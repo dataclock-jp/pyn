@@ -85,7 +85,7 @@ def _convert_design_node(src: dict) -> dict:
     attrs: dict = {}
 
     for key in ("conclusion", "problem", "bad_compromise", "key_insight",
-                "relation_to_d00", "note", "rationale", "detail"):
+                "relation_to_d00", "note", "rationale", "rejected", "detail"):
         label = {
             "conclusion": "結論",
             "problem": "問題",
@@ -94,6 +94,7 @@ def _convert_design_node(src: dict) -> dict:
             "relation_to_d00": "d-00 との関係",
             "note": "補足",
             "rationale": "根拠",
+            "rejected": "見送った案",
             "detail": "詳細",
         }[key]
         text = _labelled(label, src.get(key))
