@@ -35,10 +35,16 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
 
+      - name: .pyn から生成した文書(AGENTS.md ほか)が追従しているか
+        run: python -m tools.build_docs --check
+        env:
+          PYTHONIOENCODING: utf-8
+
       - name: .pyn の往復・参照・schema 適合
         run: |
           python -m pyn check samples/auth-spec.pyn
           python -m pyn check Handover.pyn
           python -m pyn check docs/prose-dialect.pyn
+          python -m pyn check docs/agents.pyn
         env:
           PYTHONIOENCODING: utf-8

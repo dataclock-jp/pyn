@@ -18,8 +18,6 @@ from pyn.errors import PynValidationError
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC_PYN = ROOT / "docs" / "prose-dialect.pyn"
-SPEC_MD = ROOT / "docs" / "prose-dialect.md"
-SPEC_TITLE = "散文ブロックの Markdown 方言(PYN)"
 
 
 def _prose(*lines: str) -> dict:
@@ -45,14 +43,6 @@ def test_spec_document_is_valid():
         cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
     )
     assert proc.returncode == 0, proc.stderr
-
-
-def test_spec_markdown_is_up_to_date():
-    doc = parse(SPEC_PYN.read_text(encoding="utf-8"))
-    assert SPEC_MD.read_text(encoding="utf-8") == render_md(doc, title=SPEC_TITLE), (
-        "docs/prose-dialect.md が古い —"
-        " python -m pyn md docs/prose-dialect.pyn --title ... -o docs/prose-dialect.md"
-    )
 
 
 def test_spec_uses_child_nodes_instead_of_headings():

@@ -1,0 +1,173 @@
+# AGENTS.md — AI エージェント向け操作ガイド(PYN)
+
+## <a id="agents"></a>AI エージェント向け操作ガイド(PYN)
+
+<sub>`spec` `agents`</sub>
+
+- `applies_to`: `"Codex CLI / Claude Code / その他のコーディングエージェント"`
+- `canonical_sources`: `pyn/model.py`, `Handover.json`, `docs/prose-dialect.pyn`, `docs/agents.pyn`
+- `python`: `"3.11+ / 本体は標準ライブラリのみ(テスト実行に pytest)"`
+
+このリポジトリは PYN(`.pyn`)という文書形式の実装である。
+
+中心にある主張はひとつだけで、これを踏み外すと全部が壊れる。
+
+> 真実は「型と ID を持つノードの集合と、その間の辺」である。
+> `.pyn` も JSON も HTML も Markdown も JSON Schema も、すべて再生成可能な射影にすぎない。
+
+したがってエージェントがまず知るべきことは「どれが正本で、どれが生成物か」であり、
+それが [正本と生成物](#ag-files) である。急ぐなら [守ること(これだけは)](#ag-rules) だけ読めばよい。
+
+### <a id="ag-rules"></a>守ること(これだけは)
+
+<sub>`section` `ag-rules`</sub>
+
+1. **生成物を手で編集しない。** 編集するのは正本だけ。生成物は必ず再生成する
+2. 文書を書き換えるときは、テキスト置換ではなく **ID 宛のパッチ**を使う([文書を書き換える方法](#ag-edit))
+3. `.pyn` の散文に **Markdown 見出し(`#`)は書けない**。節を分けたいなら子ノードにする
+4. 変更したら **`python -m pytest tests -q` と `python -m pyn check`** を通す([変更したら必ず通すもの](#ag-verify))
+5. `#` コメントは**作業メモ**。射影を再生成すると消える。残したい理由は散文ブロックへ
+
+3 と 5 は「知らないと事故る」種類の制約なので、`.pyn` を書く前に [.pyn を書くときの制約](#ag-writing) を読むこと。
+
+### <a id="ag-files"></a>正本と生成物
+
+<sub>`section` `ag-files`</sub>
+
+| 正本(編集してよい) | そこから生成されるもの(編集しない) |
+|---|---|
+| `pyn/model.py` | `schema/canonical.schema.json` |
+| `Handover.json` | `Handover.md` / `Handover.pyn` / `Handover.html` / `build/Handover.canonical.json` |
+| `docs/prose-dialect.pyn` | `docs/prose-dialect.md` |
+| `docs/agents.pyn` | `AGENTS.md` |
+
+再生成:
+
+```bash
+python -m tools.handover_to_pyn    # Handover.* を作り直す
+python -m tools.build_schema       # schema を作り直す(--check で追従確認のみ)
+python -m tools.build_docs         # docs/*.md と AGENTS.md を作り直す
+```
+
+生成物はリポジトリにコミットされている(読めるようにするため)。
+追従は `tests/test_handover.py` / `tests/test_schema.py` / `tests/test_docs.py` が
+強制するので、正本を直して再生成を忘れるとテストが落ちる。
+
+### <a id="ag-commands"></a>コマンド
+
+<sub>`section` `ag-commands`</sub>
+
+```bash
+python -m pyn json  doc.pyn          # 正準形JSONへ
+python -m pyn a     doc.pyn          # 投影A(インデント形。人間が読む)へ
+python -m pyn b     doc.pyn          # 投影B(フラット形 + ^parent。行番号に依存しない)へ
+python -m pyn html  doc.pyn -o out.html
+python -m pyn md    doc.pyn -o out.md
+python -m pyn check doc.pyn          # 往復 + 参照 + schema の検証
+python -m pyn repair broken.pyn      # インデント破損の診断(自動修復はしない)
+python -m pyn patch doc.pyn --ops ops.json   # ID宛のパッチ(既定で入力を上書き)
+```
+
+入力は `.pyn` でも `.json` でもよい(同じ文書の別の射影なので)。
+Windows のコンソールで日本語が化ける場合は `PYTHONIOENCODING=utf-8` を付ける
+(ファイル出力は常に UTF-8 なので影響しない)。
+
+### <a id="ag-edit"></a>文書を書き換える方法
+
+<sub>`section` `ag-edit`</sub>
+
+`.pyn` を sed や文字列置換で書き換えないこと。インデントを壊しうるし、
+行番号はすぐずれる。宛先は必ず **ID** で指定する。
+
+```bash
+cat > ops.json <<'JSON'
+[
+  {"op": "set_attr", "id": "t-11", "key": "status", "value": "done"},
+  {"op": "add_prose", "id": "t-11", "prose": "完了。@t-13 に続く。"}
+]
+JSON
+python -m pyn patch Handover.pyn --ops ops.json
+```
+
+使える操作:
+
+| op | 必須キー | 任意キー | 効果 |
+|---|---|---|---|
+| `set_attr` | `id` `key` `value` | — | 属性の追加・上書き(値はスカラーか配列) |
+| `del_attr` | `id` `key` | `missing_ok` | 属性の削除 |
+| `set_title` | `id` | `title` | タイトル変更(`title` 省略で削除) |
+| `set_prose` | `id` `prose` | — | 散文ブロック列の置換 |
+| `add_prose` | `id` `prose` | `index` | 散文ブロックの追加 |
+| `add` | `node` | `parent` `index` | ノード追加(`parent` 省略で root 直下) |
+| `remove` | `id` | `with_children` | ノード削除(`with_children: false` で子を繰り上げ) |
+| `move` | `id` | `parent` `index` | 部分木ごと移動(循環は拒否) |
+| `rename` | `id` `to` | — | ID 変更 + 散文中の参照も張り替え |
+
+性質:
+
+- **全か無か。** 途中で失敗したら文書は元のまま
+- 結果は必ず正準形。投影は毎回作り直されるので、インデントは壊れようがない
+- `refs` は散文から導出される派生値。手で書いても捨てられる
+- パッチ後にリンク切れがあると失敗し、**原本は書き換えられない**
+- Python から使うなら `from pyn import apply_patch` / `from pyn import patch`
+
+投影B(`python -m pyn b`)は行番号に意味がない形なので、差分を読ませたいときに向く。
+ただし**当てるのは投影Bのテキストではなく正準形**である、という点は変わらない。
+
+### <a id="ag-writing"></a>.pyn を書くときの制約
+
+<sub>`section` `ag-writing`</sub>
+
+構文は 4 つだけ。
+
+```
+type id "title":        ノード宣言(投影A。子はインデントで持つ)
+key: value              スカラー属性(値はスカラーかスカラーの配列)
+三連引用符で囲む行       散文ブロック(中身は Markdown 素通し)
+# ...                   コメント(作業メモ。再生成で消える)
+```
+
+落とし穴として実際に踏んだものを挙げておく。
+
+- **散文に `#` で始まる見出し行は置けない。** フェンスの中なら可。`#hashtag` のように
+  空白が続かないものは見出し扱いしないので書ける
+- **散文の中に三連引用符だけの行は置けない。** 投影A/B ではその行が散文の終端そのもの
+- **属性値に入れ子は書けない。** 構造を持たせたいなら子ノードにする
+- `no` / `yes` / `on` / `off` は**文字列のまま**(YAML の暗黙型変換は採用していない)。
+  真偽値は `true` / `false` / `null` だけ
+- ID は文書内で一意。これが構造の実体なので、重複は拒否される
+- 散文中の `@id` / `§id` は装飾ではなく**グラフの辺**。存在しない ID を指すと検証で落ちる。
+  記法そのものに言及したいときはバッククォートで囲む(コード内は参照にならない)
+
+詳しくは `docs/prose-dialect.md`(正本は `docs/prose-dialect.pyn`)。
+
+### <a id="ag-verify"></a>変更したら必ず通すもの
+
+<sub>`section` `ag-verify`</sub>
+
+```bash
+python -m pytest tests -q
+python -m pyn check samples/auth-spec.pyn
+python -m tools.build_schema --check
+```
+
+CI(`.github/workflows/ci.yml`)も同じものを回す。落ちる典型は次の 3 つで、
+どれも「正本を直したのに生成物を作り直していない」か「射影の可逆性を壊した」かのどちらか。
+
+| 落ち方 | 意味 | 直し方 |
+|---|---|---|
+| `test_generated_*_is_up_to_date` | 生成物が正本に追従していない | 該当の `tools/` を実行する |
+| `test_roundtrip_*` | 射影の可逆性が壊れた | パーサ/フォーマッタの変更を見直す。ここは設計の土台 |
+| `PynRefError` | 参照先の ID が存在しない | ID を直すか、記法への言及ならバッククォートで囲む |
+
+### <a id="ag-context"></a>背景を知りたいとき
+
+<sub>`section` `ag-context`</sub>
+
+- `Handover.md` — 設計に至った経緯と、受け入れた代償。読み物(正本は `Handover.json`)
+- `PROGRESS.md` — 各セッションで何をどう決めたかの記録
+- `docs/prose-dialect.md` — 散文に何を書いてよいかの規範
+- `samples/auth-spec.pyn` — 実物のサンプル
+
+設計判断に迷ったら、`Handover.json` の `nodes[]` にある decision / synthesis を見ること。
+「なぜそう決めたか」はすべてそこに書いてある。

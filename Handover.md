@@ -1,6 +1,6 @@
 # 引継ぎ — Synthesis from HTML and JSON
 
-*Synthesis from HTML and JSON / 最終更新 2026-08-26 午後(再開セッション: t-09〜t-14 完了、git 化)*
+*Synthesis from HTML and JSON / 最終更新 2026-08-26 午後(再開セッション: t-09〜t-15 完了、GitHub へ push)*
 
 > このファイルは Handover.json から生成されています(手で編集しないこと)。 生成: `python -m tools.handover_to_pyn`
 
@@ -8,28 +8,31 @@
 
 <sub>`meta` `meta`</sub>
 
+- `agent_entry_point`: `"AGENTS.md(正本は docs/agents.pyn)。CLAUDE.md はそこへの案内"`
 - `check_command`: `"python -m pyn check samples/auth-spec.pyn"`
 - `ci`: `".github/workflows/ci.yml(pytest / schema 追従 / .pyn の check)"`
 - `cli_usage`: `"python -m pyn {json|a|b|html|md|check|repair|patch} <file> [-o OUT]"`
 - `comment_policy`: `"# コメントは作業メモ。正準形に保存されないため射影の再生成で消える。残したい理由は散文ブロックへ(t-14)"`
 - `console_note`: `"Windowsのコンソールで日本語が化ける場合は PYTHONIOENCODING=utf-8 を付ける(ファイル出力は常にUTF-8)"`
 - `created`: `2026-08-26`
+- `docs_command`: `"python -m tools.build_docs [--check]"`
 - `dogfooding_note`: `"Handover.md / .pyn / .html / build/*.json はすべて Handover.json からの生成物。手で編集せず、tools.handover_to_pyn で再生成する(t-13 で .md も射影になった)"`
 - `editor_support`: `"editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)"`
 - `format_name`: `"PYN / 拡張子 .pyn(q-02 で確定)"`
 - `git`: `true`
 - `language`: `ja`
-- `last_session`: `"2026-08-26 午後(再開セッション: t-09〜t-14 完了、git 化)"`
+- `last_session`: `"2026-08-26 午後(再開セッション: t-09〜t-15 完了、GitHub へ push)"`
 - `owner`: `alice`
 - `project`: `"Synthesis from HTML and JSON"`
 - `prose_dialect_doc`: `"docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"`
 - `python`: `"3.14.3 / 標準ライブラリのみ(外部依存なし)"`
 - `regenerate_html_command`: `"python -m tools.handover_to_pyn  (Handover.json → Handover.md / Handover.pyn / build/Handover.canonical.json / Handover.html)"`
+- `repo`: `"https://github.com/dataclock-jp/pyn(private / 既定ブランチ main)"`
 - `resume_entry_point`: `"PROGRESS.md を読む → Handover.json の tasks[] で status=todo のものを実行"`
 - `schema_command`: `"python -m tools.build_schema [--check]"`
 - `status`: `complete__all_tasks_done`
 - `test_command`: `"python -m pytest tests -q"`
-- `tests_passing`: `647`
+- `tests_passing`: `653`
 - `workdir`: `"."`
 
 正本(canonical)。人間向けの読み物 Handover.md、投影A Handover.pyn、閲覧用HTML Handover.html は、すべて本ファイルから再生成する(手書きしない)。
@@ -39,10 +42,12 @@
 <sub>`section` `readme-start`</sub>
 
 ```bash
-python -m pytest tests -q                    # 614 passed を確認
+python -m pytest tests -q                    # 653 passed を確認
 python -m pyn check samples/auth-spec.pyn    # 往復・参照・schema の検証
 python -m tools.handover_to_pyn              # Handover.md / .pyn / .html を再生成
 ```
+
+**AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。
 
 そのままAIに投げるなら:
 
@@ -86,6 +91,8 @@ python -m tools.build_schema --check         # schema が model に追従して�
 | `tools/` | `handover_to_pyn`(引継ぎの再生成)/ `build_schema`(schema の再生成) |
 | `editors/vscode/` | VS Code シンタックスハイライト(t-09) |
 | `.github/workflows/ci.yml` | テスト / 生成物の追従 / `.pyn` の検証 |
+| `AGENTS.md` | エージェント向け操作ガイド(t-15) |
+| `tools/build_docs.py` | `.pyn` → `.md` の生成(AGENTS.md / prose-dialect.md) |
 
 ## <a id="readme-story"></a>この設計に至った物語(会話の要約)
 
@@ -195,7 +202,7 @@ spec auth "認証システム仕様":       # Type id "title": → ノード宣�
 
 - `Handover.json` = 正本(ノード + refs のグラフ)
 - `Handover.md`(このファイル)/ `Handover.pyn` / `Handover.html` / `build/Handover.canonical.json` = **すべて生成物**。手で編集せず、`python -m tools.handover_to_pyn` で再生成してください
-- t-13 で `.md` も射影になり、t-10 で `schema/canonical.schema.json` も生成物になりました。**正本は `Handover.json` / `docs/prose-dialect.pyn` / `pyn/model.py` の 3 つだけ**で、残りはすべて再生成できます
+- t-13 で `.md` も射影になり、t-10 で `schema/canonical.schema.json` も生成物になりました。**正本は `Handover.json` / `docs/prose-dialect.pyn` / `docs/agents.pyn` / `pyn/model.py` だけ**で、残りはすべて再生成できます
 
 ## <a id="goal"></a>JSONとHTMLの良いとこ取りをする、Python風の文書形式 PYN(.pyn)を設計・実装する
 
@@ -564,6 +571,18 @@ d-01 は『コメントで「なぜ」を正本に残せる』と主張してい
 
 **結果** — pyn/parser.py の comment_lines()(散文ブロック内の # は誤検出しない)と、CLI の警告。d-01 の syntax とサンプルのコメント文面も訂正。tests/test_comments.py で検証。
 
+### <a id="t-15"></a>AI エージェント向けの操作ガイドを置く
+
+<sub>`task` `t-15`</sub>
+
+- `depends`: `t-13`
+- `est`: `1h`
+- `status`: `done`
+
+Codex CLI など他のエージェントがこのリポジトリを扱えるようにする。引継ぎ文書は経緯の読み物であって操作手順ではなく、patch の ops 形式が docstring にしかなかった。
+
+**結果** — docs/agents.pyn(正本)→ AGENTS.md(生成物)。守るべき規律・正本と生成物の対応・コマンド・patch の ops 一覧・.pyn を書くときの制約・検証手順を1枚にまとめた。生成は tools/build_docs.py が担い(docs/prose-dialect.md も同じ経路へ移した)、tests/test_docs.py と CI が追従を強制する。CLAUDE.md は AGENTS.md への案内のみ。
+
 ## <a id="questions"></a>未解決の問い
 
 <sub>`questions` `questions`</sub>
@@ -617,11 +636,10 @@ d-01 は『コメントで「なぜ」を正本に残せる』と主張してい
 
 **手順**
 
-- git log を見る(初回コミットにコアと生成物が入っている)
-- python -m pytest tests -q が 647 passed になることを確認する
-- VS Code 拡張を使うなら editors/vscode/README.md の手順で配置する
-- GitHub へ push すると .github/workflows/ci.yml が動く(テスト / schema 追従 / .pyn の往復・参照・schema 適合)
-- 全タスク完了。新しい用途に使うなら docs/prose-dialect.md を読んでから .pyn を書く
+- AGENTS.md を読む(エージェントの入口。正本は docs/agents.pyn)
+- python -m pytest tests -q が 653 passed になることを確認する
+- 正本を直したら python -m tools.{handover_to_pyn,build_schema,build_docs} で再生成する
+- 全タスク完了(t-01〜t-15)。未解決の問いもなし
 
 ## <a id="artifacts"></a>成果物
 
@@ -644,5 +662,8 @@ d-01 は『コメントで「なぜ」を正本に残せる』と主張してい
 - editors/vscode/ — VS Code シンタックスハイライト(t-09)
 - .github/workflows/ci.yml — テスト・生成物の追従・.pyn の検証
 - .gitignore — 生成物はあえてコミットする方針を明記
+- AGENTS.md — エージェント向け操作ガイド(docs/agents.pyn からの生成物)
+- CLAUDE.md — AGENTS.md への案内(内容は持たない)
+- tools/build_docs.py — .pyn → .md の生成(docs/prose-dialect.md / AGENTS.md)
 
 **予定**
