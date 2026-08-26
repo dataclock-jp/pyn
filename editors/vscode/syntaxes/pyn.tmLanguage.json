@@ -1,0 +1,133 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "PYN",
+  "scopeName": "source.pyn",
+  "fileTypes": ["pyn"],
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#prose" },
+    { "include": "#node" },
+    { "include": "#attribute" }
+  ],
+  "repository": {
+    "comment": {
+      "match": "^\\s*(#).*$",
+      "name": "comment.line.number-sign.pyn",
+      "captures": {
+        "1": { "name": "punctuation.definition.comment.pyn" }
+      }
+    },
+
+    "prose": {
+      "comment": "散文ブロック。中身は Markdown 素通しだが、参照だけは辺なので色を変える(s-02)。",
+      "begin": "^\\s*(\"\"\")\\s*$",
+      "end": "^\\s*(\"\"\")\\s*$",
+      "name": "string.quoted.triple.pyn",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.string.begin.pyn" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.string.end.pyn" }
+      },
+      "patterns": [
+        { "include": "#fence" },
+        { "include": "#code-span" },
+        { "include": "#reference" }
+      ]
+    },
+
+    "fence": {
+      "comment": "フェンス内は参照ではない(s-02)。囲みごと別スコープにして解決対象から外す。",
+      "begin": "^\\s*(```|~~~).*$",
+      "end": "^\\s*(```|~~~)\\s*$",
+      "name": "markup.raw.block.pyn"
+    },
+
+    "code-span": {
+      "match": "`[^`\\n]*`",
+      "name": "markup.raw.inline.pyn"
+    },
+
+    "reference": {
+      "comment": "@id / §id。装飾ではなくグラフの辺なので、リンクとして見せる(s-02)。",
+      "match": "(?<![A-Za-z0-9_])([@§])([A-Za-z0-9_][A-Za-z0-9_.-]*)",
+      "name": "markup.underline.link.pyn",
+      "captures": {
+        "1": { "name": "punctuation.definition.reference.pyn" },
+        "2": { "name": "entity.name.tag.reference.pyn" }
+      }
+    },
+
+    "node": {
+      "comment": "ノード宣言。投影A(末尾 :)と投影B(末尾 ^parent、または無印)の両方を受ける。",
+      "match": "^\\s*([A-Za-z_][A-Za-z0-9_-]*)[ ]+([A-Za-z0-9_][A-Za-z0-9_.-]*)(?:[ ]+(\"(?:[^\"\\\\]|\\\\.)*\"))?(?:[ ]*(:)|(?:[ ]+(\\^)([A-Za-z0-9_][A-Za-z0-9_.-]*))?)[ ]*$",
+      "captures": {
+        "1": { "name": "storage.type.node.pyn" },
+        "2": { "name": "entity.name.tag.pyn" },
+        "3": { "name": "string.quoted.double.title.pyn" },
+        "4": { "name": "punctuation.separator.node.pyn" },
+        "5": { "name": "keyword.operator.parent.pyn" },
+        "6": { "name": "entity.name.tag.parent.pyn" }
+      }
+    },
+
+    "attribute": {
+      "begin": "^\\s*([A-Za-z_][A-Za-z0-9_-]*)[ ]*(:)[ ]*",
+      "end": "$",
+      "beginCaptures": {
+        "1": { "name": "variable.other.property.pyn" },
+        "2": { "name": "punctuation.separator.key-value.pyn" }
+      },
+      "patterns": [
+        { "include": "#array" },
+        { "include": "#value" }
+      ]
+    },
+
+    "array": {
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": { "0": { "name": "punctuation.definition.array.begin.pyn" } },
+      "endCaptures": { "0": { "name": "punctuation.definition.array.end.pyn" } },
+      "patterns": [
+        { "match": ",", "name": "punctuation.separator.array.pyn" },
+        { "include": "#value" }
+      ]
+    },
+
+    "value": {
+      "patterns": [
+        { "include": "#string" },
+        { "include": "#constant" },
+        { "include": "#number" },
+        { "include": "#bare" }
+      ]
+    },
+
+    "string": {
+      "begin": "\"",
+      "end": "\"",
+      "name": "string.quoted.double.pyn",
+      "patterns": [
+        { "match": "\\\\[\"\\\\nt]", "name": "constant.character.escape.pyn" },
+        { "match": "\\\\.", "name": "invalid.illegal.escape.pyn" }
+      ]
+    },
+
+    "constant": {
+      "comment": "YAML の暗黙型変換は採用しない。真偽値は true/false/null だけ(no/yes/on/off は文字列)。",
+      "match": "(?<![A-Za-z0-9_.-])(true|false|null)(?![A-Za-z0-9_.-])",
+      "name": "constant.language.pyn"
+    },
+
+    "number": {
+      "match": "(?<![A-Za-z0-9_.-])-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?![A-Za-z0-9_.-])",
+      "name": "constant.numeric.pyn"
+    },
+
+    "bare": {
+      "match": "[A-Za-z0-9_][A-Za-z0-9_./-]*",
+      "name": "string.unquoted.pyn"
+    }
+  }
+}

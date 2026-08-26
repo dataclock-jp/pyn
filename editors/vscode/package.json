@@ -1,0 +1,27 @@
+{
+  "name": "pyn",
+  "displayName": "PYN",
+  "description": "PYN(.pyn)のシンタックスハイライト。正準形 JSON の人間向け射影を読み書きするための最小限の支援。",
+  "version": "0.1.0",
+  "publisher": "alice",
+  "license": "UNLICENSED",
+  "engines": { "vscode": "^1.75.0" },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "languages": [
+      {
+        "id": "pyn",
+        "aliases": ["PYN", "pyn"],
+        "extensions": [".pyn"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "pyn",
+        "scopeName": "source.pyn",
+        "path": "./syntaxes/pyn.tmLanguage.json"
+      }
+    ]
+  }
+}

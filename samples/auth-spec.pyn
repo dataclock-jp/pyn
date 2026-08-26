@@ -1,0 +1,53 @@
+# 認証基盤の仕様書 v1.2 — PYN 投影A(インデント形)のサンプル
+# コメントは編集中の作業メモ。正準形には保存されないので、射影を再生成すると消える(d-01)。
+
+spec auth "認証システム仕様":
+  version: 1.2
+  owner: alice
+  status: draft
+
+  section overview "概要":
+    """
+    既存のセッション方式を **OAuth2 + PKCE** に置き換える。
+    移行期間中は両方式を並走させ、@migration に従って切り替える。
+
+    `client_secret` を持てない SPA が対象。
+    """
+
+  decision d-01 "なぜ PKCE か":
+    # 恒久的に残したい「なぜ」は、コメントではなく下の散文ブロックに書く
+    chosen: "OAuth2 + PKCE"
+    rejected: ["Implicit Flow", "独自トークン"]
+    reviewed: true
+    """
+    SPA からのフローでは `client_secret` を秘匿できないため。
+    Implicit Flow は仕様上非推奨、独自実装は監査コストが見合わない。
+
+    実装順序は @auth-01 → @auth-02 で固定する。
+    """
+
+  task auth-01 "認可エンドポイント実装":
+    est: 3d
+    owner: alice
+    done: true
+
+  task auth-02 "トークン交換":
+    est: 2d
+    depends: [auth-01]
+    done: false
+    blocker: "IdP側の redirect_uri 登録待ち"
+
+  section migration "移行計画":
+    """
+    | 週 | 作業 | 担当 |
+    | --- | --- | --- |
+    | 1 | 並走開始 | alice |
+    | 2 | 旧方式を停止 | alice |
+
+    判断の根拠は @d-01 を参照。ここで @auth-02 が完了していることが前提。
+
+    ```
+    # コードブロック内の @notaref は参照として扱われない
+    curl -X POST /oauth/token
+    ```
+    """

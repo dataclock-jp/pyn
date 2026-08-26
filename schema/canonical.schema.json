@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/pyn/canonical.schema.json",
+  "title": "PYN canonical document",
+  "description": "PYN の正準形(canonical JSON)。これが正本であり、.pyn の投影A/投影B と HTML / Markdown はすべてここからの射影。キー順は id, type, title, attrs, prose, refs, children に固定し、空の値は省略することでバイト安定性を担保する。 このファイルは pyn.schema.build_schema() の生成物であり、手で編集しない(t-10)。生成: python -m tools.build_schema",
+  "type": "object",
+  "required": [
+    "pyn",
+    "root"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "pyn": {
+      "description": "正準形のバージョン",
+      "const": "1.0"
+    },
+    "root": {
+      "description": "ルート直下のノード列(順序が意味を持つ)",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+      "description": "文書内で一意。s-01(構造をインデントからIDへ移す)の前提となるため必須。"
+    },
+    "typeName": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_-]*$",
+      "description": "ノードの型。HTMLのclass名と違い第一級の意味を持つ(task / decision / section など)。"
+    },
+    "scalar": {
+      "description": "属性のスカラー値。YAMLの暗黙型変換は採用しない(no/yes/on/off は文字列のまま)。",
+      "type": [
+        "string",
+        "number",
+        "boolean",
+        "null"
+      ]
+    },
+    "value": {
+      "description": "属性値。スカラー、またはスカラーの配列。ネストした構造は子ノードで表現する。",
+      "anyOf": [
+        {
+          "$ref": "#/$defs/scalar"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scalar"
+          }
+        }
+      ]
+    },
+    "node": {
+      "type": "object",
+      "required": [
+        "id",
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "type": {
+          "$ref": "#/$defs/typeName"
+        },
+        "title": {
+          "type": "string",
+          "description": "表示名。改行を含めない。省略可(空なら省略する)。",
+          "pattern": "^[^\\n\\r]*$"
+        },
+        "attrs": {
+          "type": "object",
+          "description": "スカラー属性(HTMLのattribute / JSONのkey-value)。キーは昇順にソートして正準化する。",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/typeName"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/value"
+          }
+        },
+        "prose": {
+          "type": "array",
+          "description": "散文ブロック(.pyn では \"\"\" ... \"\"\")。中身は Markdown 素通し。各行は rstrip 済み、前後の空行は除去済み。Markdown 見出し(#)は含められない(q-03)。",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "refs": {
+          "type": "array",
+          "description": "s-02。prose 内の @id / §id から機械的に抽出した参照(=グラフの辺)。派生値であり .pyn の表層には現れない。出現順・重複除去済み。",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "children": {
+          "type": "array",
+          "description": "子ノード(HTMLのchildren)。順序が意味を持つ。",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        }
+      }
+    }
+  }
+}

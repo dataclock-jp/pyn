@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# OS / エディタ
+.DS_Store
+Thumbs.db
+*.swp
+
+# 注意: 生成物(Handover.md / .pyn / .html / build/ / schema/canonical.schema.json /
+# docs/prose-dialect.md)は **あえてコミットする**。
+# d-00 に従い手で編集はしないが、リポジトリを見ただけで読める状態を保つため。
+# 追従は tests/test_handover.py と tests/test_schema.py が強制する。
+
+# Claude Code のローカル設定(環境ごとに異なる)
+.claude/settings.local.json
