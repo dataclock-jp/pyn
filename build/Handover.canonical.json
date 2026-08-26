@@ -10,6 +10,7 @@
         "check_command": "python -m pyn check samples/auth-spec.pyn",
         "ci": ".github/workflows/ci.yml(pytest / schema 追従 / .pyn の check)",
         "cli_usage": "python -m pyn {json|a|b|html|md|check|repair|patch} <file> [-o OUT]",
+        "code_size": "pyn/ 2684行 + tools/ 319行 + tests/ 2056行(本体は標準ライブラリのみ)",
         "comment_policy": "# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)",
         "console_note": "Windowsのコンソールで日本語が化ける場合は PYTHONIOENCODING=utf-8 を付ける(ファイル出力は常にUTF-8)",
         "created": "2026-08-26",
@@ -20,16 +21,17 @@
         "git": true,
         "id_policy": "ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)",
         "language": "ja",
-        "last_session": "2026-08-26 夕(再開セッション: t-17 で ID 採番と ID 消失検出を追加)",
+        "last_session": "2026-08-26 夜(t-17 まで完了。引継ぎを再開可能な状態へ整理)",
         "owner": "alice",
         "project": "Synthesis from HTML and JSON",
         "prose_dialect_doc": "docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)",
         "python": "3.14.3 / 標準ライブラリのみ(外部依存なし)",
         "regenerate_html_command": "python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)",
         "repo": "https://github.com/dataclock-jp/pyn(private / 既定ブランチ main)",
-        "resume_entry_point": "AGENTS.md を読む → Handover.pyn の task ノードで status=todo のものを実行",
+        "resume_entry_point": "このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ",
         "schema_command": "python -m tools.build_schema [--check]",
-        "status": "complete__canonical_is_pyn",
+        "status": "all_planned_tasks_done__ready_to_hand_over",
+        "tag": "v1.0",
         "test_command": "python -m pytest tests -q",
         "tests_passing": 679,
         "workdir": "."
@@ -59,7 +61,11 @@
       "type": "section",
       "title": "30秒で再開するには",
       "prose": [
-        "```bash\npython -m pytest tests -q                    # 653 passed を確認\npython -m pyn check samples/auth-spec.pyn    # 往復・参照・schema の検証\npython -m tools.handover_to_pyn              # Handover.md / .pyn / .html を再生成\n```\n\n**AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。\n\nそのままAIに投げるなら:\n\n> `PROGRESS.md` と `Handover.json` を読んで、`tasks` の `status` が `todo` のものから続けてください。\n\n**全タスク完了です(t-01〜t-14)。** 未解決の問いもありません。\n`.pyn` を書く前に `docs/prose-dialect.md`(散文に何を書いてよいか)を読むと早いです。"
+        "```bash\npython -m pytest tests -q                    # 679 passed を確認\npython -m pyn check Handover.pyn             # 往復・参照・schema の検証\npython -m tools.handover_to_pyn              # Handover.md / .html を再生成\n```\n\n**AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。\n\nそのままAIに投げるなら:\n\n> `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。\n\n**予定していたタスクは全部終わっています(t-01〜t-17)。** 未解決の問いもありません。\nいま何をするかは @backlog にまとめてあります。経緯を追いたいときは @history、\n判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。"
+      ],
+      "refs": [
+        "backlog",
+        "history"
       ]
     },
     {
@@ -67,7 +73,7 @@
       "type": "section",
       "title": "いま何が動くか",
       "prose": [
-        "```bash\npython -m pyn json  samples/auth-spec.pyn    # 正準形JSONへ\npython -m pyn a     samples/auth-spec.pyn    # 投影A(インデント形)へ\npython -m pyn b     samples/auth-spec.pyn    # 投影B(フラット形)へ\npython -m pyn html  samples/auth-spec.pyn -o out.html\npython -m pyn md    samples/auth-spec.pyn -o out.md\npython -m pyn check samples/auth-spec.pyn    # 往復 + 参照 + schema の検証\npython -m pyn repair broken.pyn              # 破損診断(自動適用はしない)\npython -m pyn patch doc.pyn --ops ops.json   # ID宛のパッチを当てて射影を再生成\n\npython -m tools.handover_to_pyn              # この引継ぎ文書の再生成\npython -m tools.build_schema --check         # schema が model に追従しているか\n```\n\n| ファイル | 役割 |\n|---|---|\n| `pyn/model.py` | **正準形の定義そのもの**。他はすべてこれの射影(t-01) |\n| `pyn/parser.py` `pyn/values.py` | `.pyn` → 正準形。投影A/B を自動判別(t-02) |\n| `pyn/formatter.py` | 正準形 → 投影A / 投影B(t-03) |\n| `pyn/refs.py` | `@id` を辺として抽出、リンク切れ検証(t-05) |\n| `pyn/render_html.py` | 正準形 → 自己完結HTML、参照をリンクへ解決(t-06) |\n| `pyn/render_md.py` | 正準形 → Markdown(t-13) |\n| `pyn/repair.py` | 破損検出と修復候補の提示(t-07) |\n| `pyn/patch.py` | ID宛のパッチ適用API(t-11) |\n| `pyn/schema.py` | JSON Schema の生成と、外部依存なしの適合検証(t-10) |\n| `schema/canonical.schema.json` | 上の生成物。手で編集しない |\n| `docs/prose-dialect.pyn` `.md` | 散文方言の仕様(t-12) |\n| `tests/` | 往復・破損・パッチ・Markdown射影・schema突き合わせ・方言・生成物の追従 |\n| `tools/` | `handover_to_pyn`(引継ぎの再生成)/ `build_schema`(schema の再生成) |\n| `editors/vscode/` | VS Code シンタックスハイライト(t-09) |\n| `.github/workflows/ci.yml` | テスト / 生成物の追従 / `.pyn` の検証 |\n| `AGENTS.md` | エージェント向け操作ガイド(t-15) |\n| `tools/build_docs.py` | `.pyn` → `.md` の生成(AGENTS.md / prose-dialect.md) |"
+        "```bash\npython -m pyn json  samples/auth-spec.pyn    # 正準形JSONへ\npython -m pyn a     samples/auth-spec.pyn    # 投影A(インデント形)へ\npython -m pyn b     samples/auth-spec.pyn    # 投影B(フラット形)へ\npython -m pyn html  samples/auth-spec.pyn -o out.html\npython -m pyn md    samples/auth-spec.pyn -o out.md\npython -m pyn check samples/auth-spec.pyn    # 往復 + 参照 + schema の検証\npython -m pyn repair broken.pyn              # 破損診断(自動適用はしない)\npython -m pyn patch doc.pyn --ops ops.json   # ID宛のパッチを当てて射影を再生成\npython -m pyn id    draft.pyn                # ID の無い宣言に採番(--dry-run 可)\n\npython -m tools.handover_to_pyn              # この引継ぎ文書の再生成(--check あり)\npython -m tools.build_schema --check         # schema が model に追従しているか\npython -m tools.build_docs --check           # AGENTS.md / prose-dialect.md の追従\npython -m tools.check_ids                    # 一度振った ID が消えていないか\n```\n\n| ファイル | 役割 |\n|---|---|\n| `pyn/model.py` | **正準形の定義そのもの**。他はすべてこれの射影(t-01) |\n| `pyn/parser.py` `pyn/values.py` | `.pyn` → 正準形。投影A/B を自動判別(t-02) |\n| `pyn/formatter.py` | 正準形 → 投影A / 投影B(t-03) |\n| `pyn/refs.py` | `@id` を辺として抽出、リンク切れ検証(t-05) |\n| `pyn/render_html.py` `pyn/render_md.py` | 正準形 → HTML / Markdown(t-06 / t-13) |\n| `pyn/repair.py` | 破損検出と修復候補の提示(t-07) |\n| `pyn/patch.py` | ID宛のパッチ適用API(t-11) |\n| `pyn/schema.py` | JSON Schema の生成と適合検証(t-10) |\n| `pyn/autoid.py` | ID の自動採番(t-17) |\n| `tools/` | `handover_to_pyn` / `build_schema` / `build_docs` / `check_ids` |\n| `editors/vscode/` | シンタックスハイライト(t-09) |\n| `docs/agents.pyn` `docs/prose-dialect.pyn` | エージェント向け操作ガイド / 散文方言の仕様 |\n| `.github/workflows/ci.yml` | テスト + 生成物の追従 + ID 消失検出 |"
       ]
     },
     {
@@ -159,6 +165,79 @@
       "title": "ドッグフーディングのメモ",
       "prose": [
         "この引継ぎ自体を、決めた原則どおりに運用しています。\n\n- `Handover.pyn` = **正本**(型と ID を持つノードのグラフ)\n- `Handover.md` / `Handover.html` / `build/Handover.canonical.json` = **すべて生成物**。手で編集せず `python -m tools.handover_to_pyn` で再生成します\n- t-16 で正本が JSON から `.pyn` へ反転し、独自形の `Handover.json` とその変換器は消えました。**正本は `Handover.pyn` / `docs/prose-dialect.pyn` / `docs/agents.pyn` / `pyn/model.py` の 4 つだけ**です\n- この文書の更新も `pyn patch` で行っています。ドッグフーディングが引継ぎ文書の運用そのものにまで届いた状態です"
+      ]
+    },
+    {
+      "id": "history",
+      "type": "history",
+      "title": "これまでの経緯(セッション単位)",
+      "prose": [
+        "各セッションで何を決め、何を作ったか。判断の理由そのものは `decision` / `synthesis` ノードに、作業の詳細は `PROGRESS.md` にある。"
+      ],
+      "children": [
+        {
+          "id": "history.s1",
+          "type": "session",
+          "title": "第1セッション — 設計と中核の実装(t-01〜t-08)",
+          "prose": [
+            "会話で PYN の設計を固め、そのまま自律実行でコアを実装。\n\n- 3つの弱点(インデント脆弱性 / インライン表現 / エコシステム)を弁証法的に止揚し、@s-meta に到達\n- 正準形スキーマ、パーサ、投影A/B フォーマッタ、往復プロパティテスト、参照解決、HTMLレンダラ、破損診断まで\n- **テスト 420 件。** 実装言語は Python、外部依存ゼロ(@q-01)\n\nこのとき既に「`Handover.md` だけ手書き」という @d-00 違反が自己申告されていた。"
+          ],
+          "refs": [
+            "s-meta",
+            "q-01",
+            "d-00"
+          ]
+        },
+        {
+          "id": "history.s2",
+          "type": "session",
+          "title": "第2セッション — パッチAPIと Markdown 射影(t-11 / t-13)",
+          "prose": [
+            "引継ぎの推奨どおり t-11 → t-13 を実施。\n\n- **パッチは正準形に当てる**と決めた。投影Bのテキストを編集するのではなく、ID 宛の操作を正準形へ当てて射影を作り直す(@t-11)\n- Markdown 射影を足し、`Handover.md` を生成物にした。手書き本文は正本へ移設(@t-13)\n- 途中で仕様の穴が2つ露見: 散文中の見出し禁止が検証されていなかった / 散文に三連引用符だけの行は置けない。どちらも `canonicalize` で弾くようにした\n- **テスト 482 件。**"
+          ],
+          "refs": [
+            "t-11",
+            "t-13"
+          ]
+        },
+        {
+          "id": "history.s3",
+          "type": "session",
+          "title": "第3セッション — 形式名の確定と、二重定義の解消(q-02 / t-10 / t-12)",
+          "prose": [
+            "- 形式名を **PYN / 拡張子 `.pyn`** で確定(@q-02)\n- `schema/canonical.schema.json` を手書きから **`pyn/model.py` からの生成物** へ。外部依存なしの検証器で「canonicalize の出力 ⊆ schema 適合」を常時突き合わせる(@t-10)\n- 散文 Markdown 方言を仕様として明文化。仕様書自身を `.pyn` で書き、主張を1件ずつテストで裏づけた(@t-12)\n- **テスト 599 件。**"
+          ],
+          "refs": [
+            "q-02",
+            "t-10",
+            "t-12"
+          ]
+        },
+        {
+          "id": "history.s4",
+          "type": "session",
+          "title": "第4セッション — 外に出す(t-09 / リポジトリ化 / t-15)",
+          "prose": [
+            "- VS Code シンタックスハイライト(@t-09)。TextMate エンジンは動かせないので、実物のサンプル全行が想定どおり拾われるかをテストで検証\n- `git init` → **GitHub (dataclock-jp/pyn, private)** へ push。CI を実在させ、設計文書が繰り返し言っていた「リンク切れは CI で落ちる」を事実にした\n- Codex CLI など他エージェント向けに `AGENTS.md` を追加(正本は `docs/agents.pyn`)。patch の ops 一覧がそれまで docstring にしかなかったのが最大の欠落だった(@t-15)\n- **テスト 653 件。**"
+          ],
+          "refs": [
+            "t-09",
+            "t-15"
+          ]
+        },
+        {
+          "id": "history.s5",
+          "type": "session",
+          "title": "第5セッション — 正本の反転と ID 規律(d-02 / t-16 / t-17 / v1.0)",
+          "prose": [
+            "- 「コメントを各形式のコメントへ射影できないか」という問いに **保存しない**と判断(@d-02)。見送った案も記録してある\n- **正本を `Handover.json` から `Handover.pyn` へ反転**(@t-16)。293行の変換器が 95行の射影生成だけになり、この文書の更新自体が `pyn patch` でできるようになった\n- 区切りとして **タグ `v1.0`** を打った\n- ID 規律を機械で支える二段構え(@t-17): `pyn id` で採番し、`tools/check_ids` で「一度振った ID が消えていないか」を CI で見張る\n- **テスト 679 件。**"
+          ],
+          "refs": [
+            "d-02",
+            "t-16",
+            "t-17"
+          ]
+        }
       ]
     },
     {
@@ -1154,7 +1233,78 @@
       "type": "actions",
       "title": "次にやること",
       "prose": [
-        "- AGENTS.md を読む(エージェントの入口。正本は docs/agents.pyn)\n- `python -m pytest tests -q` が 679 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n- ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)\n- 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す\n- 全タスク完了(t-01〜t-17)。未解決の問いもなし"
+        "- `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)\n- `python -m pytest tests -q` が 679 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n  (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)\n- ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)\n- 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す\n- 予定タスクは完了(t-01〜t-17)。次に何をするかは @backlog"
+      ],
+      "refs": [
+        "backlog"
+      ]
+    },
+    {
+      "id": "backlog",
+      "type": "backlog",
+      "title": "着手候補(いずれも未着手)",
+      "prose": [
+        "予定していた t-01〜t-17 は完了している。ここにあるのは **まだ着手していない候補** であり、やると決まったものではない。着手するときは `task` ノードとして @plan に足すこと。"
+      ],
+      "refs": [
+        "plan"
+      ],
+      "children": [
+        {
+          "id": "backlog.readme",
+          "type": "idea",
+          "title": "README.md を射影として足す",
+          "attrs": {
+            "priority": "low",
+            "status": "candidate"
+          },
+          "prose": [
+            "GitHub のトップに説明が出ない。他の生成物と同じく `docs/readme.pyn` → `README.md` の射影として足すのが筋。`tools/build_docs.py` の `DOCS` に1行足すだけで済む。"
+          ]
+        },
+        {
+          "id": "backlog.trial",
+          "type": "idea",
+          "title": "実運用で3つの指標を測る(いちばん価値が高い)",
+          "attrs": {
+            "priority": "high",
+            "status": "candidate"
+          },
+          "prose": [
+            "「PYN が本当に良いか」は意見ではなく数字で決められる。次に扱う文書 2〜3 本を PYN で運用し、次を測る。\n\n- AI の編集失敗率は下がったか(パッチ失敗・手戻りの回数)\n- 人間が ID 規律を保てるか(`check_ids` / `pyn check` が落ちる頻度)\n- 生成物を手で編集する事故が起きるか(テストが検出するので数えられる)\n\n現時点で未検証なのは、**他エージェント(Codex CLI)での実運用**と、**複数人・数か月の運用**である。"
+          ]
+        },
+        {
+          "id": "backlog.note-syntax",
+          "type": "idea",
+          "title": "保留: `##` を「直後のノードに結合する注記」にする案",
+          "attrs": {
+            "priority": "low",
+            "status": "candidate"
+          },
+          "prose": [
+            "@d-02 で見送った案B。結合規則が一意なので @cost-2 は壊さないが、得られるのは記法の楽さだけで、能力は散文や `note:` 属性と同じ。宣言の直前に短い理由を書きたい欲求が実運用で残るようなら再検討する。"
+          ],
+          "refs": [
+            "d-02",
+            "cost-2"
+          ]
+        },
+        {
+          "id": "backlog.ecosystem",
+          "type": "idea",
+          "title": "エコシステムの穴を埋めるか決める",
+          "attrs": {
+            "priority": "low",
+            "status": "candidate"
+          },
+          "prose": [
+            "`.pyn` は GitHub 上ではただのテキストで、diff レビュー・折りたたみ・検索補完・LSP が無い。@s-03 の「射影だから既存資産を継承できる」は正しいが、**継承できないもの**もこれだけ残っている。埋めるか、割り切るかは実運用の結果を見てから決める。"
+          ],
+          "refs": [
+            "s-03"
+          ]
+        }
       ]
     },
     {
@@ -1167,7 +1317,21 @@
           "type": "group",
           "title": "既存",
           "prose": [
-            "- Handover.json — 正本(このファイル)\n- Handover.md — 読み物。Handover.json の readme[] から生成(手書きしない)\n- PROGRESS.md — 自律実行セッションの記録\n- Handover.pyn — Handover.json から生成した投影A\n- Handover.html — Handover.json から生成(手書きしない)\n- build/Handover.canonical.json — PYN正準形に写した引継ぎ文書\n- schema/canonical.schema.json — pyn.schema.build_schema() の生成物(t-10)\n- docs/prose-dialect.pyn — 散文方言の仕様(正本)/ docs/prose-dialect.md はその射影\n- pyn/ — parser, formatter, refs, repair, patch, schema, render_html, render_md, values, model, cli\n- tools/ — handover_to_pyn, build_schema\n- samples/auth-spec.pyn\n- tests/ — test_roundtrip, test_repair, test_patch, test_render_md, test_schema, test_prose_dialect, test_handover\n- editors/vscode/ — VS Code シンタックスハイライト(t-09)\n- .github/workflows/ci.yml — テスト・生成物の追従・.pyn の検証\n- .gitignore — 生成物はあえてコミットする方針を明記\n- AGENTS.md — エージェント向け操作ガイド(docs/agents.pyn からの生成物)\n- CLAUDE.md — AGENTS.md への案内(内容は持たない)\n- tools/build_docs.py — .pyn → .md の生成(docs/prose-dialect.md / AGENTS.md)"
+            "- `Handover.pyn` — **正本**(このファイル)\n- `Handover.md` / `Handover.html` / `build/Handover.canonical.json` — その射影(手で編集しない)\n- `PROGRESS.md` — セッションごとの作業記録(手書き。経緯の要約は @history)\n- `AGENTS.md` — エージェント向け操作ガイド(正本 `docs/agents.pyn`)。`CLAUDE.md` はその案内\n- `docs/prose-dialect.pyn` `.md` — 散文方言の仕様\n- `pyn/` — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli\n- `tools/` — handover_to_pyn, build_schema, build_docs, check_ids(いずれも `--check` あり)\n- `schema/canonical.schema.json` — `pyn/model.py` からの生成物\n- `editors/vscode/` — シンタックスハイライト\n- `samples/auth-spec.pyn` — 実物のサンプル\n- `retired-ids.txt` — 意図的に廃止した ID の記録\n- `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid\n- `.github/workflows/ci.yml` — テスト + 生成物の追従 + ID 消失検出"
+          ],
+          "refs": [
+            "history"
+          ]
+        },
+        {
+          "id": "artifacts.planned",
+          "type": "group",
+          "title": "予定",
+          "prose": [
+            "なし。予定していたタスクは完了している。着手候補は @backlog を参照。"
+          ],
+          "refs": [
+            "backlog"
           ]
         }
       ]

@@ -96,7 +96,7 @@ a{color:var(--accent)}
 <div class="wrap">
 <header class="doc-head">
 <h1>引継ぎ — Synthesis from HTML and JSON</h1>
-<p class="sub">Synthesis from HTML and JSON / 最終更新 2026-08-26 夕(再開セッション: t-17 で ID 採番と ID 消失検出を追加)</p><p class="generated">このページは Handover.pyn から生成されています(手で編集しないこと)。 生成: python -m tools.handover_to_pyn</p>
+<p class="sub">Synthesis from HTML and JSON / 最終更新 2026-08-26 夜(t-17 まで完了。引継ぎを再開可能な状態へ整理)</p><p class="generated">このページは Handover.pyn から生成されています(手で編集しないこと)。 生成: python -m tools.handover_to_pyn</p>
 </header>
 <section class="node node--meta depth-0" id="meta">
 <header class="node__head">
@@ -104,7 +104,7 @@ a{color:var(--accent)}
 <h2 class="node__title">この文書について</h2>
 <a class="node__id" href="#meta">meta</a>
 </header>
-<div class="table-wrap"><table class="attrs"><tbody><tr><th>agent_entry_point</th><td><code>&quot;AGENTS.md(正本は docs/agents.pyn)。CLAUDE.md はそこへの案内&quot;</code></td></tr><tr><th>check_command</th><td><code>&quot;python -m pyn check samples/auth-spec.pyn&quot;</code></td></tr><tr><th>ci</th><td><code>&quot;.github/workflows/ci.yml(pytest / schema 追従 / .pyn の check)&quot;</code></td></tr><tr><th>cli_usage</th><td><code>&quot;python -m pyn {json|a|b|html|md|check|repair|patch} &lt;file&gt; [-o OUT]&quot;</code></td></tr><tr><th>comment_policy</th><td><code>&quot;# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)&quot;</code></td></tr><tr><th>console_note</th><td><code>&quot;Windowsのコンソールで日本語が化ける場合は PYTHONIOENCODING=utf-8 を付ける(ファイル出力は常にUTF-8)&quot;</code></td></tr><tr><th>created</th><td><code>2026-08-26</code></td></tr><tr><th>docs_command</th><td><code>&quot;python -m tools.build_docs [--check]&quot;</code></td></tr><tr><th>dogfooding_note</th><td><code>&quot;Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)&quot;</code></td></tr><tr><th>editor_support</th><td><code>&quot;editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)&quot;</code></td></tr><tr><th>format_name</th><td><code>&quot;PYN / 拡張子 .pyn(q-02 で確定)&quot;</code></td></tr><tr><th>git</th><td><code>true</code></td></tr><tr><th>id_policy</th><td><code>&quot;ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)&quot;</code></td></tr><tr><th>language</th><td><code>ja</code></td></tr><tr><th>last_session</th><td><code>&quot;2026-08-26 夕(再開セッション: t-17 で ID 採番と ID 消失検出を追加)&quot;</code></td></tr><tr><th>owner</th><td><code>alice</code></td></tr><tr><th>project</th><td><code>&quot;Synthesis from HTML and JSON&quot;</code></td></tr><tr><th>prose_dialect_doc</th><td><code>&quot;docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)&quot;</code></td></tr><tr><th>python</th><td><code>&quot;3.14.3 / 標準ライブラリのみ(外部依存なし)&quot;</code></td></tr><tr><th>regenerate_html_command</th><td><code>&quot;python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)&quot;</code></td></tr><tr><th>repo</th><td><code>&quot;https://github.com/dataclock-jp/pyn(private / 既定ブランチ main)&quot;</code></td></tr><tr><th>resume_entry_point</th><td><code>&quot;AGENTS.md を読む → Handover.pyn の task ノードで status=todo のものを実行&quot;</code></td></tr><tr><th>schema_command</th><td><code>&quot;python -m tools.build_schema [--check]&quot;</code></td></tr><tr><th>status</th><td><code>complete__canonical_is_pyn</code></td></tr><tr><th>test_command</th><td><code>&quot;python -m pytest tests -q&quot;</code></td></tr><tr><th>tests_passing</th><td><code>679</code></td></tr><tr><th>workdir</th><td><code>&quot;.&quot;</code></td></tr></tbody></table></div>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>agent_entry_point</th><td><code>&quot;AGENTS.md(正本は docs/agents.pyn)。CLAUDE.md はそこへの案内&quot;</code></td></tr><tr><th>check_command</th><td><code>&quot;python -m pyn check samples/auth-spec.pyn&quot;</code></td></tr><tr><th>ci</th><td><code>&quot;.github/workflows/ci.yml(pytest / schema 追従 / .pyn の check)&quot;</code></td></tr><tr><th>cli_usage</th><td><code>&quot;python -m pyn {json|a|b|html|md|check|repair|patch} &lt;file&gt; [-o OUT]&quot;</code></td></tr><tr><th>code_size</th><td><code>&quot;pyn/ 2684行 + tools/ 319行 + tests/ 2056行(本体は標準ライブラリのみ)&quot;</code></td></tr><tr><th>comment_policy</th><td><code>&quot;# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)&quot;</code></td></tr><tr><th>console_note</th><td><code>&quot;Windowsのコンソールで日本語が化ける場合は PYTHONIOENCODING=utf-8 を付ける(ファイル出力は常にUTF-8)&quot;</code></td></tr><tr><th>created</th><td><code>2026-08-26</code></td></tr><tr><th>docs_command</th><td><code>&quot;python -m tools.build_docs [--check]&quot;</code></td></tr><tr><th>dogfooding_note</th><td><code>&quot;Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)&quot;</code></td></tr><tr><th>editor_support</th><td><code>&quot;editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)&quot;</code></td></tr><tr><th>format_name</th><td><code>&quot;PYN / 拡張子 .pyn(q-02 で確定)&quot;</code></td></tr><tr><th>git</th><td><code>true</code></td></tr><tr><th>id_policy</th><td><code>&quot;ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)&quot;</code></td></tr><tr><th>language</th><td><code>ja</code></td></tr><tr><th>last_session</th><td><code>&quot;2026-08-26 夜(t-17 まで完了。引継ぎを再開可能な状態へ整理)&quot;</code></td></tr><tr><th>owner</th><td><code>alice</code></td></tr><tr><th>project</th><td><code>&quot;Synthesis from HTML and JSON&quot;</code></td></tr><tr><th>prose_dialect_doc</th><td><code>&quot;docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)&quot;</code></td></tr><tr><th>python</th><td><code>&quot;3.14.3 / 標準ライブラリのみ(外部依存なし)&quot;</code></td></tr><tr><th>regenerate_html_command</th><td><code>&quot;python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)&quot;</code></td></tr><tr><th>repo</th><td><code>&quot;https://github.com/dataclock-jp/pyn(private / 既定ブランチ main)&quot;</code></td></tr><tr><th>resume_entry_point</th><td><code>&quot;このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ&quot;</code></td></tr><tr><th>schema_command</th><td><code>&quot;python -m tools.build_schema [--check]&quot;</code></td></tr><tr><th>status</th><td><code>all_planned_tasks_done__ready_to_hand_over</code></td></tr><tr><th>tag</th><td><code>v1.0</code></td></tr><tr><th>test_command</th><td><code>&quot;python -m pytest tests -q&quot;</code></td></tr><tr><th>tests_passing</th><td><code>679</code></td></tr><tr><th>workdir</th><td><code>&quot;.&quot;</code></td></tr></tbody></table></div>
 <div class="prose"><p><strong>このファイルが正本(canonical)です。</strong> <code>Handover.md</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> は <code>python -m tools.handover_to_pyn</code> の生成物で、手では編集しません。</p>
 <p>書き換えは <code>python -m pyn patch Handover.pyn --ops ops.json</code> が安全です(ID 宛なので行番号がずれても当たり、失敗時は文書が変更されません)。</p>
 <p>なお <code>#</code> コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。</p></div>
@@ -131,13 +131,14 @@ a{color:var(--accent)}
 <h2 class="node__title">30秒で再開するには</h2>
 <a class="node__id" href="#readme-start">readme-start</a>
 </header>
-<div class="prose"><pre><code class="lang-bash">python -m pytest tests -q                    # 653 passed を確認
-python -m pyn check samples/auth-spec.pyn    # 往復・参照・schema の検証
-python -m tools.handover_to_pyn              # Handover.md / .pyn / .html を再生成</code></pre>
+<div class="prose"><pre><code class="lang-bash">python -m pytest tests -q                    # 679 passed を確認
+python -m pyn check Handover.pyn             # 往復・参照・schema の検証
+python -m tools.handover_to_pyn              # Handover.md / .html を再生成</code></pre>
 <p><strong>AI に作業させるなら、まず <code>AGENTS.md</code> を読ませてください</strong>(Claude Code / Codex CLI 共通の操作ガイド。正本は <code>docs/agents.pyn</code>)。</p>
 <p>そのままAIに投げるなら:</p>
-<blockquote><p><code>PROGRESS.md</code> と <code>Handover.json</code> を読んで、<code>tasks</code> の <code>status</code> が <code>todo</code> のものから続けてください。</p></blockquote>
-<p><strong>全タスク完了です(t-01〜t-14)。</strong> 未解決の問いもありません。<br><code>.pyn</code> を書く前に <code>docs/prose-dialect.md</code>(散文に何を書いてよいか)を読むと早いです。</p></div>
+<blockquote><p><code>Handover.pyn</code> を読んで、<code>task</code> ノードで <code>status</code> が <code>todo</code> のものから続けてください。無ければ <code>backlog</code> の候補を見てください。</p></blockquote>
+<p><strong>予定していたタスクは全部終わっています(t-01〜t-17)。</strong> 未解決の問いもありません。<br>いま何をするかは <a class="ref" href="#backlog">着手候補(いずれも未着手)</a> にまとめてあります。経緯を追いたいときは <a class="ref" href="#history">これまでの経緯(セッション単位)</a>、<br>判断の理由を知りたいときは各 <code>decision</code> / <code>synthesis</code> ノードを見てください。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補(いずれも未着手)</a><a class="chip" href="#history">これまでの経緯(セッション単位)</a></div>
 </section>
 <section class="node node--section depth-0" id="readme-now">
 <header class="node__head">
@@ -153,10 +154,13 @@ python -m pyn md    samples/auth-spec.pyn -o out.md
 python -m pyn check samples/auth-spec.pyn    # 往復 + 参照 + schema の検証
 python -m pyn repair broken.pyn              # 破損診断(自動適用はしない)
 python -m pyn patch doc.pyn --ops ops.json   # ID宛のパッチを当てて射影を再生成
+python -m pyn id    draft.pyn                # ID の無い宣言に採番(--dry-run 可)
 
-python -m tools.handover_to_pyn              # この引継ぎ文書の再生成
-python -m tools.build_schema --check         # schema が model に追従しているか</code></pre>
-<div class="table-wrap"><table><thead><tr><th>ファイル</th><th>役割</th></tr></thead><tbody><tr><td><code>pyn/model.py</code></td><td><strong>正準形の定義そのもの</strong>。他はすべてこれの射影(t-01)</td></tr><tr><td><code>pyn/parser.py</code> <code>pyn/values.py</code></td><td><code>.pyn</code> → 正準形。投影A/B を自動判別(t-02)</td></tr><tr><td><code>pyn/formatter.py</code></td><td>正準形 → 投影A / 投影B(t-03)</td></tr><tr><td><code>pyn/refs.py</code></td><td><code>@id</code> を辺として抽出、リンク切れ検証(t-05)</td></tr><tr><td><code>pyn/render_html.py</code></td><td>正準形 → 自己完結HTML、参照をリンクへ解決(t-06)</td></tr><tr><td><code>pyn/render_md.py</code></td><td>正準形 → Markdown(t-13)</td></tr><tr><td><code>pyn/repair.py</code></td><td>破損検出と修復候補の提示(t-07)</td></tr><tr><td><code>pyn/patch.py</code></td><td>ID宛のパッチ適用API(t-11)</td></tr><tr><td><code>pyn/schema.py</code></td><td>JSON Schema の生成と、外部依存なしの適合検証(t-10)</td></tr><tr><td><code>schema/canonical.schema.json</code></td><td>上の生成物。手で編集しない</td></tr><tr><td><code>docs/prose-dialect.pyn</code> <code>.md</code></td><td>散文方言の仕様(t-12)</td></tr><tr><td><code>tests/</code></td><td>往復・破損・パッチ・Markdown射影・schema突き合わせ・方言・生成物の追従</td></tr><tr><td><code>tools/</code></td><td><code>handover_to_pyn</code>(引継ぎの再生成)/ <code>build_schema</code>(schema の再生成)</td></tr><tr><td><code>editors/vscode/</code></td><td>VS Code シンタックスハイライト(t-09)</td></tr><tr><td><code>.github/workflows/ci.yml</code></td><td>テスト / 生成物の追従 / <code>.pyn</code> の検証</td></tr><tr><td><code>AGENTS.md</code></td><td>エージェント向け操作ガイド(t-15)</td></tr><tr><td><code>tools/build_docs.py</code></td><td><code>.pyn</code> → <code>.md</code> の生成(AGENTS.md / prose-dialect.md)</td></tr></tbody></table></div></div>
+python -m tools.handover_to_pyn              # この引継ぎ文書の再生成(--check あり)
+python -m tools.build_schema --check         # schema が model に追従しているか
+python -m tools.build_docs --check           # AGENTS.md / prose-dialect.md の追従
+python -m tools.check_ids                    # 一度振った ID が消えていないか</code></pre>
+<div class="table-wrap"><table><thead><tr><th>ファイル</th><th>役割</th></tr></thead><tbody><tr><td><code>pyn/model.py</code></td><td><strong>正準形の定義そのもの</strong>。他はすべてこれの射影(t-01)</td></tr><tr><td><code>pyn/parser.py</code> <code>pyn/values.py</code></td><td><code>.pyn</code> → 正準形。投影A/B を自動判別(t-02)</td></tr><tr><td><code>pyn/formatter.py</code></td><td>正準形 → 投影A / 投影B(t-03)</td></tr><tr><td><code>pyn/refs.py</code></td><td><code>@id</code> を辺として抽出、リンク切れ検証(t-05)</td></tr><tr><td><code>pyn/render_html.py</code> <code>pyn/render_md.py</code></td><td>正準形 → HTML / Markdown(t-06 / t-13)</td></tr><tr><td><code>pyn/repair.py</code></td><td>破損検出と修復候補の提示(t-07)</td></tr><tr><td><code>pyn/patch.py</code></td><td>ID宛のパッチ適用API(t-11)</td></tr><tr><td><code>pyn/schema.py</code></td><td>JSON Schema の生成と適合検証(t-10)</td></tr><tr><td><code>pyn/autoid.py</code></td><td>ID の自動採番(t-17)</td></tr><tr><td><code>tools/</code></td><td><code>handover_to_pyn</code> / <code>build_schema</code> / <code>build_docs</code> / <code>check_ids</code></td></tr><tr><td><code>editors/vscode/</code></td><td>シンタックスハイライト(t-09)</td></tr><tr><td><code>docs/agents.pyn</code> <code>docs/prose-dialect.pyn</code></td><td>エージェント向け操作ガイド / 散文方言の仕様</td></tr><tr><td><code>.github/workflows/ci.yml</code></td><td>テスト + 生成物の追従 + ID 消失検出</td></tr></tbody></table></div></div>
 </section>
 <section class="node node--section depth-0" id="readme-story">
 <header class="node__head">
@@ -253,6 +257,62 @@ spec auth &quot;認証システム仕様&quot;:       # Type id &quot;title&quot
 </header>
 <div class="prose"><p>この引継ぎ自体を、決めた原則どおりに運用しています。</p>
 <ul><li><code>Handover.pyn</code> = <strong>正本</strong>(型と ID を持つノードのグラフ)</li><li><code>Handover.md</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> = <strong>すべて生成物</strong>。手で編集せず <code>python -m tools.handover_to_pyn</code> で再生成します</li><li>t-16 で正本が JSON から <code>.pyn</code> へ反転し、独自形の <code>Handover.json</code> とその変換器は消えました。<strong>正本は <code>Handover.pyn</code> / <code>docs/prose-dialect.pyn</code> / <code>docs/agents.pyn</code> / <code>pyn/model.py</code> の 4 つだけ</strong>です</li><li>この文書の更新も <code>pyn patch</code> で行っています。ドッグフーディングが引継ぎ文書の運用そのものにまで届いた状態です</li></ul></div>
+</section>
+<section class="node node--history depth-0" id="history">
+<header class="node__head">
+<span class="badge">history</span>
+<h2 class="node__title">これまでの経緯(セッション単位)</h2>
+<a class="node__id" href="#history">history</a>
+</header>
+<div class="prose"><p>各セッションで何を決め、何を作ったか。判断の理由そのものは <code>decision</code> / <code>synthesis</code> ノードに、作業の詳細は <code>PROGRESS.md</code> にある。</p></div>
+<section class="node node--session depth-1" id="history.s1">
+<header class="node__head">
+<span class="badge">session</span>
+<h2 class="node__title">第1セッション — 設計と中核の実装(t-01〜t-08)</h2>
+<a class="node__id" href="#history.s1">history.s1</a>
+</header>
+<div class="prose"><p>会話で PYN の設計を固め、そのまま自律実行でコアを実装。</p>
+<ul><li>3つの弱点(インデント脆弱性 / インライン表現 / エコシステム)を弁証法的に止揚し、<a class="ref" href="#s-meta">メタ止揚: 3つの反はすべて同じ根から出ていた</a> に到達</li><li>正準形スキーマ、パーサ、投影A/B フォーマッタ、往復プロパティテスト、参照解決、HTMLレンダラ、破損診断まで</li><li><strong>テスト 420 件。</strong> 実装言語は Python、外部依存ゼロ(<a class="ref" href="#q-01">実装言語は? (Python / TypeScript)</a>)</li></ul>
+<p>このとき既に「<code>Handover.md</code> だけ手書き」という <a class="ref" href="#d-00">HTML vs JSON はトレードオフではなくレイヤーの違い</a> 違反が自己申告されていた。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#s-meta">メタ止揚: 3つの反はすべて同じ根から出ていた</a><a class="chip" href="#q-01">実装言語は? (Python / TypeScript)</a><a class="chip" href="#d-00">HTML vs JSON はトレードオフではなくレイヤーの違い</a></div>
+</section>
+<section class="node node--session depth-1" id="history.s2">
+<header class="node__head">
+<span class="badge">session</span>
+<h2 class="node__title">第2セッション — パッチAPIと Markdown 射影(t-11 / t-13)</h2>
+<a class="node__id" href="#history.s2">history.s2</a>
+</header>
+<div class="prose"><p>引継ぎの推奨どおり t-11 → t-13 を実施。</p>
+<ul><li><strong>パッチは正準形に当てる</strong>と決めた。投影Bのテキストを編集するのではなく、ID 宛の操作を正準形へ当てて射影を作り直す(<a class="ref" href="#t-11">投影B へのパッチ適用 API</a>)</li><li>Markdown 射影を足し、<code>Handover.md</code> を生成物にした。手書き本文は正本へ移設(<a class="ref" href="#t-13">Markdown 射影(.md の生成)</a>)</li><li>途中で仕様の穴が2つ露見: 散文中の見出し禁止が検証されていなかった / 散文に三連引用符だけの行は置けない。どちらも <code>canonicalize</code> で弾くようにした</li><li><strong>テスト 482 件。</strong></li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#t-11">投影B へのパッチ適用 API</a><a class="chip" href="#t-13">Markdown 射影(.md の生成)</a></div>
+</section>
+<section class="node node--session depth-1" id="history.s3">
+<header class="node__head">
+<span class="badge">session</span>
+<h2 class="node__title">第3セッション — 形式名の確定と、二重定義の解消(q-02 / t-10 / t-12)</h2>
+<a class="node__id" href="#history.s3">history.s3</a>
+</header>
+<div class="prose"><ul><li>形式名を <strong>PYN / 拡張子 <code>.pyn</code></strong> で確定(<a class="ref" href="#q-02">形式名を PYN、拡張子を .pyn で確定してよいか</a>)</li><li><code>schema/canonical.schema.json</code> を手書きから <strong><code>pyn/model.py</code> からの生成物</strong> へ。外部依存なしの検証器で「canonicalize の出力 ⊆ schema 適合」を常時突き合わせる(<a class="ref" href="#t-10">canonicalize の検証を JSON Schema と接続する</a>)</li><li>散文 Markdown 方言を仕様として明文化。仕様書自身を <code>.pyn</code> で書き、主張を1件ずつテストで裏づけた(<a class="ref" href="#t-12">散文Markdown方言の仕様書化</a>)</li><li><strong>テスト 599 件。</strong></li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#q-02">形式名を PYN、拡張子を .pyn で確定してよいか</a><a class="chip" href="#t-10">canonicalize の検証を JSON Schema と接続する</a><a class="chip" href="#t-12">散文Markdown方言の仕様書化</a></div>
+</section>
+<section class="node node--session depth-1" id="history.s4">
+<header class="node__head">
+<span class="badge">session</span>
+<h2 class="node__title">第4セッション — 外に出す(t-09 / リポジトリ化 / t-15)</h2>
+<a class="node__id" href="#history.s4">history.s4</a>
+</header>
+<div class="prose"><ul><li>VS Code シンタックスハイライト(<a class="ref" href="#t-09">VS Code シンタックスハイライト(TextMate文法)</a>)。TextMate エンジンは動かせないので、実物のサンプル全行が想定どおり拾われるかをテストで検証</li><li><code>git init</code> → <strong>GitHub (dataclock-jp/pyn, private)</strong> へ push。CI を実在させ、設計文書が繰り返し言っていた「リンク切れは CI で落ちる」を事実にした</li><li>Codex CLI など他エージェント向けに <code>AGENTS.md</code> を追加(正本は <code>docs/agents.pyn</code>)。patch の ops 一覧がそれまで docstring にしかなかったのが最大の欠落だった(<a class="ref" href="#t-15">AI エージェント向けの操作ガイドを置く</a>)</li><li><strong>テスト 653 件。</strong></li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#t-09">VS Code シンタックスハイライト(TextMate文法)</a><a class="chip" href="#t-15">AI エージェント向けの操作ガイドを置く</a></div>
+</section>
+<section class="node node--session depth-1" id="history.s5">
+<header class="node__head">
+<span class="badge">session</span>
+<h2 class="node__title">第5セッション — 正本の反転と ID 規律(d-02 / t-16 / t-17 / v1.0)</h2>
+<a class="node__id" href="#history.s5">history.s5</a>
+</header>
+<div class="prose"><ul><li>「コメントを各形式のコメントへ射影できないか」という問いに <strong>保存しない</strong>と判断(<a class="ref" href="#d-02">コメント(#)は保存しない。残したい「なぜ」はデータとして書く</a>)。見送った案も記録してある</li><li><strong>正本を <code>Handover.json</code> から <code>Handover.pyn</code> へ反転</strong>(<a class="ref" href="#t-16">正本を Handover.json から Handover.pyn へ反転する</a>)。293行の変換器が 95行の射影生成だけになり、この文書の更新自体が <code>pyn patch</code> でできるようになった</li><li>区切りとして <strong>タグ <code>v1.0</code></strong> を打った</li><li>ID 規律を機械で支える二段構え(<a class="ref" href="#t-17">ID 規律を機械で支える(採番 + 消失検出)</a>): <code>pyn id</code> で採番し、<code>tools/check_ids</code> で「一度振った ID が消えていないか」を CI で見張る</li><li><strong>テスト 679 件。</strong></li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#d-02">コメント(#)は保存しない。残したい「なぜ」はデータとして書く</a><a class="chip" href="#t-16">正本を Handover.json から Handover.pyn へ反転する</a><a class="chip" href="#t-17">ID 規律を機械で支える(採番 + 消失検出)</a></div>
+</section>
 </section>
 <section class="node node--decision depth-0" id="d-00">
 <header class="node__head">
@@ -1057,7 +1117,59 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">次にやること</h2>
 <a class="node__id" href="#actions">actions</a>
 </header>
-<div class="prose"><ul><li>AGENTS.md を読む(エージェントの入口。正本は docs/agents.pyn)</li><li><code>python -m pytest tests -q</code> が 679 passed になることを確認する</li><li>この文書を書き換えるときは <code>python -m pyn patch Handover.pyn --ops ops.json</code></li><li>ID を書かずに下書きしてよい。<code>python -m pyn id</code> が採番する(ただし一度振った ID は変えない)</li><li>正本を直したら <code>python -m tools.handover_to_pyn</code> / <code>build_schema</code> / <code>build_docs</code> で生成物を作り直す</li><li>全タスク完了(t-01〜t-17)。未解決の問いもなし</li></ul></div>
+<div class="prose"><ul><li><code>AGENTS.md</code> を読む(エージェントの入口。正本は <code>docs/agents.pyn</code>)</li><li><code>python -m pytest tests -q</code> が 679 passed になることを確認する</li><li>この文書を書き換えるときは <code>python -m pyn patch Handover.pyn --ops ops.json</code></li></ul>
+<p>  (ops はシェルの文字列ではなく <strong>ファイル</strong> で渡すこと。バッククォートが展開されて本文が壊れる)</p>
+<ul><li>ID を書かずに下書きしてよい。<code>python -m pyn id</code> が採番する(ただし一度振った ID は変えない)</li><li>正本を直したら <code>python -m tools.handover_to_pyn</code> / <code>build_schema</code> / <code>build_docs</code> で生成物を作り直す</li><li>予定タスクは完了(t-01〜t-17)。次に何をするかは <a class="ref" href="#backlog">着手候補(いずれも未着手)</a></li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補(いずれも未着手)</a></div>
+</section>
+<section class="node node--backlog depth-0" id="backlog">
+<header class="node__head">
+<span class="badge">backlog</span>
+<h2 class="node__title">着手候補(いずれも未着手)</h2>
+<a class="node__id" href="#backlog">backlog</a>
+</header>
+<div class="prose"><p>予定していた t-01〜t-17 は完了している。ここにあるのは <strong>まだ着手していない候補</strong> であり、やると決まったものではない。着手するときは <code>task</code> ノードとして <a class="ref" href="#plan">実装計画</a> に足すこと。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#plan">実装計画</a></div>
+<section class="node node--idea depth-1" id="backlog.readme">
+<header class="node__head">
+<span class="badge">idea</span>
+<h2 class="node__title">README.md を射影として足す</h2>
+<a class="node__id" href="#backlog.readme">backlog.readme</a>
+</header>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>priority</th><td><code>low</code></td></tr><tr><th>status</th><td><code>candidate</code></td></tr></tbody></table></div>
+<div class="prose"><p>GitHub のトップに説明が出ない。他の生成物と同じく <code>docs/readme.pyn</code> → <code>README.md</code> の射影として足すのが筋。<code>tools/build_docs.py</code> の <code>DOCS</code> に1行足すだけで済む。</p></div>
+</section>
+<section class="node node--idea depth-1" id="backlog.trial">
+<header class="node__head">
+<span class="badge">idea</span>
+<h2 class="node__title">実運用で3つの指標を測る(いちばん価値が高い)</h2>
+<a class="node__id" href="#backlog.trial">backlog.trial</a>
+</header>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>priority</th><td><code>high</code></td></tr><tr><th>status</th><td><code>candidate</code></td></tr></tbody></table></div>
+<div class="prose"><p>「PYN が本当に良いか」は意見ではなく数字で決められる。次に扱う文書 2〜3 本を PYN で運用し、次を測る。</p>
+<ul><li>AI の編集失敗率は下がったか(パッチ失敗・手戻りの回数)</li><li>人間が ID 規律を保てるか(<code>check_ids</code> / <code>pyn check</code> が落ちる頻度)</li><li>生成物を手で編集する事故が起きるか(テストが検出するので数えられる)</li></ul>
+<p>現時点で未検証なのは、<strong>他エージェント(Codex CLI)での実運用</strong>と、<strong>複数人・数か月の運用</strong>である。</p></div>
+</section>
+<section class="node node--idea depth-1" id="backlog.note-syntax">
+<header class="node__head">
+<span class="badge">idea</span>
+<h2 class="node__title">保留: `##` を「直後のノードに結合する注記」にする案</h2>
+<a class="node__id" href="#backlog.note-syntax">backlog.note-syntax</a>
+</header>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>priority</th><td><code>low</code></td></tr><tr><th>status</th><td><code>candidate</code></td></tr></tbody></table></div>
+<div class="prose"><p><a class="ref" href="#d-02">コメント(#)は保存しない。残したい「なぜ」はデータとして書く</a> で見送った案B。結合規則が一意なので <a class="ref" href="#cost-2">正準化の仕様と往復テストが必須</a> は壊さないが、得られるのは記法の楽さだけで、能力は散文や <code>note:</code> 属性と同じ。宣言の直前に短い理由を書きたい欲求が実運用で残るようなら再検討する。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#d-02">コメント(#)は保存しない。残したい「なぜ」はデータとして書く</a><a class="chip" href="#cost-2">正準化の仕様と往復テストが必須</a></div>
+</section>
+<section class="node node--idea depth-1" id="backlog.ecosystem">
+<header class="node__head">
+<span class="badge">idea</span>
+<h2 class="node__title">エコシステムの穴を埋めるか決める</h2>
+<a class="node__id" href="#backlog.ecosystem">backlog.ecosystem</a>
+</header>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>priority</th><td><code>low</code></td></tr><tr><th>status</th><td><code>candidate</code></td></tr></tbody></table></div>
+<div class="prose"><p><code>.pyn</code> は GitHub 上ではただのテキストで、diff レビュー・折りたたみ・検索補完・LSP が無い。<a class="ref" href="#s-03">止揚3: 新しい『形式』ではなく新しい『射影』として定義する</a> の「射影だから既存資産を継承できる」は正しいが、<strong>継承できないもの</strong>もこれだけ残っている。埋めるか、割り切るかは実運用の結果を見てから決める。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#s-03">止揚3: 新しい『形式』ではなく新しい『射影』として定義する</a></div>
+</section>
 </section>
 <section class="node node--artifacts depth-0" id="artifacts">
 <header class="node__head">
@@ -1071,7 +1183,17 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">既存</h2>
 <a class="node__id" href="#artifacts.existing">artifacts.existing</a>
 </header>
-<div class="prose"><ul><li>Handover.json — 正本(このファイル)</li><li>Handover.md — 読み物。Handover.json の readme[] から生成(手書きしない)</li><li>PROGRESS.md — 自律実行セッションの記録</li><li>Handover.pyn — Handover.json から生成した投影A</li><li>Handover.html — Handover.json から生成(手書きしない)</li><li>build/Handover.canonical.json — PYN正準形に写した引継ぎ文書</li><li>schema/canonical.schema.json — pyn.schema.build_schema() の生成物(t-10)</li><li>docs/prose-dialect.pyn — 散文方言の仕様(正本)/ docs/prose-dialect.md はその射影</li><li>pyn/ — parser, formatter, refs, repair, patch, schema, render_html, render_md, values, model, cli</li><li>tools/ — handover_to_pyn, build_schema</li><li>samples/auth-spec.pyn</li><li>tests/ — test_roundtrip, test_repair, test_patch, test_render_md, test_schema, test_prose_dialect, test_handover</li><li>editors/vscode/ — VS Code シンタックスハイライト(t-09)</li><li>.github/workflows/ci.yml — テスト・生成物の追従・.pyn の検証</li><li>.gitignore — 生成物はあえてコミットする方針を明記</li><li>AGENTS.md — エージェント向け操作ガイド(docs/agents.pyn からの生成物)</li><li>CLAUDE.md — AGENTS.md への案内(内容は持たない)</li><li>tools/build_docs.py — .pyn → .md の生成(docs/prose-dialect.md / AGENTS.md)</li></ul></div>
+<div class="prose"><ul><li><code>Handover.pyn</code> — <strong>正本</strong>(このファイル)</li><li><code>Handover.md</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> — その射影(手で編集しない)</li><li><code>PROGRESS.md</code> — セッションごとの作業記録(手書き。経緯の要約は <a class="ref" href="#history">これまでの経緯(セッション単位)</a>)</li><li><code>AGENTS.md</code> — エージェント向け操作ガイド(正本 <code>docs/agents.pyn</code>)。<code>CLAUDE.md</code> はその案内</li><li><code>docs/prose-dialect.pyn</code> <code>.md</code> — 散文方言の仕様</li><li><code>pyn/</code> — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli</li><li><code>tools/</code> — handover_to_pyn, build_schema, build_docs, check_ids(いずれも <code>--check</code> あり)</li><li><code>schema/canonical.schema.json</code> — <code>pyn/model.py</code> からの生成物</li><li><code>editors/vscode/</code> — シンタックスハイライト</li><li><code>samples/auth-spec.pyn</code> — 実物のサンプル</li><li><code>retired-ids.txt</code> — 意図的に廃止した ID の記録</li><li><code>tests/</code> — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid</li><li><code>.github/workflows/ci.yml</code> — テスト + 生成物の追従 + ID 消失検出</li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#history">これまでの経緯(セッション単位)</a></div>
+</section>
+<section class="node node--group depth-1" id="artifacts.planned">
+<header class="node__head">
+<span class="badge">group</span>
+<h2 class="node__title">予定</h2>
+<a class="node__id" href="#artifacts.planned">artifacts.planned</a>
+</header>
+<div class="prose"><p>なし。予定していたタスクは完了している。着手候補は <a class="ref" href="#backlog">着手候補(いずれも未着手)</a> を参照。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補(いずれも未着手)</a></div>
 </section>
 </section>
 </div>
