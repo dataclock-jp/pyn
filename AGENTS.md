@@ -66,6 +66,7 @@ python -m pyn md    doc.pyn -o out.md
 python -m pyn check doc.pyn          # 往復 + 参照 + schema の検証
 python -m pyn repair broken.pyn      # インデント破損の診断(自動修復はしない)
 python -m pyn patch doc.pyn --ops ops.json   # ID宛のパッチ(既定で入力を上書き)
+python -m pyn id    draft.pyn                # ID の無い宣言に採番する(--dry-run 可)
 ```
 
 入力は `.pyn` でも `.json` でもよい(同じ文書の別の射影なので)。
@@ -137,7 +138,12 @@ key: value              スカラー属性(値はスカラーかスカラーの�
 - **属性値に入れ子は書けない。** 構造を持たせたいなら子ノードにする
 - `no` / `yes` / `on` / `off` は**文字列のまま**(YAML の暗黙型変換は採用していない)。
   真偽値は `true` / `false` / `null` だけ
-- ID は文書内で一意。これが構造の実体なので、重複は拒否される
+- ID は文書内で一意。これが構造の実体なので、重複は拒否される。
+  考えるのが面倒なら `type "title":` と ID を書かずに下書きし、`python -m pyn id`
+  で採番してよい(親の ID + 連番が振られ、コメントも並びも保たれる)
+- **一度振った ID は変えない。** 改名するなら `rename` 操作を使う(散文中の参照も
+  張り替わる)。ID が消えると `python -m tools.check_ids` が CI で落とす。
+  意図的な廃止なら `retired-ids.txt` に理由付きで書く
 - 散文中の `@id` / `§id` は装飾ではなく**グラフの辺**。存在しない ID を指すと検証で落ちる。
   記法そのものに言及したいときはバッククォートで囲む(コード内は参照にならない)
 
@@ -151,6 +157,7 @@ key: value              スカラー属性(値はスカラーかスカラーの�
 python -m pytest tests -q
 python -m pyn check samples/auth-spec.pyn
 python -m tools.build_schema --check
+python -m tools.check_ids
 ```
 
 CI(`.github/workflows/ci.yml`)も同じものを回す。落ちる典型は次の 3 つで、
@@ -161,6 +168,7 @@ CI(`.github/workflows/ci.yml`)も同じものを回す。落ちる典型は次�
 | `test_generated_*_is_up_to_date` | 生成物が正本に追従していない | 該当の `tools/` を実行する |
 | `test_roundtrip_*` | 射影の可逆性が壊れた | パーサ/フォーマッタの変更を見直す。ここは設計の土台 |
 | `PynRefError` | 参照先の ID が存在しない | ID を直すか、記法への言及ならバッククォートで囲む |
+| `check_ids` が NG | 一度振った ID が消えた/変わった | 戻すか、`rename` を使うか、`retired-ids.txt` に廃止として記録する |
 
 ### <a id="ag-context"></a>背景を知りたいとき
 

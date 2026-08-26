@@ -18,8 +18,9 @@
         "editor_support": "editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)",
         "format_name": "PYN / 拡張子 .pyn(q-02 で確定)",
         "git": true,
+        "id_policy": "ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)",
         "language": "ja",
-        "last_session": "2026-08-26 夕(再開セッション: t-16 で正本を Handover.pyn へ反転)",
+        "last_session": "2026-08-26 夕(再開セッション: t-17 で ID 採番と ID 消失検出を追加)",
         "owner": "alice",
         "project": "Synthesis from HTML and JSON",
         "prose_dialect_doc": "docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)",
@@ -30,7 +31,7 @@
         "schema_command": "python -m tools.build_schema [--check]",
         "status": "complete__canonical_is_pyn",
         "test_command": "python -m pytest tests -q",
-        "tests_passing": 656,
+        "tests_passing": 679,
         "workdir": "."
       },
       "prose": [
@@ -1006,6 +1007,35 @@
               ]
             }
           ]
+        },
+        {
+          "id": "t-17",
+          "type": "task",
+          "title": "ID 規律を機械で支える(採番 + 消失検出)",
+          "attrs": {
+            "depends": [
+              "t-16"
+            ],
+            "est": "2h",
+            "status": "done"
+          },
+          "prose": [
+            "@cost-1 の mitigation に「ID自動採番で緩和する」と書いてあった項目。ただし規律の本体は「振ること」ではなく **「振った ID を変えないこと」** なので、採番と消失検出の二段構えにした。\n\n専用エディタ案は撤回した。必要なのは UI ではなく採番規則と検出であり、エディタを自作するのは「自作はフォーマッタ1本+ハイライタ50行だけ」という @s-03 の約束を自分から破ることになるため。"
+          ],
+          "refs": [
+            "cost-1",
+            "s-03"
+          ],
+          "children": [
+            {
+              "id": "t-17.result",
+              "type": "result",
+              "title": "結果",
+              "prose": [
+                "`python -m pyn id` — ID の無い `type \"title\":` 宣言に「親の ID + 連番」で採番する。テキストのまま処理するのでコメント・空行・並びが保たれ、既存の ID には触れない。冪等。\n\n`python -m tools.check_ids` — 一度振った ID が消えていないかを git と比べて検出する。意図的な廃止は `retired-ids.txt` に理由付きで記録すれば通る。CI にも入れた。\n\nタイトルからスラッグを作る方式は日本語で破綻するため採用していない(「認可エンドポイント」から使える ID は作れない)。親 ID を接頭辞にすると命名の階層が残り、`pyn/repair.py` の修復候補ヒューリスティクスも生きる。\n\n実装中に、番号の空きを埋める実装と「単調増加」と書いた docstring が食い違っていたので、削除された ID が別の意味で復活しないよう単調増加のほうに揃えた。"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -1124,7 +1154,7 @@
       "type": "actions",
       "title": "次にやること",
       "prose": [
-        "- AGENTS.md を読む(エージェントの入口。正本は docs/agents.pyn)\n- `python -m pytest tests -q` が 656 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n- 正本を直したら `python -m tools.{handover_to_pyn,build_schema,build_docs}` で生成物を作り直す\n- 全タスク完了(t-01〜t-16)。未解決の問いもなし"
+        "- AGENTS.md を読む(エージェントの入口。正本は docs/agents.pyn)\n- `python -m pytest tests -q` が 679 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n- ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)\n- 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す\n- 全タスク完了(t-01〜t-17)。未解決の問いもなし"
       ]
     },
     {

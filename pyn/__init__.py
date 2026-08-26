@@ -15,6 +15,7 @@
 
 from __future__ import annotations
 
+from .autoid import assign_ids
 from .errors import (
     PynError,
     PynIndentError,
@@ -46,6 +47,7 @@ __all__ = [
     "PynSyntaxError",
     "PynValidationError",
     "apply_patch",
+    "assign_ids",
     "PynSchemaError",
     "build_schema",
     "canonicalize",

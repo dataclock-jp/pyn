@@ -8,6 +8,7 @@
     python -m pyn check  samples/auth-spec.pyn    # 検証のみ(往復 + 参照 + schema)
     python -m pyn repair broken.pyn               # インデント破損の診断と修復候補
     python -m pyn patch  doc.pyn --ops ops.json   # ID 宛のパッチを当てて射影を再生成
+    python -m pyn id     draft.pyn                # ID の無い宣言に採番する(cost-1)
 
 入力は .pyn / .json のどちらでもよい(正本は同じものなので)。
 """
@@ -22,6 +23,7 @@ from pathlib import Path
 from .errors import PynError
 from .formatter import to_pyn_a, to_pyn_b
 from .model import canonicalize, dumps
+from .autoid import assign_ids
 from .parser import comment_lines, detect_projection, parse
 from .patch import apply as apply_patch
 from .refs import iter_nodes, validate_refs
@@ -69,17 +71,45 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="pyn", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("action",
-                    choices=["json", "a", "b", "html", "md", "check", "repair", "patch"])
+                    choices=["json", "a", "b", "html", "md", "check", "repair", "patch", "id"])
     ap.add_argument("path", type=Path)
     ap.add_argument("-o", "--out", type=Path, help="出力先(既定は標準出力)")
     ap.add_argument("--title", default=None, help="html / md のタイトル")
     ap.add_argument("--no-refs", action="store_true",
                     help="未定義参照のチェックを行わない")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="id: 書き換えず、何が振られるかだけを出す")
     ap.add_argument("--ops", type=Path,
                     help="patch: 操作リスト(JSON配列)のファイル。- で標準入力")
     ap.add_argument("--as", dest="as_projection", choices=["json", "a", "b"],
                     help="patch: 出力の射影(既定は入力と同じ)")
     args = ap.parse_args(argv)
+
+    if args.action == "id":
+        # 採番はテキストのまま行う(コメントも並びも保つ)。壊れた入力は strict な
+        # パースで弾かれるので、ここでは読み込みを通さない。
+        source = args.path.read_text(encoding="utf-8")
+        try:
+            assigned_text, assigned = assign_ids(source)
+            parse(assigned_text)
+        except PynError as exc:
+            print(f"{type(exc).__name__}: {exc}", file=sys.stderr)
+            return 1
+
+        if not assigned:
+            print("採番するものはありません(すべての宣言に ID があります)",
+                  file=sys.stderr)
+            return 0
+        for line_no, new_id in assigned:
+            print(f"  line {line_no}: {new_id}", file=sys.stderr)
+        if args.dry_run:
+            print(f"{len(assigned)} 件(--dry-run のため書き換えていません)",
+                  file=sys.stderr)
+            return 0
+        target = args.out or args.path
+        target.write_text(assigned_text, encoding="utf-8")
+        print(f"assigned {len(assigned)} ids -> {target}", file=sys.stderr)
+        return 0
 
     if args.action == "repair":
         # 破損している可能性があるのでパースを通さずに診断する。
