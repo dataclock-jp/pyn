@@ -1,53 +1,64 @@
-"""d-00 の「生成物を手で編集しない」を CI 側から強制する(t-13)。
+"""d-00 の「生成物を手で編集しない」を CI 側から強制する(t-13 / t-16)。
 
-Handover.md が手書きに戻った瞬間、二重管理が復活する。
-それを人間の規律ではなくテストで止めるのがここ。
+t-16 で正本が Handover.json(独自形)から Handover.pyn(正準形)へ反転した。
+そのため「変換器の出力が正しいか」を見る必要はもうなく、
+見るべきは **正本と生成物がずれていないか** だけになった。
+
+期待値は tools.handover_to_pyn.outputs() から取る。タイトルや注記の文字列を
+テスト側にも書くと、それこそ二重管理になるため。
 """
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
-from pyn import canonicalize, dumps, render_md, to_pyn_a, validate_refs
-from tools.handover_to_pyn import build_doc
+import pytest
+
+from pyn import parse, validate_refs
+from tools.handover_to_pyn import SOURCE, load, outputs
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def _doc():
-    raw = json.loads((ROOT / "Handover.json").read_text(encoding="utf-8"))
-    return canonicalize(build_doc(raw)), raw
-
-
-def test_handover_json_converts_and_refs_resolve():
-    doc, _ = _doc()
-    validate_refs(doc)
-
-
-def test_generated_md_is_up_to_date():
-    doc, raw = _doc()
-    meta = raw.get("meta", {})
-    expected = render_md(
-        doc,
-        title="引継ぎ — Synthesis from HTML and JSON",
-        subtitle=f"{meta.get('project', '')} / 最終更新 {meta.get('last_session', '')}",
-        note="このファイルは Handover.json から生成されています(手で編集しないこと)。"
-             " 生成: `python -m tools.handover_to_pyn`",
+def test_source_is_the_pyn_file():
+    """正本は Handover.pyn。独自形の Handover.json は t-16 で役目を終えた。"""
+    assert SOURCE == ROOT / "Handover.pyn"
+    assert not (ROOT / "Handover.json").exists(), (
+        "Handover.json が復活している。正本は Handover.pyn ひとつ(t-16)"
     )
-    actual = (ROOT / "Handover.md").read_text(encoding="utf-8")
-    assert actual == expected, (
-        "Handover.md が Handover.json と一致しません。"
+
+
+def test_source_parses_and_refs_resolve():
+    validate_refs(parse(SOURCE.read_text(encoding="utf-8")))
+
+
+@pytest.mark.parametrize("name", ["Handover.md", "Handover.html",
+                                  "build/Handover.canonical.json"])
+def test_generated_files_are_up_to_date(name):
+    produced = {p.relative_to(ROOT).as_posix(): text
+                for p, text in outputs(load()).items()}
+    path = ROOT / name
+    assert path.read_text(encoding="utf-8") == produced[name], (
+        f"{name} が Handover.pyn に追従していません。"
         "手で編集せず python -m tools.handover_to_pyn で再生成してください(d-00)"
     )
 
 
-def test_generated_pyn_is_up_to_date():
-    doc, _ = _doc()
-    assert (ROOT / "Handover.pyn").read_text(encoding="utf-8") == to_pyn_a(doc)
+def test_check_mode_agrees():
+    from tools.handover_to_pyn import main
+
+    assert main(["--check"]) == 0
 
 
-def test_generated_canonical_json_is_up_to_date():
-    doc, _ = _doc()
-    path = ROOT / "build" / "Handover.canonical.json"
-    assert path.read_text(encoding="utf-8") == dumps(doc)
+def test_semantics_live_in_typed_nodes_not_in_prose_labels():
+    """t-16 の案A。結論や根拠は太字ラベルではなく型付きノードであること。"""
+    from pyn import index_by_id
+
+    index = index_by_id(load())
+    assert index["d-00.conclusion"]["type"] == "conclusion"
+    assert index["d-00.rationale"]["type"] == "rationale"
+    assert index["t-01"]["attrs"]["status"] == "done"
+    # 「**結論** —」のような、意味を散文へ埋める書き方に戻っていないこと
+    for node in index.values():
+        for block in node.get("prose", []):
+            assert not block.startswith("**結論**"), node["id"]

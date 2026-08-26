@@ -5,7 +5,7 @@
 <sub>`spec` `agents`</sub>
 
 - `applies_to`: `"Codex CLI / Claude Code / その他のコーディングエージェント"`
-- `canonical_sources`: `pyn/model.py`, `Handover.json`, `docs/prose-dialect.pyn`, `docs/agents.pyn`
+- `canonical_sources`: `pyn/model.py`, `Handover.pyn`, `docs/prose-dialect.pyn`, `docs/agents.pyn`
 - `python`: `"3.11+ / 本体は標準ライブラリのみ(テスト実行に pytest)"`
 
 このリポジトリは PYN(`.pyn`)という文書形式の実装である。
@@ -37,7 +37,7 @@
 | 正本(編集してよい) | そこから生成されるもの(編集しない) |
 |---|---|
 | `pyn/model.py` | `schema/canonical.schema.json` |
-| `Handover.json` | `Handover.md` / `Handover.pyn` / `Handover.html` / `build/Handover.canonical.json` |
+| `Handover.pyn` | `Handover.md` / `Handover.html` / `build/Handover.canonical.json` |
 | `docs/prose-dialect.pyn` | `docs/prose-dialect.md` |
 | `docs/agents.pyn` | `AGENTS.md` |
 
@@ -111,6 +111,8 @@ python -m pyn patch Handover.pyn --ops ops.json
 - パッチ後にリンク切れがあると失敗し、**原本は書き換えられない**
 - Python から使うなら `from pyn import apply_patch` / `from pyn import patch`
 
+この引継ぎ文書(`Handover.pyn`)自身が正本なので、同じ手順でそのまま書き換えられる。
+
 投影B(`python -m pyn b`)は行番号に意味がない形なので、差分を読ませたいときに向く。
 ただし**当てるのは投影Bのテキストではなく正準形**である、という点は変わらない。
 
@@ -164,10 +166,11 @@ CI(`.github/workflows/ci.yml`)も同じものを回す。落ちる典型は次�
 
 <sub>`section` `ag-context`</sub>
 
-- `Handover.md` — 設計に至った経緯と、受け入れた代償。読み物(正本は `Handover.json`)
+- `Handover.md` — 設計に至った経緯と、受け入れた代償。読み物(正本は `Handover.pyn`)
 - `PROGRESS.md` — 各セッションで何をどう決めたかの記録
 - `docs/prose-dialect.md` — 散文に何を書いてよいかの規範
 - `samples/auth-spec.pyn` — 実物のサンプル
 
-設計判断に迷ったら、`Handover.json` の `nodes[]` にある decision / synthesis を見ること。
+設計判断に迷ったら、`Handover.pyn` の `decision` / `synthesis` ノードを見ること。
+結論・根拠・見送った案は `conclusion` / `rationale` / `rejected` という型の子ノードに入っている。
 「なぜそう決めたか」はすべてそこに書いてある。

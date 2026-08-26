@@ -35,6 +35,11 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
 
+      - name: 引継ぎ文書の生成物が Handover.pyn に追従しているか
+        run: python -m tools.handover_to_pyn --check
+        env:
+          PYTHONIOENCODING: utf-8
+
       - name: .pyn から生成した文書(AGENTS.md ほか)が追従しているか
         run: python -m tools.build_docs --check
         env:

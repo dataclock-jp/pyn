@@ -378,11 +378,9 @@ def test_sample_spec_roundtrips():
 
 
 def test_handover_json_is_valid_canonical_after_conversion():
-    """Handover.json → PYN 正準形 → 各射影 の往復(ドッグフーディング)"""
-    from tools.handover_to_pyn import build_doc
+    """Handover.pyn(正本)→ 各射影 の往復(ドッグフーディング)"""
 
-    raw = json.loads((ROOT / "Handover.json").read_text(encoding="utf-8"))
-    doc = canonicalize(build_doc(raw))
+    doc = parse((ROOT / "Handover.pyn").read_text(encoding="utf-8"))
     validate_refs(doc)
     assert parse(to_pyn_a(doc)) == doc
     assert parse(to_pyn_b(doc)) == doc

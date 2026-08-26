@@ -150,7 +150,9 @@ def test_many_comments_are_summarised(tmp_path):
 # --------------------------------------------------------------------------
 
 def test_handover_no_longer_claims_comments_are_canonical():
-    raw = json.loads((ROOT / "Handover.json").read_text(encoding="utf-8"))
-    d01 = next(n for n in raw["nodes"] if n["id"] == "d-01")
-    assert "正本に残せる" not in d01["syntax"]["# ..."]
-    assert "保存されない" in d01["syntax"]["# ..."]
+    from pyn import index_by_id
+
+    doc = parse((ROOT / "Handover.pyn").read_text(encoding="utf-8"))
+    syntax = "\n".join(index_by_id(doc)["d-01.syntax"]["prose"])
+    assert "正本に残せる" not in syntax
+    assert "保存されない" in syntax

@@ -96,7 +96,7 @@ a{color:var(--accent)}
 <div class="wrap">
 <header class="doc-head">
 <h1>引継ぎ — Synthesis from HTML and JSON</h1>
-<p class="sub">Synthesis from HTML and JSON / 最終更新 2026-08-26 午後(再開セッション: t-09〜t-15 完了、GitHub へ push)</p><p class="generated">このページは Handover.json から生成されています(手で編集しないこと)。 生成: python -m tools.handover_to_pyn</p>
+<p class="sub">Synthesis from HTML and JSON / 最終更新 2026-08-26 夕(再開セッション: t-16 で正本を Handover.pyn へ反転)</p><p class="generated">このページは Handover.pyn から生成されています(手で編集しないこと)。 生成: python -m tools.handover_to_pyn</p>
 </header>
 <section class="node node--meta depth-0" id="meta">
 <header class="node__head">
@@ -104,8 +104,26 @@ a{color:var(--accent)}
 <h2 class="node__title">この文書について</h2>
 <a class="node__id" href="#meta">meta</a>
 </header>
-<div class="table-wrap"><table class="attrs"><tbody><tr><th>agent_entry_point</th><td><code>&quot;AGENTS.md(正本は docs/agents.pyn)。CLAUDE.md はそこへの案内&quot;</code></td></tr><tr><th>check_command</th><td><code>&quot;python -m pyn check samples/auth-spec.pyn&quot;</code></td></tr><tr><th>ci</th><td><code>&quot;.github/workflows/ci.yml(pytest / schema 追従 / .pyn の check)&quot;</code></td></tr><tr><th>cli_usage</th><td><code>&quot;python -m pyn {json|a|b|html|md|check|repair|patch} &lt;file&gt; [-o OUT]&quot;</code></td></tr><tr><th>comment_policy</th><td><code>&quot;# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)&quot;</code></td></tr><tr><th>console_note</th><td><code>&quot;Windowsのコンソールで日本語が化ける場合は PYTHONIOENCODING=utf-8 を付ける(ファイル出力は常にUTF-8)&quot;</code></td></tr><tr><th>created</th><td><code>2026-08-26</code></td></tr><tr><th>docs_command</th><td><code>&quot;python -m tools.build_docs [--check]&quot;</code></td></tr><tr><th>dogfooding_note</th><td><code>&quot;Handover.md / .pyn / .html / build/*.json はすべて Handover.json からの生成物。手で編集せず、tools.handover_to_pyn で再生成する(t-13 で .md も射影になった)&quot;</code></td></tr><tr><th>editor_support</th><td><code>&quot;editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)&quot;</code></td></tr><tr><th>format_name</th><td><code>&quot;PYN / 拡張子 .pyn(q-02 で確定)&quot;</code></td></tr><tr><th>git</th><td><code>true</code></td></tr><tr><th>language</th><td><code>ja</code></td></tr><tr><th>last_session</th><td><code>&quot;2026-08-26 午後(再開セッション: t-09〜t-15 完了、GitHub へ push)&quot;</code></td></tr><tr><th>owner</th><td><code>alice</code></td></tr><tr><th>project</th><td><code>&quot;Synthesis from HTML and JSON&quot;</code></td></tr><tr><th>prose_dialect_doc</th><td><code>&quot;docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)&quot;</code></td></tr><tr><th>python</th><td><code>&quot;3.14.3 / 標準ライブラリのみ(外部依存なし)&quot;</code></td></tr><tr><th>regenerate_html_command</th><td><code>&quot;python -m tools.handover_to_pyn  (Handover.json → Handover.md / Handover.pyn / build/Handover.canonical.json / Handover.html)&quot;</code></td></tr><tr><th>repo</th><td><code>&quot;https://github.com/dataclock-jp/pyn(private / 既定ブランチ main)&quot;</code></td></tr><tr><th>resume_entry_point</th><td><code>&quot;PROGRESS.md を読む → Handover.json の tasks[] で status=todo のものを実行&quot;</code></td></tr><tr><th>schema_command</th><td><code>&quot;python -m tools.build_schema [--check]&quot;</code></td></tr><tr><th>status</th><td><code>complete__all_tasks_done</code></td></tr><tr><th>test_command</th><td><code>&quot;python -m pytest tests -q&quot;</code></td></tr><tr><th>tests_passing</th><td><code>653</code></td></tr><tr><th>workdir</th><td><code>&quot;.&quot;</code></td></tr></tbody></table></div>
-<div class="prose"><p>正本(canonical)。人間向けの読み物 Handover.md、投影A Handover.pyn、閲覧用HTML Handover.html は、すべて本ファイルから再生成する(手書きしない)。</p></div>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>agent_entry_point</th><td><code>&quot;AGENTS.md(正本は docs/agents.pyn)。CLAUDE.md はそこへの案内&quot;</code></td></tr><tr><th>check_command</th><td><code>&quot;python -m pyn check samples/auth-spec.pyn&quot;</code></td></tr><tr><th>ci</th><td><code>&quot;.github/workflows/ci.yml(pytest / schema 追従 / .pyn の check)&quot;</code></td></tr><tr><th>cli_usage</th><td><code>&quot;python -m pyn {json|a|b|html|md|check|repair|patch} &lt;file&gt; [-o OUT]&quot;</code></td></tr><tr><th>comment_policy</th><td><code>&quot;# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)&quot;</code></td></tr><tr><th>console_note</th><td><code>&quot;Windowsのコンソールで日本語が化ける場合は PYTHONIOENCODING=utf-8 を付ける(ファイル出力は常にUTF-8)&quot;</code></td></tr><tr><th>created</th><td><code>2026-08-26</code></td></tr><tr><th>docs_command</th><td><code>&quot;python -m tools.build_docs [--check]&quot;</code></td></tr><tr><th>dogfooding_note</th><td><code>&quot;Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)&quot;</code></td></tr><tr><th>editor_support</th><td><code>&quot;editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)&quot;</code></td></tr><tr><th>format_name</th><td><code>&quot;PYN / 拡張子 .pyn(q-02 で確定)&quot;</code></td></tr><tr><th>git</th><td><code>true</code></td></tr><tr><th>language</th><td><code>ja</code></td></tr><tr><th>last_session</th><td><code>&quot;2026-08-26 夕(再開セッション: t-16 で正本を Handover.pyn へ反転)&quot;</code></td></tr><tr><th>owner</th><td><code>alice</code></td></tr><tr><th>project</th><td><code>&quot;Synthesis from HTML and JSON&quot;</code></td></tr><tr><th>prose_dialect_doc</th><td><code>&quot;docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)&quot;</code></td></tr><tr><th>python</th><td><code>&quot;3.14.3 / 標準ライブラリのみ(外部依存なし)&quot;</code></td></tr><tr><th>regenerate_html_command</th><td><code>&quot;python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)&quot;</code></td></tr><tr><th>repo</th><td><code>&quot;https://github.com/dataclock-jp/pyn(private / 既定ブランチ main)&quot;</code></td></tr><tr><th>resume_entry_point</th><td><code>&quot;AGENTS.md を読む → Handover.pyn の task ノードで status=todo のものを実行&quot;</code></td></tr><tr><th>schema_command</th><td><code>&quot;python -m tools.build_schema [--check]&quot;</code></td></tr><tr><th>status</th><td><code>complete__canonical_is_pyn</code></td></tr><tr><th>test_command</th><td><code>&quot;python -m pytest tests -q&quot;</code></td></tr><tr><th>tests_passing</th><td><code>656</code></td></tr><tr><th>workdir</th><td><code>&quot;.&quot;</code></td></tr></tbody></table></div>
+<div class="prose"><p><strong>このファイルが正本(canonical)です。</strong> <code>Handover.md</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> は <code>python -m tools.handover_to_pyn</code> の生成物で、手では編集しません。</p>
+<p>書き換えは <code>python -m pyn patch Handover.pyn --ops ops.json</code> が安全です(ID 宛なので行番号がずれても当たり、失敗時は文書が変更されません)。</p>
+<p>なお <code>#</code> コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。</p></div>
+<div class="prose"><p>正本(canonical)は Handover.pyn。この JSON は t-16 で役目を終えた独自形式で、移行後は削除される。</p></div>
+</section>
+<section class="node node--goal depth-0" id="goal">
+<header class="node__head">
+<span class="badge">goal</span>
+<h2 class="node__title">JSONとHTMLの良いとこ取りをする、Python風の文書形式 PYN(.pyn)を設計・実装する</h2>
+<a class="node__id" href="#goal">goal</a>
+</header>
+<section class="node node--criteria depth-1" id="goal.criteria">
+<header class="node__head">
+<span class="badge">criteria</span>
+<h2 class="node__title">完了条件</h2>
+<a class="node__id" href="#goal.criteria">goal.criteria</a>
+</header>
+<div class="prose"><ul><li>3つの弱点(インデント脆弱性/インライン表現/エコシステム)を止揚した仕様が確定している</li><li>正準形JSON ⇄ .pyn射影 の可逆フォーマッタが動く</li><li>参照(<code>@id</code>)を解決するHTMLレンダラが動く</li><li>サンプル仕様書1本が .pyn → JSON → HTML と往復できる</li></ul></div>
+</section>
 </section>
 <section class="node node--section depth-0" id="readme-start">
 <header class="node__head">
@@ -234,16 +252,7 @@ spec auth &quot;認証システム仕様&quot;:       # Type id &quot;title&quot
 <a class="node__id" href="#readme-dogfood">readme-dogfood</a>
 </header>
 <div class="prose"><p>この引継ぎ自体を、決めた原則どおりに運用しています。</p>
-<ul><li><code>Handover.json</code> = 正本(ノード + refs のグラフ)</li><li><code>Handover.md</code>(このファイル)/ <code>Handover.pyn</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> = <strong>すべて生成物</strong>。手で編集せず、<code>python -m tools.handover_to_pyn</code> で再生成してください</li><li>t-13 で <code>.md</code> も射影になり、t-10 で <code>schema/canonical.schema.json</code> も生成物になりました。<strong>正本は <code>Handover.json</code> / <code>docs/prose-dialect.pyn</code> / <code>docs/agents.pyn</code> / <code>pyn/model.py</code> だけ</strong>で、残りはすべて再生成できます</li></ul></div>
-</section>
-<section class="node node--goal depth-0" id="goal">
-<header class="node__head">
-<span class="badge">goal</span>
-<h2 class="node__title">JSONとHTMLの良いとこ取りをする、Python風の文書形式 PYN(.pyn)を設計・実装する</h2>
-<a class="node__id" href="#goal">goal</a>
-</header>
-<div class="prose"><p><strong>完了条件</strong></p>
-<ul><li>3つの弱点(インデント脆弱性/インライン表現/エコシステム)を止揚した仕様が確定している</li><li>正準形JSON ⇄ .pyn射影 の可逆フォーマッタが動く</li><li>参照(<code>@id</code>)を解決するHTMLレンダラが動く</li><li>サンプル仕様書1本が .pyn → JSON → HTML と往復できる</li></ul></div>
+<ul><li><code>Handover.pyn</code> = <strong>正本</strong>(型と ID を持つノードのグラフ)</li><li><code>Handover.md</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> = <strong>すべて生成物</strong>。手で編集せず <code>python -m tools.handover_to_pyn</code> で再生成します</li><li>t-16 で正本が JSON から <code>.pyn</code> へ反転し、独自形の <code>Handover.json</code> とその変換器は消えました。<strong>正本は <code>Handover.pyn</code> / <code>docs/prose-dialect.pyn</code> / <code>docs/agents.pyn</code> / <code>pyn/model.py</code> の 4 つだけ</strong>です</li><li>この文書の更新も <code>pyn patch</code> で行っています。ドッグフーディングが引継ぎ文書の運用そのものにまで届いた状態です</li></ul></div>
 </section>
 <section class="node node--decision depth-0" id="d-00">
 <header class="node__head">
@@ -251,10 +260,30 @@ spec auth &quot;認証システム仕様&quot;:       # Type id &quot;title&quot
 <h2 class="node__title">HTML vs JSON はトレードオフではなくレイヤーの違い</h2>
 <a class="node__id" href="#d-00">d-00</a>
 </header>
-<div class="prose"><p><strong>結論</strong> — JSON=状態層(AIが読む/更新する/検証する)、HTML=提示層(人間が判断する)。正本をJSONに置き、HTMLは生成物として吐く。逆向き(HTML正本)は情報が落ちて必ず破綻する。</p></div>
-<div class="prose"><p><strong>根拠</strong></p>
-<ul><li>HTMLはトークンの60〜80%がタグとclass名で、AIの再読込コストが高い</li><li>JSONはSchemaで機械検証でき、CIで品質を担保するループが回せる</li><li>JSONはピンポイント更新でき、差分が意味の差分と一致する</li><li>一方、意思決定者に見せる用途では図・対話を持つHTMLが圧倒的に優位</li></ul></div>
+<section class="node node--conclusion depth-1" id="d-00.conclusion">
+<header class="node__head">
+<span class="badge">conclusion</span>
+<h2 class="node__title">結論</h2>
+<a class="node__id" href="#d-00.conclusion">d-00.conclusion</a>
+</header>
+<div class="prose"><p>JSON=状態層(AIが読む/更新する/検証する)、HTML=提示層(人間が判断する)。正本をJSONに置き、HTMLは生成物として吐く。逆向き(HTML正本)は情報が落ちて必ず破綻する。</p></div>
+</section>
+<section class="node node--rationale depth-1" id="d-00.rationale">
+<header class="node__head">
+<span class="badge">rationale</span>
+<h2 class="node__title">根拠</h2>
+<a class="node__id" href="#d-00.rationale">d-00.rationale</a>
+</header>
+<div class="prose"><ul><li>HTMLはトークンの60〜80%がタグとclass名で、AIの再読込コストが高い</li><li>JSONはSchemaで機械検証でき、CIで品質を担保するループが回せる</li><li>JSONはピンポイント更新でき、差分が意味の差分と一致する</li><li>一方、意思決定者に見せる用途では図・対話を持つHTMLが圧倒的に優位</li></ul></div>
+</section>
+<section class="node node--rule depth-1" id="d-00.rule">
+<header class="node__head">
+<span class="badge">rule</span>
+<h2 class="node__title">原則</h2>
+<a class="node__id" href="#d-00.rule">d-00.rule</a>
+</header>
 <div class="prose"><blockquote><p>HTMLは生成物として扱い、決して手で編集しない(二重管理の起点になるため)</p></blockquote></div>
+</section>
 </section>
 <section class="node node--decision depth-0" id="d-01">
 <header class="node__head">
@@ -262,13 +291,32 @@ spec auth &quot;認証システム仕様&quot;:       # Type id &quot;title&quot
 <h2 class="node__title">新形式 PYN(拡張子 .pyn)の基本構文</h2>
 <a class="node__id" href="#d-01">d-01</a>
 </header>
-<div class="prose"><p><strong>結論</strong> — インデント階層 + 4つの記法だけで、HTMLのattribute/childrenとJSONのkey/valueを統一する。</p></div>
-<div class="prose"><p><strong>根拠</strong></p>
-<ul><li>インデント+key:valueはLLMが最も大量に学習した形状(Python/YAML)で、長文生成の事故率がJSONより低い</li><li>括弧・閉じタグ・引用符が消え、JSON比0.6〜0.7 / HTML比1/4程度のトークン量</li><li>task/decision といった型が第一級になり、HTMLのclass名に意味が埋もれる問題が解ける</li><li>コメントは『どのノードに属するか』が決まらないため正準形に載せられない。s-meta に照らせば、コメントは真実(ノードグラフ)ではなく表記の側に属する(t-14 で主張を実態に合わせた)</li></ul></div>
-<div class="prose"><p><strong>構文</strong></p>
-<ul><li><code>key: value</code> — スカラー(HTMLのattribute / JSONのkey-value)</li><li><code>Type id &quot;title&quot;:</code> — ノード宣言。型が第一級。インデントで子を持つ</li><li><code>&quot;&quot;&quot; ... &quot;&quot;&quot;</code> — 散文ブロック。中身はMarkdown素通し。JSONのエスケープ地獄を回避</li><li><code># ...</code> — コメント。編集中の作業メモであり、正準形には保存されない。射影を再生成すると消える(恒久的な『なぜ』は散文ブロックに書く)</li></ul></div>
 <div class="prose"><p>関連: <a class="ref" href="#d-00">HTML vs JSON はトレードオフではなくレイヤーの違い</a></p></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#d-00">HTML vs JSON はトレードオフではなくレイヤーの違い</a></div>
+<section class="node node--conclusion depth-1" id="d-01.conclusion">
+<header class="node__head">
+<span class="badge">conclusion</span>
+<h2 class="node__title">結論</h2>
+<a class="node__id" href="#d-01.conclusion">d-01.conclusion</a>
+</header>
+<div class="prose"><p>インデント階層 + 4つの記法だけで、HTMLのattribute/childrenとJSONのkey/valueを統一する。</p></div>
+</section>
+<section class="node node--rationale depth-1" id="d-01.rationale">
+<header class="node__head">
+<span class="badge">rationale</span>
+<h2 class="node__title">根拠</h2>
+<a class="node__id" href="#d-01.rationale">d-01.rationale</a>
+</header>
+<div class="prose"><ul><li>インデント+key:valueはLLMが最も大量に学習した形状(Python/YAML)で、長文生成の事故率がJSONより低い</li><li>括弧・閉じタグ・引用符が消え、JSON比0.6〜0.7 / HTML比1/4程度のトークン量</li><li>task/decision といった型が第一級になり、HTMLのclass名に意味が埋もれる問題が解ける</li><li>コメントは『どのノードに属するか』が決まらないため正準形に載せられない。s-meta に照らせば、コメントは真実(ノードグラフ)ではなく表記の側に属する(t-14 で主張を実態に合わせた)</li></ul></div>
+</section>
+<section class="node node--syntax depth-1" id="d-01.syntax">
+<header class="node__head">
+<span class="badge">syntax</span>
+<h2 class="node__title">構文</h2>
+<a class="node__id" href="#d-01.syntax">d-01.syntax</a>
+</header>
+<div class="prose"><ul><li><code>key: value</code> — スカラー(HTMLのattribute / JSONのkey-value)</li><li><code>Type id &quot;title&quot;:</code> — ノード宣言。型が第一級。インデントで子を持つ</li><li><code>&quot;&quot;&quot; ... &quot;&quot;&quot;</code> — 散文ブロック。中身はMarkdown素通し。JSONのエスケープ地獄を回避</li><li><code># ...</code> — コメント。編集中の作業メモであり、正準形には保存されない。射影を再生成すると消える(恒久的な『なぜ』は散文ブロックに書く)</li></ul></div>
+</section>
 </section>
 <section class="node node--antithesis depth-0" id="a-01">
 <header class="node__head">
@@ -276,10 +324,24 @@ spec auth &quot;認証システム仕様&quot;:       # Type id &quot;title&quot
 <h2 class="node__title">弱点1: インデントは壊れやすい</h2>
 <a class="node__id" href="#a-01">a-01</a>
 </header>
-<div class="prose"><p><strong>問題</strong> — インデントは不可視な状態で冗長性がゼロ。2スペースずれてもエラーにならず意味だけが変わる。AIの差分適用やコピペで実際に起きる。</p></div>
-<div class="prose"><p><strong>安易な妥協</strong> — 終端マーカーを足す → 括弧が復活してテーゼの利点が消える</p></div>
 <div class="prose"><p>関連: <a class="ref" href="#d-01">新形式 PYN(拡張子 .pyn)の基本構文</a></p></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#d-01">新形式 PYN(拡張子 .pyn)の基本構文</a></div>
+<section class="node node--problem depth-1" id="a-01.problem">
+<header class="node__head">
+<span class="badge">problem</span>
+<h2 class="node__title">問題</h2>
+<a class="node__id" href="#a-01.problem">a-01.problem</a>
+</header>
+<div class="prose"><p>インデントは不可視な状態で冗長性がゼロ。2スペースずれてもエラーにならず意味だけが変わる。AIの差分適用やコピペで実際に起きる。</p></div>
+</section>
+<section class="node node--compromise depth-1" id="a-01.bad-compromise">
+<header class="node__head">
+<span class="badge">compromise</span>
+<h2 class="node__title">安易な妥協</h2>
+<a class="node__id" href="#a-01.bad-compromise">a-01.bad-compromise</a>
+</header>
+<div class="prose"><p>終端マーカーを足す → 括弧が復活してテーゼの利点が消える</p></div>
+</section>
 </section>
 <section class="node node--synthesis depth-0" id="s-01">
 <header class="node__head">
@@ -287,24 +349,56 @@ spec auth &quot;認証システム仕様&quot;:       # Type id &quot;title&quot
 <h2 class="node__title">止揚1: 構造をインデントからIDへ移す</h2>
 <a class="node__id" href="#s-01">s-01</a>
 </header>
-<div class="prose"><p><strong>結論</strong> — インデントは構造の『定義』ではなく『投影』である。木はIDの親子関係から復元できる。</p></div>
-<div class="prose"><p><strong>要点</strong> — 冗長性を足すのではなく、既にあったIDを冗長性として使う</p></div>
-<div class="prose"><p><strong>仕組み</strong></p>
-<ul><li><code>projection_A_indented</code> — 人間が読み書きする形。インデントが親子を表す</li><li><code>projection_B_flat</code> — AIがパッチを当てる形。^parentId で親を明示し、インデントに意味を持たせない</li><li><code>formatter</code> — 投影A ⇄ 投影B を可逆変換する</li><li><code>redundancy</code> — ID階層とインデントが2系統で冗長になるため、破損を『検出でき、自動修復もできる』。括弧のような『壊れたら止まる』冗長性ではなく、チェックサム的な冗長性</li></ul></div>
-<div class="prose"><p><strong>投影A(インデント形)</strong></p>
-<pre><code>spec auth &quot;認証システム仕様&quot;:
+<div class="prose"><p>関連: <a class="ref" href="#a-01">弱点1: インデントは壊れやすい</a></p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#a-01">弱点1: インデントは壊れやすい</a></div>
+<section class="node node--conclusion depth-1" id="s-01.conclusion">
+<header class="node__head">
+<span class="badge">conclusion</span>
+<h2 class="node__title">結論</h2>
+<a class="node__id" href="#s-01.conclusion">s-01.conclusion</a>
+</header>
+<div class="prose"><p>インデントは構造の『定義』ではなく『投影』である。木はIDの親子関係から復元できる。</p></div>
+</section>
+<section class="node node--mechanism depth-1" id="s-01.mechanism">
+<header class="node__head">
+<span class="badge">mechanism</span>
+<h2 class="node__title">仕組み</h2>
+<a class="node__id" href="#s-01.mechanism">s-01.mechanism</a>
+</header>
+<div class="prose"><ul><li><code>projection_A_indented</code> — 人間が読み書きする形。インデントが親子を表す</li><li><code>projection_B_flat</code> — AIがパッチを当てる形。^parentId で親を明示し、インデントに意味を持たせない</li><li><code>formatter</code> — 投影A ⇄ 投影B を可逆変換する</li><li><code>redundancy</code> — ID階層とインデントが2系統で冗長になるため、破損を『検出でき、自動修復もできる』。括弧のような『壊れたら止まる』冗長性ではなく、チェックサム的な冗長性</li></ul></div>
+</section>
+<section class="node node--example depth-1" id="s-01.example-a">
+<header class="node__head">
+<span class="badge">example</span>
+<h2 class="node__title">投影A(インデント形)</h2>
+<a class="node__id" href="#s-01.example-a">s-01.example-a</a>
+</header>
+<div class="prose"><pre><code>spec auth &quot;認証システム仕様&quot;:
   task auth-01 &quot;認可エンドポイント&quot;:
     est: 3d
   task auth-02 &quot;トークン交換&quot;:
     depends: [auth-01]</code></pre></div>
-<div class="prose"><p><strong>投影B(フラット形)</strong></p>
-<pre><code>spec auth &quot;認証システム仕様&quot;
+</section>
+<section class="node node--example depth-1" id="s-01.example-b">
+<header class="node__head">
+<span class="badge">example</span>
+<h2 class="node__title">投影B(フラット形)</h2>
+<a class="node__id" href="#s-01.example-b">s-01.example-b</a>
+</header>
+<div class="prose"><pre><code>spec auth &quot;認証システム仕様&quot;
 task auth-01 &quot;認可エンドポイント&quot;    ^auth
   est: 3d
 task auth-02 &quot;トークン交換&quot;          ^auth
   depends: [auth-01]</code></pre></div>
-<div class="prose"><p>関連: <a class="ref" href="#a-01">弱点1: インデントは壊れやすい</a></p></div>
-<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#a-01">弱点1: インデントは壊れやすい</a></div>
+</section>
+<section class="node node--insight depth-1" id="s-01.key-insight">
+<header class="node__head">
+<span class="badge">insight</span>
+<h2 class="node__title">要点</h2>
+<a class="node__id" href="#s-01.key-insight">s-01.key-insight</a>
+</header>
+<div class="prose"><p>冗長性を足すのではなく、既にあったIDを冗長性として使う</p></div>
+</section>
 </section>
 <section class="node node--antithesis depth-0" id="a-02">
 <header class="node__head">
@@ -312,10 +406,24 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">弱点2: インライン装飾ができない</h2>
 <a class="node__id" href="#a-02">a-02</a>
 </header>
-<div class="prose"><p><strong>問題</strong> — インデント構文では、文中に &lt;a&gt; を挟むような表現が原理的に無理。</p></div>
-<div class="prose"><p><strong>安易な妥協</strong> — Markdownを丸ごと埋め込む → 行内の意味がただの文字列になり、schemaからもAIからも不可視になる</p></div>
 <div class="prose"><p>関連: <a class="ref" href="#d-01">新形式 PYN(拡張子 .pyn)の基本構文</a></p></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#d-01">新形式 PYN(拡張子 .pyn)の基本構文</a></div>
+<section class="node node--problem depth-1" id="a-02.problem">
+<header class="node__head">
+<span class="badge">problem</span>
+<h2 class="node__title">問題</h2>
+<a class="node__id" href="#a-02.problem">a-02.problem</a>
+</header>
+<div class="prose"><p>インデント構文では、文中に &lt;a&gt; を挟むような表現が原理的に無理。</p></div>
+</section>
+<section class="node node--compromise depth-1" id="a-02.bad-compromise">
+<header class="node__head">
+<span class="badge">compromise</span>
+<h2 class="node__title">安易な妥協</h2>
+<a class="node__id" href="#a-02.bad-compromise">a-02.bad-compromise</a>
+</header>
+<div class="prose"><p>Markdownを丸ごと埋め込む → 行内の意味がただの文字列になり、schemaからもAIからも不可視になる</p></div>
+</section>
 </section>
 <section class="node node--synthesis depth-0" id="s-02">
 <header class="node__head">
@@ -323,12 +431,32 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">止揚2: インラインを『装飾』ではなくグラフの辺にする</h2>
 <a class="node__id" href="#s-02">s-02</a>
 </header>
-<div class="prose"><p><strong>結論</strong> — 行内記法は自文書のID空間への参照(<code>@id</code> / <code>§id</code>)だけに限定する。パーサは散文から辺を実データとして抽出する。</p></div>
-<div class="prose"><p><strong>要点</strong> — 『意味を持つ行内』と『意味を持たない行内』を分離した。結果、劣化版インラインではなく、HTMLが持っていない能力(データモデルに参加するインライン)になる。副産物として文書が木からグラフへ昇格する</p></div>
-<div class="prose"><p><strong>仕組み</strong></p>
-<ul><li><code>html_output</code> — <code>@auth-02</code> → &lt;a href="#auth-02"&gt;トークン交換&lt;/a&gt; に解決(タイトルも自動補完)</li><li><code>json_output</code> — "refs": ["auth-02", "auth-01"]</li><li><code>validation</code> — 参照先が存在しなければエラー。リンク切れがCIで落ちる</li><li><code>markdown_passthrough</code> — 太字・斜体など検証価値のない純装飾はMarkdownに素通し</li></ul></div>
 <div class="prose"><p>関連: <a class="ref" href="#a-02">弱点2: インライン装飾ができない</a></p></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#a-02">弱点2: インライン装飾ができない</a></div>
+<section class="node node--conclusion depth-1" id="s-02.conclusion">
+<header class="node__head">
+<span class="badge">conclusion</span>
+<h2 class="node__title">結論</h2>
+<a class="node__id" href="#s-02.conclusion">s-02.conclusion</a>
+</header>
+<div class="prose"><p>行内記法は自文書のID空間への参照(<code>@id</code> / <code>§id</code>)だけに限定する。パーサは散文から辺を実データとして抽出する。</p></div>
+</section>
+<section class="node node--mechanism depth-1" id="s-02.mechanism">
+<header class="node__head">
+<span class="badge">mechanism</span>
+<h2 class="node__title">仕組み</h2>
+<a class="node__id" href="#s-02.mechanism">s-02.mechanism</a>
+</header>
+<div class="prose"><ul><li><code>html_output</code> — <code>@auth-02</code> → &lt;a href="#auth-02"&gt;トークン交換&lt;/a&gt; に解決(タイトルも自動補完)</li><li><code>json_output</code> — "refs": ["auth-02", "auth-01"]</li><li><code>validation</code> — 参照先が存在しなければエラー。リンク切れがCIで落ちる</li><li><code>markdown_passthrough</code> — 太字・斜体など検証価値のない純装飾はMarkdownに素通し</li></ul></div>
+</section>
+<section class="node node--insight depth-1" id="s-02.key-insight">
+<header class="node__head">
+<span class="badge">insight</span>
+<h2 class="node__title">要点</h2>
+<a class="node__id" href="#s-02.key-insight">s-02.key-insight</a>
+</header>
+<div class="prose"><p>『意味を持つ行内』と『意味を持たない行内』を分離した。結果、劣化版インラインではなく、HTMLが持っていない能力(データモデルに参加するインライン)になる。副産物として文書が木からグラフへ昇格する</p></div>
+</section>
 </section>
 <section class="node node--antithesis depth-0" id="a-03">
 <header class="node__head">
@@ -336,10 +464,24 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">弱点3: YAMLで足りる / エコシステムがない</h2>
 <a class="node__id" href="#a-03">a-03</a>
 </header>
-<div class="prose"><p><strong>問題</strong> — 新形式はハイライタ・フォーマッタ・差分・schemaを全部自作する負債を背負う。しかもYAMLが8割方できてしまう。</p></div>
-<div class="prose"><p><strong>安易な妥協</strong> — YAMLで我慢する → 型付きノードと散文の素直さを失う</p></div>
 <div class="prose"><p>関連: <a class="ref" href="#d-01">新形式 PYN(拡張子 .pyn)の基本構文</a></p></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#d-01">新形式 PYN(拡張子 .pyn)の基本構文</a></div>
+<section class="node node--problem depth-1" id="a-03.problem">
+<header class="node__head">
+<span class="badge">problem</span>
+<h2 class="node__title">問題</h2>
+<a class="node__id" href="#a-03.problem">a-03.problem</a>
+</header>
+<div class="prose"><p>新形式はハイライタ・フォーマッタ・差分・schemaを全部自作する負債を背負う。しかもYAMLが8割方できてしまう。</p></div>
+</section>
+<section class="node node--compromise depth-1" id="a-03.bad-compromise">
+<header class="node__head">
+<span class="badge">compromise</span>
+<h2 class="node__title">安易な妥協</h2>
+<a class="node__id" href="#a-03.bad-compromise">a-03.bad-compromise</a>
+</header>
+<div class="prose"><p>YAMLで我慢する → 型付きノードと散文の素直さを失う</p></div>
+</section>
 </section>
 <section class="node node--synthesis depth-0" id="s-03">
 <header class="node__head">
@@ -347,12 +489,32 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">止揚3: 新しい『形式』ではなく新しい『射影』として定義する</h2>
 <a class="node__id" href="#s-03">s-03</a>
 </header>
-<div class="prose"><p><strong>結論</strong> — PYNを独立形式にしない。正準形はJSONとし、.pyn はそれを人間とLLMが扱いやすくするための可逆な表示形式(レンズ)と定義する。</p></div>
-<div class="prose"><p><strong>要点</strong> — MarkdownがHTMLに対して持つ関係と同じ。YAMLとの競合論争が消滅し、チーム内で採用が全員一致でなくてよくなる(誰かがJSONで直接書いてもよい)</p></div>
-<div class="prose"><p><strong>仕組み</strong></p>
-<ul><li><code>canonical</code> — canonical JSON が正本</li><li><code>roundtrip</code> — .pyn ⇄ canonical JSON をバイト安定に往復させる</li><li><code>inherited</code> — JSON Schema検証 / jq / git diff / 各言語のパーサ / エディタのフォールバック を全部継承できる</li><li><code>to_build</code> — 自作が必要なのはフォーマッタ1本 + ハイライタ50行 だけ</li></ul></div>
 <div class="prose"><p>関連: <a class="ref" href="#a-03">弱点3: YAMLで足りる / エコシステムがない</a></p></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#a-03">弱点3: YAMLで足りる / エコシステムがない</a></div>
+<section class="node node--conclusion depth-1" id="s-03.conclusion">
+<header class="node__head">
+<span class="badge">conclusion</span>
+<h2 class="node__title">結論</h2>
+<a class="node__id" href="#s-03.conclusion">s-03.conclusion</a>
+</header>
+<div class="prose"><p>PYNを独立形式にしない。正準形はJSONとし、.pyn はそれを人間とLLMが扱いやすくするための可逆な表示形式(レンズ)と定義する。</p></div>
+</section>
+<section class="node node--mechanism depth-1" id="s-03.mechanism">
+<header class="node__head">
+<span class="badge">mechanism</span>
+<h2 class="node__title">仕組み</h2>
+<a class="node__id" href="#s-03.mechanism">s-03.mechanism</a>
+</header>
+<div class="prose"><ul><li><code>canonical</code> — canonical JSON が正本</li><li><code>roundtrip</code> — .pyn ⇄ canonical JSON をバイト安定に往復させる</li><li><code>inherited</code> — JSON Schema検証 / jq / git diff / 各言語のパーサ / エディタのフォールバック を全部継承できる</li><li><code>to_build</code> — 自作が必要なのはフォーマッタ1本 + ハイライタ50行 だけ</li></ul></div>
+</section>
+<section class="node node--insight depth-1" id="s-03.key-insight">
+<header class="node__head">
+<span class="badge">insight</span>
+<h2 class="node__title">要点</h2>
+<a class="node__id" href="#s-03.key-insight">s-03.key-insight</a>
+</header>
+<div class="prose"><p>MarkdownがHTMLに対して持つ関係と同じ。YAMLとの競合論争が消滅し、チーム内で採用が全員一致でなくてよくなる(誰かがJSONで直接書いてもよい)</p></div>
+</section>
 </section>
 <section class="node node--synthesis depth-0" id="s-meta">
 <header class="node__head">
@@ -360,11 +522,32 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">メタ止揚: 3つの反はすべて同じ根から出ていた</h2>
 <a class="node__id" href="#s-meta">s-meta</a>
 </header>
-<div class="prose"><p><strong>結論</strong> — 真実は『型とIDを持つノードの集合と、その間の辺』である。インデント形もフラット形もJSONもHTMLも、すべて再生成可能な射影にすぎない。</p></div>
-<div class="prose"><p><strong>d-00 との関係</strong> — d-00 の『JSON正本 / HTML生成物』の一段上。JSONすら生成物であり、正本は識別されたノードのグラフそのもの。</p></div>
-<div class="prose"><p><strong>根拠</strong> — 3つの弱点はいずれも『表記を真実だと見なしていた』ことが原因だった(1=インデントに真実を持たせた / 2=散文に意味を埋めた / 3=ファイル形式を真実だと思った)。真実をノードグラフに置いた瞬間、3つとも射影の性質になり、弱点でなくなる。射影は壊れても再生成できる。</p></div>
 <div class="prose"><p>関連: <a class="ref" href="#s-01">止揚1: 構造をインデントからIDへ移す</a> <a class="ref" href="#s-02">止揚2: インラインを『装飾』ではなくグラフの辺にする</a> <a class="ref" href="#s-03">止揚3: 新しい『形式』ではなく新しい『射影』として定義する</a> <a class="ref" href="#d-00">HTML vs JSON はトレードオフではなくレイヤーの違い</a></p></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#s-01">止揚1: 構造をインデントからIDへ移す</a><a class="chip" href="#s-02">止揚2: インラインを『装飾』ではなくグラフの辺にする</a><a class="chip" href="#s-03">止揚3: 新しい『形式』ではなく新しい『射影』として定義する</a><a class="chip" href="#d-00">HTML vs JSON はトレードオフではなくレイヤーの違い</a></div>
+<section class="node node--conclusion depth-1" id="s-meta.conclusion">
+<header class="node__head">
+<span class="badge">conclusion</span>
+<h2 class="node__title">結論</h2>
+<a class="node__id" href="#s-meta.conclusion">s-meta.conclusion</a>
+</header>
+<div class="prose"><p>真実は『型とIDを持つノードの集合と、その間の辺』である。インデント形もフラット形もJSONもHTMLも、すべて再生成可能な射影にすぎない。</p></div>
+</section>
+<section class="node node--rationale depth-1" id="s-meta.rationale">
+<header class="node__head">
+<span class="badge">rationale</span>
+<h2 class="node__title">根拠</h2>
+<a class="node__id" href="#s-meta.rationale">s-meta.rationale</a>
+</header>
+<div class="prose"><p>3つの弱点はいずれも『表記を真実だと見なしていた』ことが原因だった(1=インデントに真実を持たせた / 2=散文に意味を埋めた / 3=ファイル形式を真実だと思った)。真実をノードグラフに置いた瞬間、3つとも射影の性質になり、弱点でなくなる。射影は壊れても再生成できる。</p></div>
+</section>
+<section class="node node--relation depth-1" id="s-meta.relation-to-d00">
+<header class="node__head">
+<span class="badge">relation</span>
+<h2 class="node__title">d-00 との関係</h2>
+<a class="node__id" href="#s-meta.relation-to-d00">s-meta.relation-to-d00</a>
+</header>
+<div class="prose"><p>d-00 の『JSON正本 / HTML生成物』の一段上。JSONすら生成物であり、正本は識別されたノードのグラフそのもの。</p></div>
+</section>
 </section>
 <section class="node node--decision depth-0" id="d-02">
 <header class="node__head">
@@ -372,15 +555,49 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">コメント(#)は保存しない。残したい「なぜ」はデータとして書く</h2>
 <a class="node__id" href="#d-02">d-02</a>
 </header>
-<div class="prose"><p><strong>結論</strong> — <code>#</code> は作業メモであり、正準形には入れない。射影を再生成すれば消える(消えるときは警告する)。恒久的に残したい理由は散文ブロックか <code>note:</code> 属性に書く —— つまりデータとして書く。</p></div>
-<div class="prose"><p><strong>問題</strong> — 「コメントを JSON / HTML / Markdown それぞれのコメントへ射影できないか」という問いに対する判断。欲求そのもの(宣言の近くに理由を置きたい)は正当。</p></div>
-<div class="prose"><p><strong>根拠</strong></p>
-<ul><li>射影先にコメントとして出しても価値が小さい。JSON に仕様上のコメントはなく(<code>$comment</code> は慣習キー)、HTML / Markdown の <code>&lt;!-- --&gt;</code> は読者に見えない。見える形にした時点で、それはコメントではなく注記=データである</li><li>保存しようとすると「そのコメントはどのノードに属するか」が決まらない。前のノードの末尾か、次のノードの頭か、親か、ファイル全体か。move / remove を持つ以上、整形や移動のたびにずれる(YAML のラウンドトリップ実装が実際に苦しんでいる箇所)</li><li>位置情報を正準形に持ち込むことは cost-2(往復の安定性)を直接危うくする。ここは『崩れたら設計全体が崩れる』と決めた場所である</li><li>コメントに意味を入れるのは、<a class="ref" href="#s-02">止揚2: インラインを『装飾』ではなくグラフの辺にする</a> が否定した『意味を表記に埋める』形そのもの。散文と <code>note:</code> は schema からも AI からも見えるが、コメントは見えない</li></ul></div>
-<div class="prose"><p><strong>見送った案</strong></p>
-<ul><li>案B: <code>##</code> を『直後のノードに結合する注記』として正準形に入れる。結合規則が一意なので cost-2 は壊さないが、得られるのは記法の楽さだけで、能力は散文 / <code>note:</code> と同じだった。必要になったら再検討してよい</li><li>案C: <code>#</code> をすべて保存する(ruamel 方式)。位置情報が入り込み往復が不安定化する</li></ul></div>
-<div class="prose"><blockquote><p>残したい理由は散文ブロックか <code>note:</code> 属性へ。<code>#</code> は消えてよいものだけに使う</p></blockquote></div>
 <div class="prose"><p>関連: <a class="ref" href="#s-02">止揚2: インラインを『装飾』ではなくグラフの辺にする</a> <a class="ref" href="#cost-2">正準化の仕様と往復テストが必須</a> <a class="ref" href="#t-14">コメントの位置づけを実態に合わせ、消える前に警告する</a></p></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#s-02">止揚2: インラインを『装飾』ではなくグラフの辺にする</a><a class="chip" href="#cost-2">正準化の仕様と往復テストが必須</a><a class="chip" href="#t-14">コメントの位置づけを実態に合わせ、消える前に警告する</a></div>
+<section class="node node--conclusion depth-1" id="d-02.conclusion">
+<header class="node__head">
+<span class="badge">conclusion</span>
+<h2 class="node__title">結論</h2>
+<a class="node__id" href="#d-02.conclusion">d-02.conclusion</a>
+</header>
+<div class="prose"><p><code>#</code> は作業メモであり、正準形には入れない。射影を再生成すれば消える(消えるときは警告する)。恒久的に残したい理由は散文ブロックか <code>note:</code> 属性に書く —— つまりデータとして書く。</p></div>
+</section>
+<section class="node node--problem depth-1" id="d-02.problem">
+<header class="node__head">
+<span class="badge">problem</span>
+<h2 class="node__title">問題</h2>
+<a class="node__id" href="#d-02.problem">d-02.problem</a>
+</header>
+<div class="prose"><p>「コメントを JSON / HTML / Markdown それぞれのコメントへ射影できないか」という問いに対する判断。欲求そのもの(宣言の近くに理由を置きたい)は正当。</p></div>
+</section>
+<section class="node node--rationale depth-1" id="d-02.rationale">
+<header class="node__head">
+<span class="badge">rationale</span>
+<h2 class="node__title">根拠</h2>
+<a class="node__id" href="#d-02.rationale">d-02.rationale</a>
+</header>
+<div class="prose"><ul><li>射影先にコメントとして出しても価値が小さい。JSON に仕様上のコメントはなく(<code>$comment</code> は慣習キー)、HTML / Markdown の <code>&lt;!-- --&gt;</code> は読者に見えない。見える形にした時点で、それはコメントではなく注記=データである</li><li>保存しようとすると「そのコメントはどのノードに属するか」が決まらない。前のノードの末尾か、次のノードの頭か、親か、ファイル全体か。move / remove を持つ以上、整形や移動のたびにずれる(YAML のラウンドトリップ実装が実際に苦しんでいる箇所)</li><li>位置情報を正準形に持ち込むことは cost-2(往復の安定性)を直接危うくする。ここは『崩れたら設計全体が崩れる』と決めた場所である</li><li>コメントに意味を入れるのは、<a class="ref" href="#s-02">止揚2: インラインを『装飾』ではなくグラフの辺にする</a> が否定した『意味を表記に埋める』形そのもの。散文と <code>note:</code> は schema からも AI からも見えるが、コメントは見えない</li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#s-02">止揚2: インラインを『装飾』ではなくグラフの辺にする</a></div>
+</section>
+<section class="node node--rejected depth-1" id="d-02.rejected">
+<header class="node__head">
+<span class="badge">rejected</span>
+<h2 class="node__title">見送った案</h2>
+<a class="node__id" href="#d-02.rejected">d-02.rejected</a>
+</header>
+<div class="prose"><ul><li>案B: <code>##</code> を『直後のノードに結合する注記』として正準形に入れる。結合規則が一意なので cost-2 は壊さないが、得られるのは記法の楽さだけで、能力は散文 / <code>note:</code> と同じだった。必要になったら再検討してよい</li><li>案C: <code>#</code> をすべて保存する(ruamel 方式)。位置情報が入り込み往復が不安定化する</li></ul></div>
+</section>
+<section class="node node--rule depth-1" id="d-02.rule">
+<header class="node__head">
+<span class="badge">rule</span>
+<h2 class="node__title">原則</h2>
+<a class="node__id" href="#d-02.rule">d-02.rule</a>
+</header>
+<div class="prose"><blockquote><p>残したい理由は散文ブロックか <code>note:</code> 属性へ。<code>#</code> は消えてよいものだけに使う</p></blockquote></div>
+</section>
 </section>
 <section class="node node--constraint depth-0" id="cost">
 <header class="node__head">
@@ -388,9 +605,16 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">止揚が要求する代償(受け入れ済み)</h2>
 <a class="node__id" href="#cost">cost</a>
 </header>
-<div class="prose"><p><strong>補足</strong> — 代償が技術的不可能ではなく『規律』に集約されているのは良い兆候。運用で払える種類のコスト。</p></div>
 <div class="prose"><p>関連: <a class="ref" href="#s-meta">メタ止揚: 3つの反はすべて同じ根から出ていた</a></p></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#s-meta">メタ止揚: 3つの反はすべて同じ根から出ていた</a></div>
+<section class="node node--note depth-1" id="cost.note">
+<header class="node__head">
+<span class="badge">note</span>
+<h2 class="node__title">補足</h2>
+<a class="node__id" href="#cost.note">cost.note</a>
+</header>
+<div class="prose"><p>代償が技術的不可能ではなく『規律』に集約されているのは良い兆候。運用で払える種類のコスト。</p></div>
+</section>
 <section class="node node--item depth-1" id="cost-1">
 <header class="node__head">
 <span class="badge">item</span>
@@ -398,7 +622,7 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <a class="node__id" href="#cost-1">cost-1</a>
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>mitigation</th><td><code>&quot;ID自動採番で緩和する&quot;</code></td></tr></tbody></table></div>
-<div class="prose"><p><strong>詳細</strong> — 今回の代償の本体。手書きの気楽さが減る</p></div>
+<div class="prose"><p>今回の代償の本体。手書きの気楽さが減る</p></div>
 </section>
 <section class="node node--item depth-1" id="cost-2">
 <header class="node__head">
@@ -407,7 +631,7 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <a class="node__id" href="#cost-2">cost-2</a>
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>mitigation</th><td><code>&quot;プロパティベーステスト(t-04)&quot;</code></td></tr></tbody></table></div>
-<div class="prose"><p><strong>詳細</strong> — project(canonicalize(x)) == x を保証しないと『射影』を名乗れない。ここを手抜きすると全部崩れる</p></div>
+<div class="prose"><p>project(canonicalize(x)) == x を保証しないと『射影』を名乗れない。ここを手抜きすると全部崩れる</p></div>
 </section>
 <section class="node node--item depth-1" id="cost-3">
 <header class="node__head">
@@ -416,7 +640,7 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <a class="node__id" href="#cost-3">cost-3</a>
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>mitigation</th><td><code>&quot;修復候補を提示して人間に確認させる(t-07)&quot;</code></td></tr></tbody></table></div>
-<div class="prose"><p><strong>詳細</strong> — IDからのインデント復元は、曖昧なときに黙って直してはいけない</p></div>
+<div class="prose"><p>IDからのインデント復元は、曖昧なときに黙って直してはいけない</p></div>
 </section>
 </section>
 <section class="node node--plan depth-0" id="plan">
@@ -434,7 +658,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>est</th><td><code>1h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>ノードの正準表現を決める: { id, type, title, attrs{}, prose[], refs[], children[] }。JSON Schema を書き、キー順を固定してバイト安定にする。q-03(散文のMarkdown方言)もここで決める。</p></div>
-<div class="prose"><p><strong>結果</strong> — schema/canonical.schema.json。キー順 id,type,title,attrs,prose,refs,children に固定、空値は省略、attrs はキー昇順。</p></div>
+<section class="node node--result depth-2" id="t-01.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-01.result">t-01.result</a>
+</header>
+<div class="prose"><p>schema/canonical.schema.json。キー順 id,type,title,attrs,prose,refs,children に固定、空値は省略、attrs はキー昇順。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-02">
 <header class="node__head">
@@ -444,7 +675,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-01]</code></td></tr><tr><th>est</th><td><code>2h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>インデントスタック方式、250〜300行想定。インデント幅の混在はエラーにする。散文は """ ブロックでdedentして取り込む。# はコメント。投影B(^parent)も受理する。</p></div>
-<div class="prose"><p><strong>結果</strong> — pyn/parser.py。投影A/B を自動判別。タブ・インデント混在・深さ飛びをエラーにする。</p></div>
+<section class="node node--result depth-2" id="t-02.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-02.result">t-02.result</a>
+</header>
+<div class="prose"><p>pyn/parser.py。投影A/B を自動判別。タブ・インデント混在・深さ飛びをエラーにする。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-03">
 <header class="node__head">
@@ -454,7 +692,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-02]</code></td></tr><tr><th>est</th><td><code>1.5h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>投影A=インデント形(人間用)、投影B=フラット形+^parent(AIパッチ用)。s-01 の中核。</p></div>
-<div class="prose"><p><strong>結果</strong> — pyn/formatter.py。投影A(インデント形)/ 投影B(0インデント + ^parent)。</p></div>
+<section class="node node--result depth-2" id="t-03.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-03.result">t-03.result</a>
+</header>
+<div class="prose"><p>pyn/formatter.py。投影A(インデント形)/ 投影B(0インデント + ^parent)。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-04">
 <header class="node__head">
@@ -464,7 +709,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-03]</code></td></tr><tr><th>est</th><td><code>1h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>cost-2 の担保。ランダム生成した木で project(canonicalize(x)) == x を検証。投影A/B間の相互変換も含める。</p></div>
-<div class="prose"><p><strong>結果</strong> — tests/test_roundtrip.py。乱数生成した木60本で往復・バイト安定・A⇄B相互変換・冪等性を検証。</p></div>
+<section class="node node--result depth-2" id="t-04.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-04.result">t-04.result</a>
+</header>
+<div class="prose"><p>tests/test_roundtrip.py。乱数生成した木60本で往復・バイト安定・A⇄B相互変換・冪等性を検証。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-05">
 <header class="node__head">
@@ -474,7 +726,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-02]</code></td></tr><tr><th>est</th><td><code>1h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>s-02 の実装。散文から <code>@id</code> を抽出して refs[] に落とす。存在しないIDはエラー。</p></div>
-<div class="prose"><p><strong>結果</strong> — pyn/refs.py。<code>@id</code> / <code>§id</code> を辺として抽出、コードスパンとフェンスは除外、リンク切れは PynRefError。</p></div>
+<section class="node node--result depth-2" id="t-05.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-05.result">t-05.result</a>
+</header>
+<div class="prose"><p>pyn/refs.py。<code>@id</code> / <code>§id</code> を辺として抽出、コードスパンとフェンスは除外、リンク切れは PynRefError。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-06">
 <header class="node__head">
@@ -484,7 +743,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-05]</code></td></tr><tr><th>est</th><td><code>1.5h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>型→テンプレートのマッピング。散文はMarkdownレンダ。<code>@id</code> は &lt;a href="#id"&gt;タイトル&lt;/a&gt; に解決。100行程度想定。完成したら Handover.html もこれで生成する。</p></div>
-<div class="prose"><p><strong>結果</strong> — pyn/render_html.py。Markdown部分集合 + 参照のリンク解決(タイトル自動補完)。ライト/ダーク対応の自己完結HTML。</p></div>
+<section class="node node--result depth-2" id="t-06.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-06.result">t-06.result</a>
+</header>
+<div class="prose"><p>pyn/render_html.py。Markdown部分集合 + 参照のリンク解決(タイトル自動補完)。ライト/ダーク対応の自己完結HTML。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-07">
 <header class="node__head">
@@ -494,7 +760,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-03]</code></td></tr><tr><th>est</th><td><code>1h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>s-01 の実装。ID階層とインデントの不一致を検出し、修復案を提示する(自動適用はしない = cost-3)。</p></div>
-<div class="prose"><p><strong>結果</strong> — pyn/repair.py。破損検出 + 修復候補提示。ID命名階層を優先候補に使う。cost-3 に従い自動適用しない。</p></div>
+<section class="node node--result depth-2" id="t-07.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-07.result">t-07.result</a>
+</header>
+<div class="prose"><p>pyn/repair.py。破損検出 + 修復候補提示。ID命名階層を優先候補に使う。cost-3 に従い自動適用しない。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-08">
 <header class="node__head">
@@ -504,7 +777,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-04, t-06, t-07]</code></td></tr><tr><th>est</th><td><code>0.5h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>会話中に書いた『認証システム仕様』サンプルを .pyn → JSON → HTML と通す。</p></div>
-<div class="prose"><p><strong>結果</strong> — samples/auth-spec.pyn と Handover.json の両方で E2E 確認。<code>python -m pyn check</code> も通る。</p></div>
+<section class="node node--result depth-2" id="t-08.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-08.result">t-08.result</a>
+</header>
+<div class="prose"><p>samples/auth-spec.pyn と Handover.json の両方で E2E 確認。<code>python -m pyn check</code> も通る。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-09">
 <header class="node__head">
@@ -514,7 +794,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-02]</code></td></tr><tr><th>est</th><td><code>0.5h</code></td></tr><tr><th>priority</th><td><code>low</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>50行程度。後回し可。</p></div>
-<div class="prose"><p><strong>結果</strong> — editors/vscode(package.json / language-configuration.json / syntaxes/pyn.tmLanguage.json / README.md)。投影A・投影Bの両方を1つの文法で扱い、<code>@id</code> は辺としてリンク色にする。true/false/null 以外は定数にしない(YAML の暗黙型変換を採用しないという決定を文法側でも守る)。TextMate エンジンは動かせないため、tests/test_grammar.py が「実物の samples/auth-spec.pyn の各行を想定どおり拾うか」を検証する。</p></div>
+<section class="node node--result depth-2" id="t-09.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-09.result">t-09.result</a>
+</header>
+<div class="prose"><p>editors/vscode(package.json / language-configuration.json / syntaxes/pyn.tmLanguage.json / README.md)。投影A・投影Bの両方を1つの文法で扱い、<code>@id</code> は辺としてリンク色にする。true/false/null 以外は定数にしない(YAML の暗黙型変換を採用しないという決定を文法側でも守る)。TextMate エンジンは動かせないため、tests/test_grammar.py が「実物の samples/auth-spec.pyn の各行を想定どおり拾うか」を検証する。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-10">
 <header class="node__head">
@@ -524,7 +811,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-01]</code></td></tr><tr><th>est</th><td><code>1h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>現状 canonicalize は独自の検証を持つ。schema/canonical.schema.json と二重定義になっているので、jsonschema で突き合わせるテストを足すか、生成元を一本化する。</p></div>
-<div class="prose"><p><strong>結果</strong> — pyn/schema.py。schema/canonical.schema.json を build_schema() の生成物にし、ID/型の正規表現・バージョン・キー順を model.py 由来にした。外部依存なしの検証器 validate() を置き、canonicalize の出力が常に schema へ適合することを乱数文書で検証。<code>python -m pyn check</code> も schema を通る。生成/追従確認は <code>python -m tools.build_schema [--check]</code>。</p></div>
+<section class="node node--result depth-2" id="t-10.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-10.result">t-10.result</a>
+</header>
+<div class="prose"><p>pyn/schema.py。schema/canonical.schema.json を build_schema() の生成物にし、ID/型の正規表現・バージョン・キー順を model.py 由来にした。外部依存なしの検証器 validate() を置き、canonicalize の出力が常に schema へ適合することを乱数文書で検証。<code>python -m pyn check</code> も schema を通る。生成/追従確認は <code>python -m tools.build_schema [--check]</code>。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-11">
 <header class="node__head">
@@ -534,7 +828,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-03]</code></td></tr><tr><th>est</th><td><code>1.5h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>s-01 の実運用部分。AI が投影B に差分を当て、正準形へ戻す経路を関数として提供する(例: set_attr(id, key, value) / move(id, new_parent))。</p></div>
-<div class="prose"><p><strong>結果</strong> — pyn/patch.py + <code>python -m pyn patch</code>。ID 宛の操作を正準形に当て、射影を再生成する純粋関数群(set_attr / del_attr / set_title / set_prose / add_prose / add / remove / move / rename)と、宣言的な op リストを受ける apply()。全か無かで適用し、失敗時は文書を変更しない。</p></div>
+<section class="node node--result depth-2" id="t-11.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-11.result">t-11.result</a>
+</header>
+<div class="prose"><p>pyn/patch.py + <code>python -m pyn patch</code>。ID 宛の操作を正準形に当て、射影を再生成する純粋関数群(set_attr / del_attr / set_title / set_prose / add_prose / add / remove / move / rename)と、宣言的な op リストを受ける apply()。全か無かで適用し、失敗時は文書を変更しない。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-12">
 <header class="node__head">
@@ -544,7 +845,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-06]</code></td></tr><tr><th>est</th><td><code>0.5h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>q-03 の決定(見出し禁止、表・コードブロック・強調は許可)は実装済みだが、仕様として明文化されていない。 なお本セッションで、見出し禁止だけは canonicalize が実際に拒否するようにした(フェンス内は対象外)。残るは文書化。</p></div>
-<div class="prose"><p><strong>結果</strong> — docs/prose-dialect.pyn(正本)と docs/prose-dialect.md(Markdown射影)。仕様書自身を .pyn で書き、見出しを子ノードで表現することで方言を実演している。tests/test_prose_dialect.py が仕様書の主張を1件ずつ実装で裏づける。</p></div>
+<section class="node node--result depth-2" id="t-12.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-12.result">t-12.result</a>
+</header>
+<div class="prose"><p>docs/prose-dialect.pyn(正本)と docs/prose-dialect.md(Markdown射影)。仕様書自身を .pyn で書き、見出しを子ノードで表現することで方言を実演している。tests/test_prose_dialect.py が仕様書の主張を1件ずつ実装で裏づける。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-13">
 <header class="node__head">
@@ -554,7 +862,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-06]</code></td></tr><tr><th>est</th><td><code>1h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>Handover.md だけが手書きのままで、d-00 の『二重管理を作らない』に反している。正準形から Markdown を吐く射影を足し、Handover.md も生成物にする。</p></div>
-<div class="prose"><p><strong>結果</strong> — pyn/render_md.py + <code>python -m pyn md</code>。Handover.md も tools.handover_to_pyn の生成物になり、d-00 の二重管理が解消した。手書き本文は readme[] として Handover.json へ移設済み。</p></div>
+<section class="node node--result depth-2" id="t-13.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-13.result">t-13.result</a>
+</header>
+<div class="prose"><p>pyn/render_md.py + <code>python -m pyn md</code>。Handover.md も tools.handover_to_pyn の生成物になり、d-00 の二重管理が解消した。手書き本文は readme[] として Handover.json へ移設済み。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-14">
 <header class="node__head">
@@ -564,7 +879,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-11, t-13]</code></td></tr><tr><th>est</th><td><code>0.5h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>d-01 は『コメントで「なぜ」を正本に残せる』と主張していたが、コメントは正準形に保存されず、射影の再生成(pyn a / b / json / patch)で黙って消えていた。主張を実態に合わせ、消える場合は警告を出す。</p></div>
-<div class="prose"><p><strong>結果</strong> — pyn/parser.py の comment_lines()(散文ブロック内の # は誤検出しない)と、CLI の警告。d-01 の syntax とサンプルのコメント文面も訂正。tests/test_comments.py で検証。</p></div>
+<section class="node node--result depth-2" id="t-14.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-14.result">t-14.result</a>
+</header>
+<div class="prose"><p>pyn/parser.py の comment_lines()(散文ブロック内の # は誤検出しない)と、CLI の警告。d-01 の syntax とサンプルのコメント文面も訂正。tests/test_comments.py で検証。</p></div>
+</section>
 </section>
 <section class="node node--task depth-1" id="t-15">
 <header class="node__head">
@@ -574,7 +896,34 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-13]</code></td></tr><tr><th>est</th><td><code>1h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>Codex CLI など他のエージェントがこのリポジトリを扱えるようにする。引継ぎ文書は経緯の読み物であって操作手順ではなく、patch の ops 形式が docstring にしかなかった。</p></div>
-<div class="prose"><p><strong>結果</strong> — docs/agents.pyn(正本)→ AGENTS.md(生成物)。守るべき規律・正本と生成物の対応・コマンド・patch の ops 一覧・.pyn を書くときの制約・検証手順を1枚にまとめた。生成は tools/build_docs.py が担い(docs/prose-dialect.md も同じ経路へ移した)、tests/test_docs.py と CI が追従を強制する。CLAUDE.md は AGENTS.md への案内のみ。</p></div>
+<section class="node node--result depth-2" id="t-15.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-15.result">t-15.result</a>
+</header>
+<div class="prose"><p>docs/agents.pyn(正本)→ AGENTS.md(生成物)。守るべき規律・正本と生成物の対応・コマンド・patch の ops 一覧・.pyn を書くときの制約・検証手順を1枚にまとめた。生成は tools/build_docs.py が担い(docs/prose-dialect.md も同じ経路へ移した)、tests/test_docs.py と CI が追従を強制する。CLAUDE.md は AGENTS.md への案内のみ。</p></div>
+</section>
+</section>
+<section class="node node--task depth-1" id="t-16">
+<header class="node__head">
+<span class="badge">task</span>
+<h2 class="node__title">正本を Handover.json から Handover.pyn へ反転する</h2>
+<a class="node__id" href="#t-16">t-16</a>
+</header>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-11, t-13]</code></td></tr><tr><th>est</th><td><code>2h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
+<div class="prose"><p>Handover.json は PYN の正準形ではなく独自形だったため、PYN へ写す変換器(293行)を人間が保守していた。<code>.pyn ⇄ 正準形</code> は可逆なので、正本を最初から <code>.pyn</code> にすれば変換器は不要になる。</p>
+<p>移行の設計判断は案A —— JSON のキーが持っていた意味(<code>conclusion</code> / <code>problem</code> / <code>rationale</code> …)を、散文の太字ラベルではなく<strong>型付きの子ノード</strong>にする。太字ラベルにすると <a class="ref" href="#s-02">止揚2: インラインを『装飾』ではなくグラフの辺にする</a> が否定した「意味を表記に埋める」形に戻ってしまうため。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#s-02">止揚2: インラインを『装飾』ではなくグラフの辺にする</a></div>
+<section class="node node--result depth-2" id="t-16.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-16.result">t-16.result</a>
+</header>
+<div class="prose"><p><code>Handover.pyn</code> が正本になり、<code>Handover.json</code> は削除。<code>tools/handover_to_pyn.py</code> は 293 行の変換器から、射影を吐くだけの 95 行へ縮小した(変換対応表がまるごと消えた)。意味は <code>conclusion</code> / <code>rationale</code> / <code>result</code> / <code>criteria</code> などの型付きノードとして構造に残っている。</p>
+<p>副作用として、この文書の更新自体が <code>pyn patch</code> で行えるようになった(この t-16 ノードもパッチで追加している)。</p></div>
+</section>
 </section>
 </section>
 <section class="node node--questions depth-0" id="questions">
@@ -590,10 +939,30 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <a class="node__id" href="#q-01">q-01</a>
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>default_if_no_answer</th><td><code>Python</code></td></tr><tr><th>status</th><td><code>resolved</code></td></tr></tbody></table></div>
-<div class="prose"><p><strong>問い</strong> — 実装言語は? (Python / TypeScript)</p></div>
-<div class="prose"><p><strong>背景</strong> — Python: 構文が思想と一致し、テキスト処理が楽。TypeScript: HTMLレンダラとVS Code拡張が同居できる。</p></div>
-<div class="prose"><p><strong>推奨</strong> — Pythonでコア(パーサ/フォーマッタ/検証)を作り、HTMLもPython側で文字列生成。VS Code拡張が必要になった段階でTSを足す。</p></div>
-<div class="prose"><p><strong>決定</strong> — Python。実装済み(Python 3.14 / 標準ライブラリのみ、外部依存ゼロ)。</p></div>
+<section class="node node--context depth-2" id="q-01.context">
+<header class="node__head">
+<span class="badge">context</span>
+<h2 class="node__title">背景</h2>
+<a class="node__id" href="#q-01.context">q-01.context</a>
+</header>
+<div class="prose"><p>Python: 構文が思想と一致し、テキスト処理が楽。TypeScript: HTMLレンダラとVS Code拡張が同居できる。</p></div>
+</section>
+<section class="node node--recommendation depth-2" id="q-01.recommendation">
+<header class="node__head">
+<span class="badge">recommendation</span>
+<h2 class="node__title">推奨</h2>
+<a class="node__id" href="#q-01.recommendation">q-01.recommendation</a>
+</header>
+<div class="prose"><p>Pythonでコア(パーサ/フォーマッタ/検証)を作り、HTMLもPython側で文字列生成。VS Code拡張が必要になった段階でTSを足す。</p></div>
+</section>
+<section class="node node--resolution depth-2" id="q-01.resolution">
+<header class="node__head">
+<span class="badge">resolution</span>
+<h2 class="node__title">決定</h2>
+<a class="node__id" href="#q-01.resolution">q-01.resolution</a>
+</header>
+<div class="prose"><p>Python。実装済み(Python 3.14 / 標準ライブラリのみ、外部依存ゼロ)。</p></div>
+</section>
 </section>
 <section class="node node--question depth-1" id="q-02">
 <header class="node__head">
@@ -602,10 +971,30 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <a class="node__id" href="#q-02">q-02</a>
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>status</th><td><code>resolved</code></td></tr></tbody></table></div>
-<div class="prose"><p><strong>問い</strong> — 形式名を PYN、拡張子を .pyn で確定してよいか</p></div>
-<div class="prose"><p><strong>背景</strong> — 会話中は仮称。.pyd はPython拡張DLLと衝突するため回避済み。</p></div>
-<div class="prose"><p><strong>推奨</strong> — 確定してよい。</p></div>
-<div class="prose"><p><strong>決定</strong> — 確定。形式名は PYN、拡張子は .pyn。2026-08-26 にオーナー判断で決定した。以後この名前を仮称として扱わない。</p></div>
+<section class="node node--context depth-2" id="q-02.context">
+<header class="node__head">
+<span class="badge">context</span>
+<h2 class="node__title">背景</h2>
+<a class="node__id" href="#q-02.context">q-02.context</a>
+</header>
+<div class="prose"><p>会話中は仮称。.pyd はPython拡張DLLと衝突するため回避済み。</p></div>
+</section>
+<section class="node node--recommendation depth-2" id="q-02.recommendation">
+<header class="node__head">
+<span class="badge">recommendation</span>
+<h2 class="node__title">推奨</h2>
+<a class="node__id" href="#q-02.recommendation">q-02.recommendation</a>
+</header>
+<div class="prose"><p>確定してよい。</p></div>
+</section>
+<section class="node node--resolution depth-2" id="q-02.resolution">
+<header class="node__head">
+<span class="badge">resolution</span>
+<h2 class="node__title">決定</h2>
+<a class="node__id" href="#q-02.resolution">q-02.resolution</a>
+</header>
+<div class="prose"><p>確定。形式名は PYN、拡張子は .pyn。2026-08-26 にオーナー判断で決定した。以後この名前を仮称として扱わない。</p></div>
+</section>
 </section>
 <section class="node node--question depth-1" id="q-03">
 <header class="node__head">
@@ -614,10 +1003,30 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <a class="node__id" href="#q-03">q-03</a>
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>status</th><td><code>resolved</code></td></tr></tbody></table></div>
-<div class="prose"><p><strong>問い</strong> — 散文ブロック内のMarkdown方言をどこまで許すか</p></div>
-<div class="prose"><p><strong>背景</strong> — s-02 で『純装飾は素通し』と決めたが、表・コードブロック・見出しの扱いが未定。見出し(#)はノード構造と競合しうる。</p></div>
-<div class="prose"><p><strong>推奨</strong> — 見出しは散文内で禁止(ノード型で表現すべき)。表・コードブロック・強調は許可。</p></div>
-<div class="prose"><p><strong>決定</strong> — 見出し(#)は散文内で禁止。表・コードブロック・強調・引用・箇条書き・リンクは許可。実装済み、明文化は t-12。</p></div>
+<section class="node node--context depth-2" id="q-03.context">
+<header class="node__head">
+<span class="badge">context</span>
+<h2 class="node__title">背景</h2>
+<a class="node__id" href="#q-03.context">q-03.context</a>
+</header>
+<div class="prose"><p>s-02 で『純装飾は素通し』と決めたが、表・コードブロック・見出しの扱いが未定。見出し(#)はノード構造と競合しうる。</p></div>
+</section>
+<section class="node node--recommendation depth-2" id="q-03.recommendation">
+<header class="node__head">
+<span class="badge">recommendation</span>
+<h2 class="node__title">推奨</h2>
+<a class="node__id" href="#q-03.recommendation">q-03.recommendation</a>
+</header>
+<div class="prose"><p>見出しは散文内で禁止(ノード型で表現すべき)。表・コードブロック・強調は許可。</p></div>
+</section>
+<section class="node node--resolution depth-2" id="q-03.resolution">
+<header class="node__head">
+<span class="badge">resolution</span>
+<h2 class="node__title">決定</h2>
+<a class="node__id" href="#q-03.resolution">q-03.resolution</a>
+</header>
+<div class="prose"><p>見出し(#)は散文内で禁止。表・コードブロック・強調・引用・箇条書き・リンクは許可。実装済み、明文化は t-12。</p></div>
+</section>
 </section>
 </section>
 <section class="node node--actions depth-0" id="actions">
@@ -626,8 +1035,7 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">次にやること</h2>
 <a class="node__id" href="#actions">actions</a>
 </header>
-<div class="prose"><p><strong>手順</strong></p>
-<ul><li>AGENTS.md を読む(エージェントの入口。正本は docs/agents.pyn)</li><li>python -m pytest tests -q が 653 passed になることを確認する</li><li>正本を直したら python -m tools.{handover_to_pyn,build_schema,build_docs} で再生成する</li><li>全タスク完了(t-01〜t-15)。未解決の問いもなし</li></ul></div>
+<div class="prose"><ul><li>AGENTS.md を読む(エージェントの入口。正本は docs/agents.pyn)</li><li><code>python -m pytest tests -q</code> が 656 passed になることを確認する</li><li>この文書を書き換えるときは <code>python -m pyn patch Handover.pyn --ops ops.json</code></li><li>正本を直したら <code>python -m tools.{handover_to_pyn,build_schema,build_docs}</code> で生成物を作り直す</li><li>全タスク完了(t-01〜t-16)。未解決の問いもなし</li></ul></div>
 </section>
 <section class="node node--artifacts depth-0" id="artifacts">
 <header class="node__head">
@@ -635,9 +1043,14 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">成果物</h2>
 <a class="node__id" href="#artifacts">artifacts</a>
 </header>
-<div class="prose"><p><strong>既存</strong></p>
-<ul><li>Handover.json — 正本(このファイル)</li><li>Handover.md — 読み物。Handover.json の readme[] から生成(手書きしない)</li><li>PROGRESS.md — 自律実行セッションの記録</li><li>Handover.pyn — Handover.json から生成した投影A</li><li>Handover.html — Handover.json から生成(手書きしない)</li><li>build/Handover.canonical.json — PYN正準形に写した引継ぎ文書</li><li>schema/canonical.schema.json — pyn.schema.build_schema() の生成物(t-10)</li><li>docs/prose-dialect.pyn — 散文方言の仕様(正本)/ docs/prose-dialect.md はその射影</li><li>pyn/ — parser, formatter, refs, repair, patch, schema, render_html, render_md, values, model, cli</li><li>tools/ — handover_to_pyn, build_schema</li><li>samples/auth-spec.pyn</li><li>tests/ — test_roundtrip, test_repair, test_patch, test_render_md, test_schema, test_prose_dialect, test_handover</li><li>editors/vscode/ — VS Code シンタックスハイライト(t-09)</li><li>.github/workflows/ci.yml — テスト・生成物の追従・.pyn の検証</li><li>.gitignore — 生成物はあえてコミットする方針を明記</li><li>AGENTS.md — エージェント向け操作ガイド(docs/agents.pyn からの生成物)</li><li>CLAUDE.md — AGENTS.md への案内(内容は持たない)</li><li>tools/build_docs.py — .pyn → .md の生成(docs/prose-dialect.md / AGENTS.md)</li></ul></div>
-<div class="prose"><p><strong>予定</strong></p></div>
+<section class="node node--group depth-1" id="artifacts.existing">
+<header class="node__head">
+<span class="badge">group</span>
+<h2 class="node__title">既存</h2>
+<a class="node__id" href="#artifacts.existing">artifacts.existing</a>
+</header>
+<div class="prose"><ul><li>Handover.json — 正本(このファイル)</li><li>Handover.md — 読み物。Handover.json の readme[] から生成(手書きしない)</li><li>PROGRESS.md — 自律実行セッションの記録</li><li>Handover.pyn — Handover.json から生成した投影A</li><li>Handover.html — Handover.json から生成(手書きしない)</li><li>build/Handover.canonical.json — PYN正準形に写した引継ぎ文書</li><li>schema/canonical.schema.json — pyn.schema.build_schema() の生成物(t-10)</li><li>docs/prose-dialect.pyn — 散文方言の仕様(正本)/ docs/prose-dialect.md はその射影</li><li>pyn/ — parser, formatter, refs, repair, patch, schema, render_html, render_md, values, model, cli</li><li>tools/ — handover_to_pyn, build_schema</li><li>samples/auth-spec.pyn</li><li>tests/ — test_roundtrip, test_repair, test_patch, test_render_md, test_schema, test_prose_dialect, test_handover</li><li>editors/vscode/ — VS Code シンタックスハイライト(t-09)</li><li>.github/workflows/ci.yml — テスト・生成物の追従・.pyn の検証</li><li>.gitignore — 生成物はあえてコミットする方針を明記</li><li>AGENTS.md — エージェント向け操作ガイド(docs/agents.pyn からの生成物)</li><li>CLAUDE.md — AGENTS.md への案内(内容は持たない)</li><li>tools/build_docs.py — .pyn → .md の生成(docs/prose-dialect.md / AGENTS.md)</li></ul></div>
+</section>
 </section>
 </div>
 </body>

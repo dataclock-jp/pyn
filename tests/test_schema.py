@@ -12,7 +12,6 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import pytest
@@ -28,7 +27,6 @@ from pyn.schema import (
     validate,
 )
 from tests.test_roundtrip import docs
-from tools.handover_to_pyn import build_doc
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -81,10 +79,9 @@ def test_canonicalize_output_always_validates(seed, doc):
 
 def test_sample_and_handover_validate():
     schema = load_schema()
-    validate(parse((ROOT / "samples" / "auth-spec.pyn").read_text(encoding="utf-8")),
-             schema)
-    raw = json.loads((ROOT / "Handover.json").read_text(encoding="utf-8"))
-    validate(canonicalize(build_doc(raw)), schema)
+    for source in ("samples/auth-spec.pyn", "Handover.pyn",
+                   "docs/prose-dialect.pyn", "docs/agents.pyn"):
+        validate(parse((ROOT / source).read_text(encoding="utf-8")), schema)
 
 
 def test_empty_document_validates():

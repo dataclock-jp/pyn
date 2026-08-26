@@ -410,3 +410,57 @@ TextMate エンジン(Oniguruma)は動かせないので、文法そのものは
 `.pyn` を読む練習になります**。仕様書(t-12)と同じ姿勢です。
 
 **テスト 653 件通過。t-01〜t-15 完了。**
+
+---
+
+## t-16 — 正本を Handover.json から Handover.pyn へ反転
+
+これまで正本は `Handover.json` という **独自形** でした。PYN の正準形ではないので、
+PYN のノードへ写す変換器(`tools/handover_to_pyn.py`、293行)を人間が保守していたことになります。
+`.pyn ⇄ 正準形` は可逆なのだから、**最初から `.pyn` を正本にすれば変換器そのものが要らない**、
+というのが今回の反転です。
+
+### 設計判断(案A)
+
+JSON のキーが持っていた意味 — `conclusion` / `problem` / `rationale` / `rejected` /
+`mechanism` / `result` / `success_criteria` など — をどう表すか。
+
+- **採用(案A)**: **型付きの子ノード**にする。`decision d-00` の下に
+  `conclusion d-00.conclusion "結論"` / `rationale d-00.rationale "根拠"` が並ぶ形
+- 却下(案B): 散文に `**結論** —` と太字ラベルで書く。楽だが、s-02 が否定した
+  「意味を表記に埋める」形に戻る。schema からも AI からも見えなくなる
+
+結果、107 → 109 ノードに増えましたが、**意味が構造として残りました**。
+「結論だけ抽出」「未解決の決定を探す」が機械的にできます。
+
+### 変わったもの
+
+| | before | after |
+|---|---|---|
+| 正本 | `Handover.json`(独自形) | **`Handover.pyn`**(正準形) |
+| `tools/handover_to_pyn.py` | 293行(変換器) | **95行**(射影を吐くだけ) |
+| 更新方法 | Python で JSON を書き換え | **`python -m pyn patch Handover.pyn --ops ops.json`** |
+| 生成物 | `.md` `.pyn` `.html` `canonical.json` | `.md` `.html` `canonical.json` |
+
+`Handover.json` は削除しました。JSON が要るときは生成物の
+`build/Handover.canonical.json` を使います。
+
+### この更新自体をパッチで行った
+
+t-16 のタスクノードも、meta の更新も、`pyn patch` で当てています。
+ドッグフーディングが引継ぎ文書の運用そのものにまで届いた形です。
+
+その過程で **ファイル先頭に置いていた `#` コメント(「このファイルが正本」等)が
+パッチで消えました**。警告は出ましたが、これは d-02 のとおりの挙動です。
+消えて困る内容だったので、`meta` ノードの散文へ移しました
+—— 「残したいならデータとして書く」を自分で踏んで確認した形になります。
+
+### 検証
+
+```
+python -m pytest tests -q                  →  656 passed
+python -m pyn check Handover.pyn           →  OK  nodes=109
+python -m tools.handover_to_pyn --check    →  OK  生成物は追従しています
+```
+
+`--check` を全ツールに揃え、CI にも追加しました。正本を直して再生成を忘れると CI で落ちます。

@@ -1,8 +1,8 @@
 # 引継ぎ — Synthesis from HTML and JSON
 
-*Synthesis from HTML and JSON / 最終更新 2026-08-26 午後(再開セッション: t-09〜t-15 完了、GitHub へ push)*
+*Synthesis from HTML and JSON / 最終更新 2026-08-26 夕(再開セッション: t-16 で正本を Handover.pyn へ反転)*
 
-> このファイルは Handover.json から生成されています(手で編集しないこと)。 生成: `python -m tools.handover_to_pyn`
+> このファイルは Handover.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.handover_to_pyn`
 
 ## <a id="meta"></a>この文書について
 
@@ -16,26 +16,45 @@
 - `console_note`: `"Windowsのコンソールで日本語が化ける場合は PYTHONIOENCODING=utf-8 を付ける(ファイル出力は常にUTF-8)"`
 - `created`: `2026-08-26`
 - `docs_command`: `"python -m tools.build_docs [--check]"`
-- `dogfooding_note`: `"Handover.md / .pyn / .html / build/*.json はすべて Handover.json からの生成物。手で編集せず、tools.handover_to_pyn で再生成する(t-13 で .md も射影になった)"`
+- `dogfooding_note`: `"Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)"`
 - `editor_support`: `"editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)"`
 - `format_name`: `"PYN / 拡張子 .pyn(q-02 で確定)"`
 - `git`: `true`
 - `language`: `ja`
-- `last_session`: `"2026-08-26 午後(再開セッション: t-09〜t-15 完了、GitHub へ push)"`
+- `last_session`: `"2026-08-26 夕(再開セッション: t-16 で正本を Handover.pyn へ反転)"`
 - `owner`: `alice`
 - `project`: `"Synthesis from HTML and JSON"`
 - `prose_dialect_doc`: `"docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"`
 - `python`: `"3.14.3 / 標準ライブラリのみ(外部依存なし)"`
-- `regenerate_html_command`: `"python -m tools.handover_to_pyn  (Handover.json → Handover.md / Handover.pyn / build/Handover.canonical.json / Handover.html)"`
+- `regenerate_html_command`: `"python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)"`
 - `repo`: `"https://github.com/dataclock-jp/pyn(private / 既定ブランチ main)"`
-- `resume_entry_point`: `"PROGRESS.md を読む → Handover.json の tasks[] で status=todo のものを実行"`
+- `resume_entry_point`: `"AGENTS.md を読む → Handover.pyn の task ノードで status=todo のものを実行"`
 - `schema_command`: `"python -m tools.build_schema [--check]"`
-- `status`: `complete__all_tasks_done`
+- `status`: `complete__canonical_is_pyn`
 - `test_command`: `"python -m pytest tests -q"`
-- `tests_passing`: `653`
+- `tests_passing`: `656`
 - `workdir`: `"."`
 
-正本(canonical)。人間向けの読み物 Handover.md、投影A Handover.pyn、閲覧用HTML Handover.html は、すべて本ファイルから再生成する(手書きしない)。
+**このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。
+
+書き換えは `python -m pyn patch Handover.pyn --ops ops.json` が安全です(ID 宛なので行番号がずれても当たり、失敗時は文書が変更されません)。
+
+なお `#` コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。
+
+正本(canonical)は Handover.pyn。この JSON は t-16 で役目を終えた独自形式で、移行後は削除される。
+
+## <a id="goal"></a>JSONとHTMLの良いとこ取りをする、Python風の文書形式 PYN(.pyn)を設計・実装する
+
+<sub>`goal` `goal`</sub>
+
+### <a id="goal.criteria"></a>完了条件
+
+<sub>`criteria` `goal.criteria`</sub>
+
+- 3つの弱点(インデント脆弱性/インライン表現/エコシステム)を止揚した仕様が確定している
+- 正準形JSON ⇄ .pyn射影 の可逆フォーマッタが動く
+- 参照(`@id`)を解決するHTMLレンダラが動く
+- サンプル仕様書1本が .pyn → JSON → HTML と往復できる
 
 ## <a id="readme-start"></a>30秒で再開するには
 
@@ -200,33 +219,33 @@ spec auth "認証システム仕様":       # Type id "title": → ノード宣�
 
 この引継ぎ自体を、決めた原則どおりに運用しています。
 
-- `Handover.json` = 正本(ノード + refs のグラフ)
-- `Handover.md`(このファイル)/ `Handover.pyn` / `Handover.html` / `build/Handover.canonical.json` = **すべて生成物**。手で編集せず、`python -m tools.handover_to_pyn` で再生成してください
-- t-13 で `.md` も射影になり、t-10 で `schema/canonical.schema.json` も生成物になりました。**正本は `Handover.json` / `docs/prose-dialect.pyn` / `docs/agents.pyn` / `pyn/model.py` だけ**で、残りはすべて再生成できます
-
-## <a id="goal"></a>JSONとHTMLの良いとこ取りをする、Python風の文書形式 PYN(.pyn)を設計・実装する
-
-<sub>`goal` `goal`</sub>
-
-**完了条件**
-
-- 3つの弱点(インデント脆弱性/インライン表現/エコシステム)を止揚した仕様が確定している
-- 正準形JSON ⇄ .pyn射影 の可逆フォーマッタが動く
-- 参照(`@id`)を解決するHTMLレンダラが動く
-- サンプル仕様書1本が .pyn → JSON → HTML と往復できる
+- `Handover.pyn` = **正本**(型と ID を持つノードのグラフ)
+- `Handover.md` / `Handover.html` / `build/Handover.canonical.json` = **すべて生成物**。手で編集せず `python -m tools.handover_to_pyn` で再生成します
+- t-16 で正本が JSON から `.pyn` へ反転し、独自形の `Handover.json` とその変換器は消えました。**正本は `Handover.pyn` / `docs/prose-dialect.pyn` / `docs/agents.pyn` / `pyn/model.py` の 4 つだけ**です
+- この文書の更新も `pyn patch` で行っています。ドッグフーディングが引継ぎ文書の運用そのものにまで届いた状態です
 
 ## <a id="d-00"></a>HTML vs JSON はトレードオフではなくレイヤーの違い
 
 <sub>`decision` `d-00`</sub>
 
-**結論** — JSON=状態層(AIが読む/更新する/検証する)、HTML=提示層(人間が判断する)。正本をJSONに置き、HTMLは生成物として吐く。逆向き(HTML正本)は情報が落ちて必ず破綻する。
+### <a id="d-00.conclusion"></a>結論
 
-**根拠**
+<sub>`conclusion` `d-00.conclusion`</sub>
+
+JSON=状態層(AIが読む/更新する/検証する)、HTML=提示層(人間が判断する)。正本をJSONに置き、HTMLは生成物として吐く。逆向き(HTML正本)は情報が落ちて必ず破綻する。
+
+### <a id="d-00.rationale"></a>根拠
+
+<sub>`rationale` `d-00.rationale`</sub>
 
 - HTMLはトークンの60〜80%がタグとclass名で、AIの再読込コストが高い
 - JSONはSchemaで機械検証でき、CIで品質を担保するループが回せる
 - JSONはピンポイント更新でき、差分が意味の差分と一致する
 - 一方、意思決定者に見せる用途では図・対話を持つHTMLが圧倒的に優位
+
+### <a id="d-00.rule"></a>原則
+
+<sub>`rule` `d-00.rule`</sub>
 
 > HTMLは生成物として扱い、決して手で編集しない(二重管理の起点になるため)
 
@@ -234,50 +253,74 @@ spec auth "認証システム仕様":       # Type id "title": → ノード宣�
 
 <sub>`decision` `d-01`</sub>
 
-**結論** — インデント階層 + 4つの記法だけで、HTMLのattribute/childrenとJSONのkey/valueを統一する。
+関連: [HTML vs JSON はトレードオフではなくレイヤーの違い](#d-00)
 
-**根拠**
+### <a id="d-01.conclusion"></a>結論
+
+<sub>`conclusion` `d-01.conclusion`</sub>
+
+インデント階層 + 4つの記法だけで、HTMLのattribute/childrenとJSONのkey/valueを統一する。
+
+### <a id="d-01.rationale"></a>根拠
+
+<sub>`rationale` `d-01.rationale`</sub>
 
 - インデント+key:valueはLLMが最も大量に学習した形状(Python/YAML)で、長文生成の事故率がJSONより低い
 - 括弧・閉じタグ・引用符が消え、JSON比0.6〜0.7 / HTML比1/4程度のトークン量
 - task/decision といった型が第一級になり、HTMLのclass名に意味が埋もれる問題が解ける
 - コメントは『どのノードに属するか』が決まらないため正準形に載せられない。s-meta に照らせば、コメントは真実(ノードグラフ)ではなく表記の側に属する(t-14 で主張を実態に合わせた)
 
-**構文**
+### <a id="d-01.syntax"></a>構文
+
+<sub>`syntax` `d-01.syntax`</sub>
 
 - `key: value` — スカラー(HTMLのattribute / JSONのkey-value)
 - `Type id "title":` — ノード宣言。型が第一級。インデントで子を持つ
 - `""" ... """` — 散文ブロック。中身はMarkdown素通し。JSONのエスケープ地獄を回避
 - `# ...` — コメント。編集中の作業メモであり、正準形には保存されない。射影を再生成すると消える(恒久的な『なぜ』は散文ブロックに書く)
 
-関連: [HTML vs JSON はトレードオフではなくレイヤーの違い](#d-00)
-
 ## <a id="a-01"></a>弱点1: インデントは壊れやすい
 
 <sub>`antithesis` `a-01`</sub>
 
-**問題** — インデントは不可視な状態で冗長性がゼロ。2スペースずれてもエラーにならず意味だけが変わる。AIの差分適用やコピペで実際に起きる。
-
-**安易な妥協** — 終端マーカーを足す → 括弧が復活してテーゼの利点が消える
-
 関連: [新形式 PYN(拡張子 .pyn)の基本構文](#d-01)
+
+### <a id="a-01.problem"></a>問題
+
+<sub>`problem` `a-01.problem`</sub>
+
+インデントは不可視な状態で冗長性がゼロ。2スペースずれてもエラーにならず意味だけが変わる。AIの差分適用やコピペで実際に起きる。
+
+### <a id="a-01.bad-compromise"></a>安易な妥協
+
+<sub>`compromise` `a-01.bad-compromise`</sub>
+
+終端マーカーを足す → 括弧が復活してテーゼの利点が消える
 
 ## <a id="s-01"></a>止揚1: 構造をインデントからIDへ移す
 
 <sub>`synthesis` `s-01`</sub>
 
-**結論** — インデントは構造の『定義』ではなく『投影』である。木はIDの親子関係から復元できる。
+関連: [弱点1: インデントは壊れやすい](#a-01)
 
-**要点** — 冗長性を足すのではなく、既にあったIDを冗長性として使う
+### <a id="s-01.conclusion"></a>結論
 
-**仕組み**
+<sub>`conclusion` `s-01.conclusion`</sub>
+
+インデントは構造の『定義』ではなく『投影』である。木はIDの親子関係から復元できる。
+
+### <a id="s-01.mechanism"></a>仕組み
+
+<sub>`mechanism` `s-01.mechanism`</sub>
 
 - `projection_A_indented` — 人間が読み書きする形。インデントが親子を表す
 - `projection_B_flat` — AIがパッチを当てる形。^parentId で親を明示し、インデントに意味を持たせない
 - `formatter` — 投影A ⇄ 投影B を可逆変換する
 - `redundancy` — ID階層とインデントが2系統で冗長になるため、破損を『検出でき、自動修復もできる』。括弧のような『壊れたら止まる』冗長性ではなく、チェックサム的な冗長性
 
-**投影A(インデント形)**
+### <a id="s-01.example-a"></a>投影A(インデント形)
+
+<sub>`example` `s-01.example-a`</sub>
 
 ```
 spec auth "認証システム仕様":
@@ -287,7 +330,9 @@ spec auth "認証システム仕様":
     depends: [auth-01]
 ```
 
-**投影B(フラット形)**
+### <a id="s-01.example-b"></a>投影B(フラット形)
+
+<sub>`example` `s-01.example-b`</sub>
 
 ```
 spec auth "認証システム仕様"
@@ -297,105 +342,177 @@ task auth-02 "トークン交換"          ^auth
   depends: [auth-01]
 ```
 
-関連: [弱点1: インデントは壊れやすい](#a-01)
+### <a id="s-01.key-insight"></a>要点
+
+<sub>`insight` `s-01.key-insight`</sub>
+
+冗長性を足すのではなく、既にあったIDを冗長性として使う
 
 ## <a id="a-02"></a>弱点2: インライン装飾ができない
 
 <sub>`antithesis` `a-02`</sub>
 
-**問題** — インデント構文では、文中に <a> を挟むような表現が原理的に無理。
-
-**安易な妥協** — Markdownを丸ごと埋め込む → 行内の意味がただの文字列になり、schemaからもAIからも不可視になる
-
 関連: [新形式 PYN(拡張子 .pyn)の基本構文](#d-01)
+
+### <a id="a-02.problem"></a>問題
+
+<sub>`problem` `a-02.problem`</sub>
+
+インデント構文では、文中に <a> を挟むような表現が原理的に無理。
+
+### <a id="a-02.bad-compromise"></a>安易な妥協
+
+<sub>`compromise` `a-02.bad-compromise`</sub>
+
+Markdownを丸ごと埋め込む → 行内の意味がただの文字列になり、schemaからもAIからも不可視になる
 
 ## <a id="s-02"></a>止揚2: インラインを『装飾』ではなくグラフの辺にする
 
 <sub>`synthesis` `s-02`</sub>
 
-**結論** — 行内記法は自文書のID空間への参照(`@id` / `§id`)だけに限定する。パーサは散文から辺を実データとして抽出する。
+関連: [弱点2: インライン装飾ができない](#a-02)
 
-**要点** — 『意味を持つ行内』と『意味を持たない行内』を分離した。結果、劣化版インラインではなく、HTMLが持っていない能力(データモデルに参加するインライン)になる。副産物として文書が木からグラフへ昇格する
+### <a id="s-02.conclusion"></a>結論
 
-**仕組み**
+<sub>`conclusion` `s-02.conclusion`</sub>
+
+行内記法は自文書のID空間への参照(`@id` / `§id`)だけに限定する。パーサは散文から辺を実データとして抽出する。
+
+### <a id="s-02.mechanism"></a>仕組み
+
+<sub>`mechanism` `s-02.mechanism`</sub>
 
 - `html_output` — `@auth-02` → <a href="#auth-02">トークン交換</a> に解決(タイトルも自動補完)
 - `json_output` — "refs": ["auth-02", "auth-01"]
 - `validation` — 参照先が存在しなければエラー。リンク切れがCIで落ちる
 - `markdown_passthrough` — 太字・斜体など検証価値のない純装飾はMarkdownに素通し
 
-関連: [弱点2: インライン装飾ができない](#a-02)
+### <a id="s-02.key-insight"></a>要点
+
+<sub>`insight` `s-02.key-insight`</sub>
+
+『意味を持つ行内』と『意味を持たない行内』を分離した。結果、劣化版インラインではなく、HTMLが持っていない能力(データモデルに参加するインライン)になる。副産物として文書が木からグラフへ昇格する
 
 ## <a id="a-03"></a>弱点3: YAMLで足りる / エコシステムがない
 
 <sub>`antithesis` `a-03`</sub>
 
-**問題** — 新形式はハイライタ・フォーマッタ・差分・schemaを全部自作する負債を背負う。しかもYAMLが8割方できてしまう。
-
-**安易な妥協** — YAMLで我慢する → 型付きノードと散文の素直さを失う
-
 関連: [新形式 PYN(拡張子 .pyn)の基本構文](#d-01)
+
+### <a id="a-03.problem"></a>問題
+
+<sub>`problem` `a-03.problem`</sub>
+
+新形式はハイライタ・フォーマッタ・差分・schemaを全部自作する負債を背負う。しかもYAMLが8割方できてしまう。
+
+### <a id="a-03.bad-compromise"></a>安易な妥協
+
+<sub>`compromise` `a-03.bad-compromise`</sub>
+
+YAMLで我慢する → 型付きノードと散文の素直さを失う
 
 ## <a id="s-03"></a>止揚3: 新しい『形式』ではなく新しい『射影』として定義する
 
 <sub>`synthesis` `s-03`</sub>
 
-**結論** — PYNを独立形式にしない。正準形はJSONとし、.pyn はそれを人間とLLMが扱いやすくするための可逆な表示形式(レンズ)と定義する。
+関連: [弱点3: YAMLで足りる / エコシステムがない](#a-03)
 
-**要点** — MarkdownがHTMLに対して持つ関係と同じ。YAMLとの競合論争が消滅し、チーム内で採用が全員一致でなくてよくなる(誰かがJSONで直接書いてもよい)
+### <a id="s-03.conclusion"></a>結論
 
-**仕組み**
+<sub>`conclusion` `s-03.conclusion`</sub>
+
+PYNを独立形式にしない。正準形はJSONとし、.pyn はそれを人間とLLMが扱いやすくするための可逆な表示形式(レンズ)と定義する。
+
+### <a id="s-03.mechanism"></a>仕組み
+
+<sub>`mechanism` `s-03.mechanism`</sub>
 
 - `canonical` — canonical JSON が正本
 - `roundtrip` — .pyn ⇄ canonical JSON をバイト安定に往復させる
 - `inherited` — JSON Schema検証 / jq / git diff / 各言語のパーサ / エディタのフォールバック を全部継承できる
 - `to_build` — 自作が必要なのはフォーマッタ1本 + ハイライタ50行 だけ
 
-関連: [弱点3: YAMLで足りる / エコシステムがない](#a-03)
+### <a id="s-03.key-insight"></a>要点
+
+<sub>`insight` `s-03.key-insight`</sub>
+
+MarkdownがHTMLに対して持つ関係と同じ。YAMLとの競合論争が消滅し、チーム内で採用が全員一致でなくてよくなる(誰かがJSONで直接書いてもよい)
 
 ## <a id="s-meta"></a>メタ止揚: 3つの反はすべて同じ根から出ていた
 
 <sub>`synthesis` `s-meta`</sub>
 
-**結論** — 真実は『型とIDを持つノードの集合と、その間の辺』である。インデント形もフラット形もJSONもHTMLも、すべて再生成可能な射影にすぎない。
-
-**d-00 との関係** — d-00 の『JSON正本 / HTML生成物』の一段上。JSONすら生成物であり、正本は識別されたノードのグラフそのもの。
-
-**根拠** — 3つの弱点はいずれも『表記を真実だと見なしていた』ことが原因だった(1=インデントに真実を持たせた / 2=散文に意味を埋めた / 3=ファイル形式を真実だと思った)。真実をノードグラフに置いた瞬間、3つとも射影の性質になり、弱点でなくなる。射影は壊れても再生成できる。
-
 関連: [止揚1: 構造をインデントからIDへ移す](#s-01) [止揚2: インラインを『装飾』ではなくグラフの辺にする](#s-02) [止揚3: 新しい『形式』ではなく新しい『射影』として定義する](#s-03) [HTML vs JSON はトレードオフではなくレイヤーの違い](#d-00)
+
+### <a id="s-meta.conclusion"></a>結論
+
+<sub>`conclusion` `s-meta.conclusion`</sub>
+
+真実は『型とIDを持つノードの集合と、その間の辺』である。インデント形もフラット形もJSONもHTMLも、すべて再生成可能な射影にすぎない。
+
+### <a id="s-meta.rationale"></a>根拠
+
+<sub>`rationale` `s-meta.rationale`</sub>
+
+3つの弱点はいずれも『表記を真実だと見なしていた』ことが原因だった(1=インデントに真実を持たせた / 2=散文に意味を埋めた / 3=ファイル形式を真実だと思った)。真実をノードグラフに置いた瞬間、3つとも射影の性質になり、弱点でなくなる。射影は壊れても再生成できる。
+
+### <a id="s-meta.relation-to-d00"></a>d-00 との関係
+
+<sub>`relation` `s-meta.relation-to-d00`</sub>
+
+d-00 の『JSON正本 / HTML生成物』の一段上。JSONすら生成物であり、正本は識別されたノードのグラフそのもの。
 
 ## <a id="d-02"></a>コメント(#)は保存しない。残したい「なぜ」はデータとして書く
 
 <sub>`decision` `d-02`</sub>
 
-**結論** — `#` は作業メモであり、正準形には入れない。射影を再生成すれば消える(消えるときは警告する)。恒久的に残したい理由は散文ブロックか `note:` 属性に書く —— つまりデータとして書く。
+関連: [止揚2: インラインを『装飾』ではなくグラフの辺にする](#s-02) [正準化の仕様と往復テストが必須](#cost-2) [コメントの位置づけを実態に合わせ、消える前に警告する](#t-14)
 
-**問題** — 「コメントを JSON / HTML / Markdown それぞれのコメントへ射影できないか」という問いに対する判断。欲求そのもの(宣言の近くに理由を置きたい)は正当。
+### <a id="d-02.conclusion"></a>結論
 
-**根拠**
+<sub>`conclusion` `d-02.conclusion`</sub>
+
+`#` は作業メモであり、正準形には入れない。射影を再生成すれば消える(消えるときは警告する)。恒久的に残したい理由は散文ブロックか `note:` 属性に書く —— つまりデータとして書く。
+
+### <a id="d-02.problem"></a>問題
+
+<sub>`problem` `d-02.problem`</sub>
+
+「コメントを JSON / HTML / Markdown それぞれのコメントへ射影できないか」という問いに対する判断。欲求そのもの(宣言の近くに理由を置きたい)は正当。
+
+### <a id="d-02.rationale"></a>根拠
+
+<sub>`rationale` `d-02.rationale`</sub>
 
 - 射影先にコメントとして出しても価値が小さい。JSON に仕様上のコメントはなく(`$comment` は慣習キー)、HTML / Markdown の `<!-- -->` は読者に見えない。見える形にした時点で、それはコメントではなく注記=データである
 - 保存しようとすると「そのコメントはどのノードに属するか」が決まらない。前のノードの末尾か、次のノードの頭か、親か、ファイル全体か。move / remove を持つ以上、整形や移動のたびにずれる(YAML のラウンドトリップ実装が実際に苦しんでいる箇所)
 - 位置情報を正準形に持ち込むことは cost-2(往復の安定性)を直接危うくする。ここは『崩れたら設計全体が崩れる』と決めた場所である
 - コメントに意味を入れるのは、[止揚2: インラインを『装飾』ではなくグラフの辺にする](#s-02) が否定した『意味を表記に埋める』形そのもの。散文と `note:` は schema からも AI からも見えるが、コメントは見えない
 
-**見送った案**
+### <a id="d-02.rejected"></a>見送った案
+
+<sub>`rejected` `d-02.rejected`</sub>
 
 - 案B: `##` を『直後のノードに結合する注記』として正準形に入れる。結合規則が一意なので cost-2 は壊さないが、得られるのは記法の楽さだけで、能力は散文 / `note:` と同じだった。必要になったら再検討してよい
 - 案C: `#` をすべて保存する(ruamel 方式)。位置情報が入り込み往復が不安定化する
 
-> 残したい理由は散文ブロックか `note:` 属性へ。`#` は消えてよいものだけに使う
+### <a id="d-02.rule"></a>原則
 
-関連: [止揚2: インラインを『装飾』ではなくグラフの辺にする](#s-02) [正準化の仕様と往復テストが必須](#cost-2) [コメントの位置づけを実態に合わせ、消える前に警告する](#t-14)
+<sub>`rule` `d-02.rule`</sub>
+
+> 残したい理由は散文ブロックか `note:` 属性へ。`#` は消えてよいものだけに使う
 
 ## <a id="cost"></a>止揚が要求する代償(受け入れ済み)
 
 <sub>`constraint` `cost`</sub>
 
-**補足** — 代償が技術的不可能ではなく『規律』に集約されているのは良い兆候。運用で払える種類のコスト。
-
 関連: [メタ止揚: 3つの反はすべて同じ根から出ていた](#s-meta)
+
+### <a id="cost.note"></a>補足
+
+<sub>`note` `cost.note`</sub>
+
+代償が技術的不可能ではなく『規律』に集約されているのは良い兆候。運用で払える種類のコスト。
 
 ### <a id="cost-1"></a>全ノードに一意なIDを振る規律が必須
 
@@ -403,7 +520,7 @@ task auth-02 "トークン交換"          ^auth
 
 - `mitigation`: `"ID自動採番で緩和する"`
 
-**詳細** — 今回の代償の本体。手書きの気楽さが減る
+今回の代償の本体。手書きの気楽さが減る
 
 ### <a id="cost-2"></a>正準化の仕様と往復テストが必須
 
@@ -411,7 +528,7 @@ task auth-02 "トークン交換"          ^auth
 
 - `mitigation`: `"プロパティベーステスト(t-04)"`
 
-**詳細** — project(canonicalize(x)) == x を保証しないと『射影』を名乗れない。ここを手抜きすると全部崩れる
+project(canonicalize(x)) == x を保証しないと『射影』を名乗れない。ここを手抜きすると全部崩れる
 
 ### <a id="cost-3"></a>自動修復は誤修復しうる
 
@@ -419,7 +536,7 @@ task auth-02 "トークン交換"          ^auth
 
 - `mitigation`: `"修復候補を提示して人間に確認させる(t-07)"`
 
-**詳細** — IDからのインデント復元は、曖昧なときに黙って直してはいけない
+IDからのインデント復元は、曖昧なときに黙って直してはいけない
 
 ## <a id="plan"></a>実装計画
 
@@ -436,7 +553,11 @@ task auth-02 "トークン交換"          ^auth
 
 ノードの正準表現を決める: { id, type, title, attrs{}, prose[], refs[], children[] }。JSON Schema を書き、キー順を固定してバイト安定にする。q-03(散文のMarkdown方言)もここで決める。
 
-**結果** — schema/canonical.schema.json。キー順 id,type,title,attrs,prose,refs,children に固定、空値は省略、attrs はキー昇順。
+#### <a id="t-01.result"></a>結果
+
+<sub>`result` `t-01.result`</sub>
+
+schema/canonical.schema.json。キー順 id,type,title,attrs,prose,refs,children に固定、空値は省略、attrs はキー昇順。
 
 ### <a id="t-02"></a>PYNパーサ実装(.pyn → canonical JSON)
 
@@ -448,7 +569,11 @@ task auth-02 "トークン交換"          ^auth
 
 インデントスタック方式、250〜300行想定。インデント幅の混在はエラーにする。散文は """ ブロックでdedentして取り込む。# はコメント。投影B(^parent)も受理する。
 
-**結果** — pyn/parser.py。投影A/B を自動判別。タブ・インデント混在・深さ飛びをエラーにする。
+#### <a id="t-02.result"></a>結果
+
+<sub>`result` `t-02.result`</sub>
+
+pyn/parser.py。投影A/B を自動判別。タブ・インデント混在・深さ飛びをエラーにする。
 
 ### <a id="t-03"></a>射影フォーマッタ実装(canonical JSON → .pyn 投影A / 投影B)
 
@@ -460,7 +585,11 @@ task auth-02 "トークン交換"          ^auth
 
 投影A=インデント形(人間用)、投影B=フラット形+^parent(AIパッチ用)。s-01 の中核。
 
-**結果** — pyn/formatter.py。投影A(インデント形)/ 投影B(0インデント + ^parent)。
+#### <a id="t-03.result"></a>結果
+
+<sub>`result` `t-03.result`</sub>
+
+pyn/formatter.py。投影A(インデント形)/ 投影B(0インデント + ^parent)。
 
 ### <a id="t-04"></a>往復プロパティテスト
 
@@ -472,7 +601,11 @@ task auth-02 "トークン交換"          ^auth
 
 cost-2 の担保。ランダム生成した木で project(canonicalize(x)) == x を検証。投影A/B間の相互変換も含める。
 
-**結果** — tests/test_roundtrip.py。乱数生成した木60本で往復・バイト安定・A⇄B相互変換・冪等性を検証。
+#### <a id="t-04.result"></a>結果
+
+<sub>`result` `t-04.result`</sub>
+
+tests/test_roundtrip.py。乱数生成した木60本で往復・バイト安定・A⇄B相互変換・冪等性を検証。
 
 ### <a id="t-05"></a>参照解決(`@id` / `§id`)とリンク切れ検証
 
@@ -484,7 +617,11 @@ cost-2 の担保。ランダム生成した木で project(canonicalize(x)) == x 
 
 s-02 の実装。散文から `@id` を抽出して refs[] に落とす。存在しないIDはエラー。
 
-**結果** — pyn/refs.py。`@id` / `§id` を辺として抽出、コードスパンとフェンスは除外、リンク切れは PynRefError。
+#### <a id="t-05.result"></a>結果
+
+<sub>`result` `t-05.result`</sub>
+
+pyn/refs.py。`@id` / `§id` を辺として抽出、コードスパンとフェンスは除外、リンク切れは PynRefError。
 
 ### <a id="t-06"></a>HTMLレンダラ(canonical JSON → HTML)
 
@@ -496,7 +633,11 @@ s-02 の実装。散文から `@id` を抽出して refs[] に落とす。存在
 
 型→テンプレートのマッピング。散文はMarkdownレンダ。`@id` は <a href="#id">タイトル</a> に解決。100行程度想定。完成したら Handover.html もこれで生成する。
 
-**結果** — pyn/render_html.py。Markdown部分集合 + 参照のリンク解決(タイトル自動補完)。ライト/ダーク対応の自己完結HTML。
+#### <a id="t-06.result"></a>結果
+
+<sub>`result` `t-06.result`</sub>
+
+pyn/render_html.py。Markdown部分集合 + 参照のリンク解決(タイトル自動補完)。ライト/ダーク対応の自己完結HTML。
 
 ### <a id="t-07"></a>ID破損の検出と修復候補の提示
 
@@ -508,7 +649,11 @@ s-02 の実装。散文から `@id` を抽出して refs[] に落とす。存在
 
 s-01 の実装。ID階層とインデントの不一致を検出し、修復案を提示する(自動適用はしない = cost-3)。
 
-**結果** — pyn/repair.py。破損検出 + 修復候補提示。ID命名階層を優先候補に使う。cost-3 に従い自動適用しない。
+#### <a id="t-07.result"></a>結果
+
+<sub>`result` `t-07.result`</sub>
+
+pyn/repair.py。破損検出 + 修復候補提示。ID命名階層を優先候補に使う。cost-3 に従い自動適用しない。
 
 ### <a id="t-08"></a>サンプル仕様書でE2E確認
 
@@ -520,7 +665,11 @@ s-01 の実装。ID階層とインデントの不一致を検出し、修復案�
 
 会話中に書いた『認証システム仕様』サンプルを .pyn → JSON → HTML と通す。
 
-**結果** — samples/auth-spec.pyn と Handover.json の両方で E2E 確認。`python -m pyn check` も通る。
+#### <a id="t-08.result"></a>結果
+
+<sub>`result` `t-08.result`</sub>
+
+samples/auth-spec.pyn と Handover.json の両方で E2E 確認。`python -m pyn check` も通る。
 
 ### <a id="t-09"></a>VS Code シンタックスハイライト(TextMate文法)
 
@@ -533,7 +682,11 @@ s-01 の実装。ID階層とインデントの不一致を検出し、修復案�
 
 50行程度。後回し可。
 
-**結果** — editors/vscode(package.json / language-configuration.json / syntaxes/pyn.tmLanguage.json / README.md)。投影A・投影Bの両方を1つの文法で扱い、`@id` は辺としてリンク色にする。true/false/null 以外は定数にしない(YAML の暗黙型変換を採用しないという決定を文法側でも守る)。TextMate エンジンは動かせないため、tests/test_grammar.py が「実物の samples/auth-spec.pyn の各行を想定どおり拾うか」を検証する。
+#### <a id="t-09.result"></a>結果
+
+<sub>`result` `t-09.result`</sub>
+
+editors/vscode(package.json / language-configuration.json / syntaxes/pyn.tmLanguage.json / README.md)。投影A・投影Bの両方を1つの文法で扱い、`@id` は辺としてリンク色にする。true/false/null 以外は定数にしない(YAML の暗黙型変換を採用しないという決定を文法側でも守る)。TextMate エンジンは動かせないため、tests/test_grammar.py が「実物の samples/auth-spec.pyn の各行を想定どおり拾うか」を検証する。
 
 ### <a id="t-10"></a>canonicalize の検証を JSON Schema と接続する
 
@@ -545,7 +698,11 @@ s-01 の実装。ID階層とインデントの不一致を検出し、修復案�
 
 現状 canonicalize は独自の検証を持つ。schema/canonical.schema.json と二重定義になっているので、jsonschema で突き合わせるテストを足すか、生成元を一本化する。
 
-**結果** — pyn/schema.py。schema/canonical.schema.json を build_schema() の生成物にし、ID/型の正規表現・バージョン・キー順を model.py 由来にした。外部依存なしの検証器 validate() を置き、canonicalize の出力が常に schema へ適合することを乱数文書で検証。`python -m pyn check` も schema を通る。生成/追従確認は `python -m tools.build_schema [--check]`。
+#### <a id="t-10.result"></a>結果
+
+<sub>`result` `t-10.result`</sub>
+
+pyn/schema.py。schema/canonical.schema.json を build_schema() の生成物にし、ID/型の正規表現・バージョン・キー順を model.py 由来にした。外部依存なしの検証器 validate() を置き、canonicalize の出力が常に schema へ適合することを乱数文書で検証。`python -m pyn check` も schema を通る。生成/追従確認は `python -m tools.build_schema [--check]`。
 
 ### <a id="t-11"></a>投影B へのパッチ適用 API
 
@@ -557,7 +714,11 @@ s-01 の実装。ID階層とインデントの不一致を検出し、修復案�
 
 s-01 の実運用部分。AI が投影B に差分を当て、正準形へ戻す経路を関数として提供する(例: set_attr(id, key, value) / move(id, new_parent))。
 
-**結果** — pyn/patch.py + `python -m pyn patch`。ID 宛の操作を正準形に当て、射影を再生成する純粋関数群(set_attr / del_attr / set_title / set_prose / add_prose / add / remove / move / rename)と、宣言的な op リストを受ける apply()。全か無かで適用し、失敗時は文書を変更しない。
+#### <a id="t-11.result"></a>結果
+
+<sub>`result` `t-11.result`</sub>
+
+pyn/patch.py + `python -m pyn patch`。ID 宛の操作を正準形に当て、射影を再生成する純粋関数群(set_attr / del_attr / set_title / set_prose / add_prose / add / remove / move / rename)と、宣言的な op リストを受ける apply()。全か無かで適用し、失敗時は文書を変更しない。
 
 ### <a id="t-12"></a>散文Markdown方言の仕様書化
 
@@ -569,7 +730,11 @@ s-01 の実運用部分。AI が投影B に差分を当て、正準形へ戻す�
 
 q-03 の決定(見出し禁止、表・コードブロック・強調は許可)は実装済みだが、仕様として明文化されていない。 なお本セッションで、見出し禁止だけは canonicalize が実際に拒否するようにした(フェンス内は対象外)。残るは文書化。
 
-**結果** — docs/prose-dialect.pyn(正本)と docs/prose-dialect.md(Markdown射影)。仕様書自身を .pyn で書き、見出しを子ノードで表現することで方言を実演している。tests/test_prose_dialect.py が仕様書の主張を1件ずつ実装で裏づける。
+#### <a id="t-12.result"></a>結果
+
+<sub>`result` `t-12.result`</sub>
+
+docs/prose-dialect.pyn(正本)と docs/prose-dialect.md(Markdown射影)。仕様書自身を .pyn で書き、見出しを子ノードで表現することで方言を実演している。tests/test_prose_dialect.py が仕様書の主張を1件ずつ実装で裏づける。
 
 ### <a id="t-13"></a>Markdown 射影(.md の生成)
 
@@ -581,7 +746,11 @@ q-03 の決定(見出し禁止、表・コードブロック・強調は許可)�
 
 Handover.md だけが手書きのままで、d-00 の『二重管理を作らない』に反している。正準形から Markdown を吐く射影を足し、Handover.md も生成物にする。
 
-**結果** — pyn/render_md.py + `python -m pyn md`。Handover.md も tools.handover_to_pyn の生成物になり、d-00 の二重管理が解消した。手書き本文は readme[] として Handover.json へ移設済み。
+#### <a id="t-13.result"></a>結果
+
+<sub>`result` `t-13.result`</sub>
+
+pyn/render_md.py + `python -m pyn md`。Handover.md も tools.handover_to_pyn の生成物になり、d-00 の二重管理が解消した。手書き本文は readme[] として Handover.json へ移設済み。
 
 ### <a id="t-14"></a>コメントの位置づけを実態に合わせ、消える前に警告する
 
@@ -593,7 +762,11 @@ Handover.md だけが手書きのままで、d-00 の『二重管理を作らな
 
 d-01 は『コメントで「なぜ」を正本に残せる』と主張していたが、コメントは正準形に保存されず、射影の再生成(pyn a / b / json / patch)で黙って消えていた。主張を実態に合わせ、消える場合は警告を出す。
 
-**結果** — pyn/parser.py の comment_lines()(散文ブロック内の # は誤検出しない)と、CLI の警告。d-01 の syntax とサンプルのコメント文面も訂正。tests/test_comments.py で検証。
+#### <a id="t-14.result"></a>結果
+
+<sub>`result` `t-14.result`</sub>
+
+pyn/parser.py の comment_lines()(散文ブロック内の # は誤検出しない)と、CLI の警告。d-01 の syntax とサンプルのコメント文面も訂正。tests/test_comments.py で検証。
 
 ### <a id="t-15"></a>AI エージェント向けの操作ガイドを置く
 
@@ -605,7 +778,31 @@ d-01 は『コメントで「なぜ」を正本に残せる』と主張してい
 
 Codex CLI など他のエージェントがこのリポジトリを扱えるようにする。引継ぎ文書は経緯の読み物であって操作手順ではなく、patch の ops 形式が docstring にしかなかった。
 
-**結果** — docs/agents.pyn(正本)→ AGENTS.md(生成物)。守るべき規律・正本と生成物の対応・コマンド・patch の ops 一覧・.pyn を書くときの制約・検証手順を1枚にまとめた。生成は tools/build_docs.py が担い(docs/prose-dialect.md も同じ経路へ移した)、tests/test_docs.py と CI が追従を強制する。CLAUDE.md は AGENTS.md への案内のみ。
+#### <a id="t-15.result"></a>結果
+
+<sub>`result` `t-15.result`</sub>
+
+docs/agents.pyn(正本)→ AGENTS.md(生成物)。守るべき規律・正本と生成物の対応・コマンド・patch の ops 一覧・.pyn を書くときの制約・検証手順を1枚にまとめた。生成は tools/build_docs.py が担い(docs/prose-dialect.md も同じ経路へ移した)、tests/test_docs.py と CI が追従を強制する。CLAUDE.md は AGENTS.md への案内のみ。
+
+### <a id="t-16"></a>正本を Handover.json から Handover.pyn へ反転する
+
+<sub>`task` `t-16`</sub>
+
+- `depends`: `t-11`, `t-13`
+- `est`: `2h`
+- `status`: `done`
+
+Handover.json は PYN の正準形ではなく独自形だったため、PYN へ写す変換器(293行)を人間が保守していた。`.pyn ⇄ 正準形` は可逆なので、正本を最初から `.pyn` にすれば変換器は不要になる。
+
+移行の設計判断は案A —— JSON のキーが持っていた意味(`conclusion` / `problem` / `rationale` …)を、散文の太字ラベルではなく**型付きの子ノード**にする。太字ラベルにすると [止揚2: インラインを『装飾』ではなくグラフの辺にする](#s-02) が否定した「意味を表記に埋める」形に戻ってしまうため。
+
+#### <a id="t-16.result"></a>結果
+
+<sub>`result` `t-16.result`</sub>
+
+`Handover.pyn` が正本になり、`Handover.json` は削除。`tools/handover_to_pyn.py` は 293 行の変換器から、射影を吐くだけの 95 行へ縮小した(変換対応表がまるごと消えた)。意味は `conclusion` / `rationale` / `result` / `criteria` などの型付きノードとして構造に残っている。
+
+副作用として、この文書の更新自体が `pyn patch` で行えるようになった(この t-16 ノードもパッチで追加している)。
 
 ## <a id="questions"></a>未解決の問い
 
@@ -618,13 +815,23 @@ Codex CLI など他のエージェントがこのリポジトリを扱えるよ�
 - `default_if_no_answer`: `Python`
 - `status`: `resolved`
 
-**問い** — 実装言語は? (Python / TypeScript)
+#### <a id="q-01.context"></a>背景
 
-**背景** — Python: 構文が思想と一致し、テキスト処理が楽。TypeScript: HTMLレンダラとVS Code拡張が同居できる。
+<sub>`context` `q-01.context`</sub>
 
-**推奨** — Pythonでコア(パーサ/フォーマッタ/検証)を作り、HTMLもPython側で文字列生成。VS Code拡張が必要になった段階でTSを足す。
+Python: 構文が思想と一致し、テキスト処理が楽。TypeScript: HTMLレンダラとVS Code拡張が同居できる。
 
-**決定** — Python。実装済み(Python 3.14 / 標準ライブラリのみ、外部依存ゼロ)。
+#### <a id="q-01.recommendation"></a>推奨
+
+<sub>`recommendation` `q-01.recommendation`</sub>
+
+Pythonでコア(パーサ/フォーマッタ/検証)を作り、HTMLもPython側で文字列生成。VS Code拡張が必要になった段階でTSを足す。
+
+#### <a id="q-01.resolution"></a>決定
+
+<sub>`resolution` `q-01.resolution`</sub>
+
+Python。実装済み(Python 3.14 / 標準ライブラリのみ、外部依存ゼロ)。
 
 ### <a id="q-02"></a>形式名を PYN、拡張子を .pyn で確定してよいか
 
@@ -632,13 +839,23 @@ Codex CLI など他のエージェントがこのリポジトリを扱えるよ�
 
 - `status`: `resolved`
 
-**問い** — 形式名を PYN、拡張子を .pyn で確定してよいか
+#### <a id="q-02.context"></a>背景
 
-**背景** — 会話中は仮称。.pyd はPython拡張DLLと衝突するため回避済み。
+<sub>`context` `q-02.context`</sub>
 
-**推奨** — 確定してよい。
+会話中は仮称。.pyd はPython拡張DLLと衝突するため回避済み。
 
-**決定** — 確定。形式名は PYN、拡張子は .pyn。2026-08-26 にオーナー判断で決定した。以後この名前を仮称として扱わない。
+#### <a id="q-02.recommendation"></a>推奨
+
+<sub>`recommendation` `q-02.recommendation`</sub>
+
+確定してよい。
+
+#### <a id="q-02.resolution"></a>決定
+
+<sub>`resolution` `q-02.resolution`</sub>
+
+確定。形式名は PYN、拡張子は .pyn。2026-08-26 にオーナー判断で決定した。以後この名前を仮称として扱わない。
 
 ### <a id="q-03"></a>散文ブロック内のMarkdown方言をどこまで許すか
 
@@ -646,30 +863,41 @@ Codex CLI など他のエージェントがこのリポジトリを扱えるよ�
 
 - `status`: `resolved`
 
-**問い** — 散文ブロック内のMarkdown方言をどこまで許すか
+#### <a id="q-03.context"></a>背景
 
-**背景** — s-02 で『純装飾は素通し』と決めたが、表・コードブロック・見出しの扱いが未定。見出し(#)はノード構造と競合しうる。
+<sub>`context` `q-03.context`</sub>
 
-**推奨** — 見出しは散文内で禁止(ノード型で表現すべき)。表・コードブロック・強調は許可。
+s-02 で『純装飾は素通し』と決めたが、表・コードブロック・見出しの扱いが未定。見出し(#)はノード構造と競合しうる。
 
-**決定** — 見出し(#)は散文内で禁止。表・コードブロック・強調・引用・箇条書き・リンクは許可。実装済み、明文化は t-12。
+#### <a id="q-03.recommendation"></a>推奨
+
+<sub>`recommendation` `q-03.recommendation`</sub>
+
+見出しは散文内で禁止(ノード型で表現すべき)。表・コードブロック・強調は許可。
+
+#### <a id="q-03.resolution"></a>決定
+
+<sub>`resolution` `q-03.resolution`</sub>
+
+見出し(#)は散文内で禁止。表・コードブロック・強調・引用・箇条書き・リンクは許可。実装済み、明文化は t-12。
 
 ## <a id="actions"></a>次にやること
 
 <sub>`actions` `actions`</sub>
 
-**手順**
-
 - AGENTS.md を読む(エージェントの入口。正本は docs/agents.pyn)
-- python -m pytest tests -q が 653 passed になることを確認する
-- 正本を直したら python -m tools.{handover_to_pyn,build_schema,build_docs} で再生成する
-- 全タスク完了(t-01〜t-15)。未解決の問いもなし
+- `python -m pytest tests -q` が 656 passed になることを確認する
+- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`
+- 正本を直したら `python -m tools.{handover_to_pyn,build_schema,build_docs}` で生成物を作り直す
+- 全タスク完了(t-01〜t-16)。未解決の問いもなし
 
 ## <a id="artifacts"></a>成果物
 
 <sub>`artifacts` `artifacts`</sub>
 
-**既存**
+### <a id="artifacts.existing"></a>既存
+
+<sub>`group` `artifacts.existing`</sub>
 
 - Handover.json — 正本(このファイル)
 - Handover.md — 読み物。Handover.json の readme[] から生成(手書きしない)
@@ -689,5 +917,3 @@ Codex CLI など他のエージェントがこのリポジトリを扱えるよ�
 - AGENTS.md — エージェント向け操作ガイド(docs/agents.pyn からの生成物)
 - CLAUDE.md — AGENTS.md への案内(内容は持たない)
 - tools/build_docs.py — .pyn → .md の生成(docs/prose-dialect.md / AGENTS.md)
-
-**予定**
