@@ -1,9 +1,9 @@
 meta meta "この文書について":
   agent_entry_point: "AGENTS.md(正本は docs/agents.pyn)。CLAUDE.md はそこへの案内"
   check_command: "python -m pyn check samples/auth-spec.pyn"
-  ci: ".github/workflows/ci.yml(pytest / schema 追従 / .pyn の check)"
-  cli_usage: "python -m pyn {json|a|b|html|md|check|repair|patch} <file> [-o OUT]"
-  code_size: "pyn/ 2684行 + tools/ 319行 + tests/ 2056行(本体は標準ライブラリのみ)"
+  ci: ".github/workflows/ci.yml(pytest 3.11 / 3.14・生成物の追従・ID 消失検出・.pyn の check・install ジョブ = Ubuntu / Windows で pip install してリポジトリの外から動かす)"
+  cli_usage: "pyn {json|a|b|html|md|check|repair|patch|id} <file> [-o OUT](pip で入れた場合。このリポジトリの中では python -m pyn)"
+  code_size: "pyn/ 2776行 + tools/ 320行 + tests/ 2321行(本体は標準ライブラリのみ)"
   comment_policy: "# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)"
   console_note: "CLI は標準出力・標準エラーも常に UTF-8・LF で書く(ファイル出力と同じ。t-19 / t-21)。PYTHONIOENCODING の指定は不要"
   created: 2026-08-26
@@ -15,19 +15,20 @@ meta meta "この文書について":
   id_policy: "ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)"
   install_command: "pip install git+https://github.com/dataclock-jp/pyn.git"
   language: ja
-  last_session: "2026-10-22(t-21 まで完了。CLI の書き出しを LF に揃えた)"
+  last_session: "2026-10-22 夜(t-21 まで完了・v1.1.1。ここで終了。続きは backlog から)"
   license: "MIT(LICENSE)"
   project: "Synthesis from HTML and JSON"
   prose_dialect_doc: "docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"
-  python: "3.14.3 / 標準ライブラリのみ(外部依存なし)"
+  python: "3.11 以上(CI は 3.11 / 3.14)。本体は標準ライブラリのみ(外部依存なし)"
   regenerate_html_command: "python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)"
   repo: "https://github.com/dataclock-jp/pyn(public / 既定ブランチ main)"
   resume_entry_point: "このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ"
   schema_command: "python -m tools.build_schema [--check]"
   status: all_planned_tasks_done__ready_to_hand_over
-  tag: v1.0
+  tag: v1.1.1
   test_command: "python -m pytest tests -q"
   tests_passing: 709
+  version: "1.1.1(pyn.__version__ が唯一の源)"
   """
   **このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。
 
@@ -36,7 +37,7 @@ meta meta "この文書について":
   なお `#` コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。
   """
   """
-  正本(canonical)は Handover.pyn。この JSON は t-16 で役目を終えた独自形式で、移行後は削除される。
+  このリポジトリの外でも、3 つのプロジェクトが pip で入れた pyn で `.pyn` を運用している(名前はここに書かない)。pyn の整形や書き出しを変えると、それらの文書に次に patch を当てたとき一度だけ差分が出る(@t-19 の空行、正準化による属性の並べ替え)。pyn を直して push したら、使う側では `pip install --user --upgrade --force-reinstall "git+https://github.com/dataclock-jp/pyn.git"` で入れ直す(バージョンが同じだと入れ替わらないことがある)。
   """
 
 goal goal "JSONとHTMLの良いとこ取りをする、Python風の文書形式 PYN(.pyn)を設計・実装する":
@@ -55,6 +56,8 @@ section readme-start "30秒で再開するには":
   python -m pyn check Handover.pyn             # 往復・参照・schema の検証
   python -m tools.handover_to_pyn              # Handover.md / .html を再生成
   ```
+
+  **直近の終了点(2026-10-22 夜)**: `main` は push 済みで作業ツリーはきれい、CI は全ジョブ成功。タグ `v1.1.1` のあとに入っているのは、サンプルのコメントの直しとこの引継ぎの整理だけ。続きは @backlog から選ぶ。いちばん価値が高いのは @backlog.trial、すぐ片付く小物は @backlog.doc-comments と @backlog.tools-stdio。
 
   **AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。
 
@@ -82,9 +85,11 @@ section readme-now "いま何が動くか":
 
   python -m tools.handover_to_pyn              # この引継ぎ文書の再生成(--check あり)
   python -m tools.build_schema --check         # schema が model に追従しているか
-  python -m tools.build_docs --check           # AGENTS.md / prose-dialect.md の追従
+  python -m tools.build_docs --check           # AGENTS.md / README.md / prose-dialect.md の追従
   python -m tools.check_ids                    # 一度振った ID が消えていないか
   ```
+
+  pip で入れた環境では `python -m pyn` の代わりに `pyn` と打てる(`pip install git+https://github.com/dataclock-jp/pyn.git`。@t-20)。このリポジトリの中では、作業中のコードが使われるよう `python -m pyn` を使う。
 
   | ファイル | 役割 |
   |---|---|
@@ -98,9 +103,10 @@ section readme-now "いま何が動くか":
   | `pyn/schema.py` | JSON Schema の生成と適合検証(t-10) |
   | `pyn/autoid.py` | ID の自動採番(t-17) |
   | `tools/` | `handover_to_pyn` / `build_schema` / `build_docs` / `check_ids` |
+  | `pyproject.toml` | pip で入れるための定義。`pyn` コマンド = `pyn.cli:main`(t-20) |
   | `editors/vscode/` | シンタックスハイライト(t-09) |
-  | `docs/agents.pyn` `docs/prose-dialect.pyn` | エージェント向け操作ガイド / 散文方言の仕様 |
-  | `.github/workflows/ci.yml` | テスト + 生成物の追従 + ID 消失検出 |
+  | `docs/agents.pyn` `docs/prose-dialect.pyn` `docs/readme.pyn` | エージェント向け操作ガイド / 散文方言の仕様 / README |
+  | `.github/workflows/ci.yml` | テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ |
   """
 
 section readme-story "この設計に至った物語(会話の要約)":
@@ -921,6 +927,10 @@ actions actions "次にやること":
     (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)
   - ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)
   - 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す
+  - pyn を直して外部で使うときは、push してから `pip install --user --upgrade --force-reinstall "git+https://github.com/dataclock-jp/pyn.git"` で入れ直す
+  - 修正前のコードでテストが落ちるかを確かめるとき、`git stash` は使わない(戻したあとに修正が消えたことがある。PROGRESS.md の t-19)。`git worktree add` で HEAD を別の場所に出して回す
+  - バックスラッシュを含む書き換えはシェルを通さない(コマンドの中で `\\` と書くと `\` に減ってから渡ることがある。PROGRESS.md の t-21)。置換スクリプトも ops もファイルに書く
+  - `docs/agents.pyn` / `docs/readme.pyn` に patch を当てると先頭の `#` コメントが消えるので、当てたあとに戻す(@backlog.doc-comments)
   - 予定タスクは完了(t-01〜t-21)。次に何をするかは @backlog
   """
 
@@ -981,6 +991,34 @@ backlog backlog "着手候補":
     済み(@t-20)。PyPI には出していない。
     """
 
+  idea backlog.doc-comments "docs/*.pyn の先頭コメントを、patch のたびに手で戻さずに済むようにする":
+    priority: low
+    status: candidate
+    """
+    `docs/agents.pyn` と `docs/readme.pyn` の 1 行目の `#` コメント(「この文書の正本。… 手で編集しない」)は、patch のたびに消える(@d-02 のとおり)。第6セッションだけで 4 回、手で戻した。@d-02 の推奨どおり、内容をデータ(`note:` 属性か散文)へ移せば手作業が要らなくなる。`tools/build_docs` が生成物の側に同じ注記を出しているなら、コメントそのものを消してもよい。
+    """
+
+  idea backlog.tools-stdio "tools/ のメッセージも UTF-8 で出す":
+    priority: low
+    status: candidate
+    """
+    `tools/` の 4 本は pyn の CLI を通らないので、Windows では標準出力が今も cp932 になる。日本語は表示が化けるだけで、今のところ落ちる経路は見つかっていない。`pyn.cli.use_utf8_stdio()` を呼べば CLI と揃う(@t-19 / @t-21)。
+    """
+
+  idea backlog.first-patch-diff "手書きの .pyn に初めて patch を当てたときの差分を予告する":
+    priority: low
+    status: candidate
+    """
+    手で書かれてきた `.pyn` に初めて patch を当てると、正準化で属性がキー順に並び、子ノードの前に空行が入る。外部プロジェクトでは、中身の変更 2 行に対して差分が 114 行になった。仕様どおり(attrs はキー昇順、@t-19)だが、`pyn check` が「正準形ではない(次の patch で整形される)」と知らせるだけでも、利用者は整形だけのコミットを先に切れる。
+    """
+
+  idea backlog.pypi "PyPI に出すか決める":
+    priority: low
+    status: candidate
+    """
+    いまは `pip install git+https://github.com/dataclock-jp/pyn.git` で入れる(@t-20)。PyPI の `pyn` という名前は、2026-10 時点で配布物が見つからなかった(名前が登録済みかどうかは未確認)。出すなら `README.md` の英語の説明を厚くし、タグからの自動公開を CI に足す。
+    """
+
 artifacts artifacts "成果物":
   group artifacts.existing "既存":
     """
@@ -996,8 +1034,9 @@ artifacts artifacts "成果物":
     - `editors/vscode/` — シンタックスハイライト
     - `samples/auth-spec.pyn` — 実物のサンプル
     - `retired-ids.txt` — 意図的に廃止した ID の記録
-    - `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid
-    - `.github/workflows/ci.yml` — テスト + 生成物の追従 + ID 消失検出
+    - `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging
+    - `pyproject.toml` — pip で入れるための定義(@t-20)
+    - `.github/workflows/ci.yml` — テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ
     """
 
   group artifacts.planned "予定":
