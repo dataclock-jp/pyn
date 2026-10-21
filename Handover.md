@@ -1,6 +1,6 @@
 # 引継ぎ — Synthesis from HTML and JSON
 
-*Synthesis from HTML and JSON / 最終更新 2026-10-22(t-20 まで完了。pip で入れられるようにした)*
+*Synthesis from HTML and JSON / 最終更新 2026-10-22(t-21 まで完了。CLI の書き出しを LF に揃えた)*
 
 > このファイルは Handover.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.handover_to_pyn`
 
@@ -14,7 +14,7 @@
 - `cli_usage`: `"python -m pyn {json|a|b|html|md|check|repair|patch} <file> [-o OUT]"`
 - `code_size`: `"pyn/ 2684行 + tools/ 319行 + tests/ 2056行(本体は標準ライブラリのみ)"`
 - `comment_policy`: `"# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)"`
-- `console_note`: `"CLI は標準出力・標準エラーも常に UTF-8 で書く(ファイル出力と同じ。t-19)。PYTHONIOENCODING の指定は不要"`
+- `console_note`: `"CLI は標準出力・標準エラーも常に UTF-8・LF で書く(ファイル出力と同じ。t-19 / t-21)。PYTHONIOENCODING の指定は不要"`
 - `created`: `2026-08-26`
 - `docs_command`: `"python -m tools.build_docs [--check]"`
 - `dogfooding_note`: `"Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)"`
@@ -24,7 +24,7 @@
 - `id_policy`: `"ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)"`
 - `install_command`: `"pip install git+https://github.com/dataclock-jp/pyn.git"`
 - `language`: `ja`
-- `last_session`: `"2026-10-22(t-20 まで完了。pip で入れられるようにした)"`
+- `last_session`: `"2026-10-22(t-21 まで完了。CLI の書き出しを LF に揃えた)"`
 - `license`: `"MIT(LICENSE)"`
 - `project`: `"Synthesis from HTML and JSON"`
 - `prose_dialect_doc`: `"docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"`
@@ -36,7 +36,7 @@
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
 - `tag`: `v1.0`
 - `test_command`: `"python -m pytest tests -q"`
-- `tests_passing`: `702`
+- `tests_passing`: `709`
 
 **このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。
 
@@ -64,7 +64,7 @@
 <sub>`section` `readme-start`</sub>
 
 ```bash
-python -m pytest tests -q                    # 702 passed を確認
+python -m pytest tests -q                    # 709 passed を確認
 python -m pyn check Handover.pyn             # 往復・参照・schema の検証
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 ```
@@ -75,7 +75,7 @@ python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 
 > `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。
 
-**予定していたタスクは全部終わっています(t-01〜t-20)。** 未解決の問いもありません。
+**予定していたタスクは全部終わっています(t-01〜t-21)。** 未解決の問いもありません。
 いま何をするかは [着手候補](#backlog) にまとめてあります。経緯を追いたいときは [これまでの経緯(セッション単位)](#history)、
 判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。
 
@@ -284,7 +284,7 @@ spec auth "認証システム仕様":       # Type id "title": → ノード宣�
 - ID 規律を機械で支える二段構え([ID 規律を機械で支える(採番 + 消失検出)](#t-17)): `pyn id` で採番し、`tools/check_ids` で「一度振った ID が消えていないか」を CI で見張る
 - **テスト 679 件。**
 
-### <a id="history.s6"></a>第6セッション — 外部での実運用と公開(t-18 / t-19 / public / t-20)
+### <a id="history.s6"></a>第6セッション — 外部での実運用と公開(t-18 / t-19 / public / t-20 / t-21)
 
 <sub>`session` `history.s6`</sub>
 
@@ -297,7 +297,8 @@ spec auth "認証システム仕様":       # Type id "title": → ノード宣�
 - 公開前に、外部プロジェクト名・個人のハンドル・ローカルパスを**全履歴から**消した(`git filter-repo`)。push 済みの履歴は HEAD で直しても消えないため、リポジトリを作り直し、旧リポジトリは private のまま別名で保管している。**コミットの SHA はこのセッションより前のものもすべて変わった**(タグ `v1.0` も付け直し)。それ以前の clone は履歴がつながらないので clone し直すこと
 - `dataclock-jp/pyn` を **public** にした
 - 続けて、pip で入れられるようにした([pip で入れられるようにする(pyproject.toml)](#t-20))。インストールした環境で `pyn check` が schema ファイルを見つけられない穴があり、CI に「リポジトリの外で動かす」ジョブを足して塞いだ
-- **テスト 702 件。**
+- CLI の書き出しを OS によらず LF にした([CLI の書き出しを OS によらず LF にする](#t-21))。Windows では CRLF になっていた
+- **テスト 709 件。**
 
 ## <a id="d-00"></a>HTML vs JSON はトレードオフではなくレイヤーの違い
 
@@ -974,6 +975,24 @@ CLI は標準出力・標準エラーを**常に UTF-8 で書く**(`pyn/cli.py` 
 
 テスト 702 件(+6)。
 
+### <a id="t-21"></a>CLI の書き出しを OS によらず LF にする
+
+<sub>`task` `t-21`</sub>
+
+- `depends`: `t-20`
+- `est`: `0.5h`
+- `status`: `done`
+
+`Path.write_text` の既定はテキストモードなので、Windows では `-o` / `patch` / `id` の書き出しも標準出力も改行が CRLF になっていた。このリポジトリの `.gitattributes` は「生成物をバイトで比較するテストがあるので LF に統一する」としており、git が LF に揃えるので実害は出ていなかったが、コミットのたびに「CRLF will be replaced by LF」の警告が出ていた。そういう設定の無いリポジトリで pyn を使うと、触っていない行まで差分になる。
+
+#### <a id="t-21.result"></a>結果
+
+<sub>`result` `t-21.result`</sub>
+
+CLI のファイル書き出しを `write_text()`(UTF-8・`newline="\n"`)に集め、標準出力・標準エラーも `use_utf8_stdio()` で改行を変換しないようにした。`pyn a doc.pyn > out.pyn` は `-o` と同じバイト列になる。CRLF の入力を patch / id で書き直すと LF に揃う。リポジトリ保守用の `tools/`(handover_to_pyn / build_docs / build_schema)も同じく LF で書く。
+
+テストは書き出したファイルと標準出力のバイト列に `\r` が無いことを見る(Linux では元から通るので、Windows で修正前に落ちることを確かめた)。CI の install ジョブでも、Windows で `pyn a … -o` の結果に `\r` が無いことを確かめる。バージョンは 1.1.1。テスト 709 件(+7)。
+
 ## <a id="questions"></a>未解決の問い
 
 <sub>`questions` `questions`</sub>
@@ -1056,18 +1075,18 @@ s-02 で『純装飾は素通し』と決めたが、表・コードブロック
 <sub>`actions` `actions`</sub>
 
 - `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)
-- `python -m pytest tests -q` が 702 passed になることを確認する
+- `python -m pytest tests -q` が 709 passed になることを確認する
 - この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`
   (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)
 - ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)
 - 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す
-- 予定タスクは完了(t-01〜t-20)。次に何をするかは [着手候補](#backlog)
+- 予定タスクは完了(t-01〜t-21)。次に何をするかは [着手候補](#backlog)
 
 ## <a id="backlog"></a>着手候補
 
 <sub>`backlog` `backlog`</sub>
 
-予定していた t-01〜t-20 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして [実装計画](#plan) に足すこと。
+予定していた t-01〜t-21 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして [実装計画](#plan) に足すこと。
 
 ### <a id="backlog.readme"></a>README.md を射影として足す
 

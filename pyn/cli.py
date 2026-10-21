@@ -41,18 +41,29 @@ def load(path: Path) -> dict:
     return parse(text)
 
 
+def write_text(path: Path, text: str) -> None:
+    """ファイルへ書く。UTF-8、改行は常に LF(t-21)。
+
+    `Path.write_text` の既定はテキストモードなので、Windows では改行が CRLF に
+    変わる。.pyn も生成物も LF を前提にしており(リポジトリの .gitattributes も
+    eol=lf)、OS によって書き出すバイト列が変わると差分や比較が狂う。
+    """
+    path.write_text(text, encoding="utf-8", newline="\n")
+
+
 def use_utf8_stdio() -> None:
-    """標準出力・標準エラーを UTF-8 に固定する(-o のファイル出力と同じ)。
+    """標準出力・標準エラーを UTF-8・LF に固定する(-o のファイル出力と同じ)。
 
     Windows ではパイプやリダイレクト先がロケール既定(cp932)になり、`⇄` や `—` の
     ような cp932 に無い文字で UnicodeEncodeError になる。エージェントは出力を必ず
     パイプで受けるので、これは「たまに化ける」ではなく「確実に落ちる」経路だった。
     `pyn a doc.pyn > out.pyn` の結果が UTF-8 でないと、そのまま読み戻せないことにもなる。
+    改行も変換しない(t-21)。リダイレクトした結果が -o と同じバイト列になるように。
     """
     for stream in (sys.stdout, sys.stderr):
         reconfigure = getattr(stream, "reconfigure", None)
         if reconfigure is not None:
-            reconfigure(encoding="utf-8")
+            reconfigure(encoding="utf-8", newline="\n")
 
 
 #: 警告に並べるコメント行の最大数(それ以上は件数だけ出す)
@@ -165,7 +176,7 @@ def main(argv=None) -> int:
                   file=sys.stderr)
             return 0
         target = args.out or args.path
-        target.write_text(assigned_text, encoding="utf-8")
+        write_text(target, assigned_text)
         print(f"assigned {len(assigned)} ids -> {target}", file=sys.stderr)
         return 0
 
@@ -207,7 +218,7 @@ def main(argv=None) -> int:
                       file=sys.stderr)
                 return 0
             warn_dropped_comments(args.path, args.out)
-            args.out.write_text(out, encoding="utf-8")
+            write_text(args.out, out)
             print(f"patched {args.out}  (projection={projection})", file=sys.stderr)
             return 0
 
@@ -247,7 +258,7 @@ def main(argv=None) -> int:
         return 1
 
     if args.out:
-        args.out.write_text(out, encoding="utf-8")
+        write_text(args.out, out)
         print(f"wrote {args.out}", file=sys.stderr)
     else:
         sys.stdout.write(out)

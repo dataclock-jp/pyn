@@ -484,3 +484,62 @@ def test_cli_stdout_is_utf8_even_on_cp932_pipe(tmp_path, action):
     )
     assert proc.returncode == 0, proc.stderr
     assert "⇄" in proc.stdout and "—" in proc.stdout
+
+
+LF_SRC = 'spec s "仕様":\n  k: v\n\n  task t1 "一":\n    est: 3d\n'
+
+
+@pytest.mark.parametrize("action", ["a", "b", "json", "md", "html"])
+def test_cli_writes_lf_to_files(tmp_path, action):
+    """-o の書き出しは OS によらず LF(t-21)。Windows の既定のままだと CRLF になる。"""
+    src = tmp_path / "doc.pyn"
+    src.write_bytes(LF_SRC.encode("utf-8"))
+    dest = tmp_path / f"out.{action}"
+
+    proc = subprocess.run(
+        [sys.executable, "-m", "pyn", action, str(src), "-o", str(dest)],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert b"\r" not in dest.read_bytes()
+
+
+def test_cli_patch_and_id_write_lf(tmp_path):
+    """上書きする patch と id も LF。CRLF の入力も LF に揃う(t-21)。"""
+    src = tmp_path / "doc.pyn"
+    src.write_bytes(LF_SRC.replace("\n", "\r\n").encode("utf-8"))
+    ops = tmp_path / "ops.json"
+    ops.write_text(json.dumps(
+        [{"op": "set_attr", "id": "t1", "key": "est", "value": "5d"}]
+    ), encoding="utf-8")
+
+    proc = subprocess.run(
+        [sys.executable, "-m", "pyn", "patch", str(src), "--ops", str(ops)],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert b"\r" not in src.read_bytes()
+
+    draft = tmp_path / "draft.pyn"
+    draft.write_bytes('spec s "仕様":\r\n  task "下書き":\r\n'.encode("utf-8"))
+    proc = subprocess.run(
+        [sys.executable, "-m", "pyn", "id", str(draft)],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert b"\r" not in draft.read_bytes()
+
+
+def test_cli_stdout_is_lf(tmp_path):
+    """標準出力も改行を変換しない。`pyn a doc.pyn > out.pyn` が -o と同じバイト列になる(t-21)。"""
+    src = tmp_path / "doc.pyn"
+    src.write_bytes(LF_SRC.encode("utf-8"))
+    dest = tmp_path / "out.pyn"
+
+    piped = subprocess.run([sys.executable, "-m", "pyn", "a", str(src)],
+                           cwd=ROOT, capture_output=True)
+    subprocess.run([sys.executable, "-m", "pyn", "a", str(src), "-o", str(dest)],
+                   cwd=ROOT, capture_output=True, check=True)
+    assert piped.returncode == 0
+    assert b"\r" not in piped.stdout
+    assert piped.stdout == dest.read_bytes()

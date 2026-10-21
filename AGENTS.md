@@ -73,7 +73,7 @@ python -m pyn id    draft.pyn                # ID の無い宣言に採番する
 入力は `.pyn` でも `.json` でもよい(同じ文書の別の射影なので)。
 このリポジトリの外で使うなら `pip install git+https://github.com/dataclock-jp/pyn.git` で入れ、`python -m pyn` の代わりに `pyn` と打てる。このリポジトリの中では、作業中のコードが使われるよう `python -m pyn` を使うこと。
 **そのアクションが読まないフラグを渡すとエラーで止まる**(終了コード 2)。効かないフラグを黙って無視すると、`patch --dry-run` のような「防いだつもり」がそのまま上書きになるため。
-標準出力・標準エラーも**常に UTF-8** で書く(ファイル出力と同じ)。`pyn a doc.pyn > out.pyn` はそのまま読み戻せる。
+標準出力・標準エラーも**常に UTF-8・LF** で書く(ファイル出力と同じ。改行は OS によらず LF)。`pyn a doc.pyn > out.pyn` はそのまま読み戻せる。
 
 ### <a id="ag-edit"></a>文書を書き換える方法
 

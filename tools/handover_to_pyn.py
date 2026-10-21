@@ -83,7 +83,7 @@ def main(argv=None) -> int:
 
     for path, text in produced.items():
         path.parent.mkdir(exist_ok=True)
-        path.write_text(text, encoding="utf-8")
+        path.write_text(text, encoding="utf-8", newline="\n")
 
     print(f"OK  nodes={sum(1 for _ in index_by_id(doc))}")
     for path in produced:

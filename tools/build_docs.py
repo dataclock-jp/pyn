@@ -51,7 +51,7 @@ def main(argv=None) -> int:
                 stale.append(target)
             continue
 
-        path.write_text(expected, encoding="utf-8")
+        path.write_text(expected, encoding="utf-8", newline="\n")
         print(f"wrote {target}  ({source} から)")
 
     if args.check:

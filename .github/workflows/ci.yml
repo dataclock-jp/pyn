@@ -93,3 +93,6 @@ jobs:
           pyn check "${{ github.workspace }}/samples/auth-spec.pyn"
           pyn check "${{ github.workspace }}/Handover.pyn"
           pyn md "${{ github.workspace }}/samples/auth-spec.pyn" -o out.md
+          # t-21: 書き出しは OS によらず LF(Windows の既定のままだと CRLF になる)
+          pyn a "${{ github.workspace }}/samples/auth-spec.pyn" -o out.pyn
+          python -c "import sys; sys.exit(b'\r' in open('out.pyn', 'rb').read())"

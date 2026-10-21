@@ -36,7 +36,7 @@ def main(argv=None) -> int:
         return 1
 
     SCHEMA_PATH.parent.mkdir(exist_ok=True)
-    SCHEMA_PATH.write_text(expected, encoding="utf-8")
+    SCHEMA_PATH.write_text(expected, encoding="utf-8", newline="\n")
     print(f"wrote {SCHEMA_PATH}")
     return 0
 
