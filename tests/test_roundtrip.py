@@ -209,6 +209,28 @@ def test_empty_document():
     assert to_pyn_b(empty) == ""
 
 
+def test_projection_a_separates_child_nodes_with_blank_line():
+    """子ノードの前に空行。宣言の直後に来る最初の子だけは詰める(t-19)。"""
+    text = (
+        'spec s "仕様":\n'
+        "  k: v\n"
+        "\n"
+        "  section a:\n"
+        "    group g:\n"
+        "      item i1:\n"
+        "\n"
+        "      item i2:\n"
+        "\n"
+        '  section b "B":\n'
+        '    """\n'
+        "    本文\n"
+        '    """\n'
+        "\n"
+        "    item i3:\n"
+    )
+    assert to_pyn_a(parse(text)) == text
+
+
 def test_minimal_node():
     doc = parse("task t1:\n")
     assert doc == {"pyn": "1.0", "root": [{"id": "t1", "type": "task"}]}

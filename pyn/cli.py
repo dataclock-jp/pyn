@@ -41,6 +41,20 @@ def load(path: Path) -> dict:
     return parse(text)
 
 
+def use_utf8_stdio() -> None:
+    """標準出力・標準エラーを UTF-8 に固定する(-o のファイル出力と同じ)。
+
+    Windows ではパイプやリダイレクト先がロケール既定(cp932)になり、`⇄` や `—` の
+    ような cp932 に無い文字で UnicodeEncodeError になる。エージェントは出力を必ず
+    パイプで受けるので、これは「たまに化ける」ではなく「確実に落ちる」経路だった。
+    `pyn a doc.pyn > out.pyn` の結果が UTF-8 でないと、そのまま読み戻せないことにもなる。
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(encoding="utf-8")
+
+
 #: 警告に並べるコメント行の最大数(それ以上は件数だけ出す)
 COMMENT_PREVIEW = 3
 
@@ -61,7 +75,7 @@ def warn_dropped_comments(path: Path, destination: Path | None) -> None:
     where = "入力を上書きするので失われます" if destination == path \
         else "出力には含まれません"
     print(f"警告: # コメント {len(found)} 行は正準形に保存されないため、{where}"
-          f"(d-01 / t-14)", file=sys.stderr)
+          f"(d-02 / t-14)", file=sys.stderr)
     for line_no, raw in found[:COMMENT_PREVIEW]:
         print(f"  line {line_no}: {raw.strip()}", file=sys.stderr)
     if len(found) > COMMENT_PREVIEW:
@@ -104,6 +118,7 @@ def unusable_flags(args) -> list[str]:
 
 
 def main(argv=None) -> int:
+    use_utf8_stdio()
     ap = argparse.ArgumentParser(prog="pyn", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("action",

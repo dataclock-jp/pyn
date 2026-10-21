@@ -1,6 +1,6 @@
 # 引継ぎ — Synthesis from HTML and JSON
 
-*Synthesis from HTML and JSON / 最終更新 2026-08-26 夜(t-17 まで完了。引継ぎを再開可能な状態へ整理)*
+*Synthesis from HTML and JSON / 最終更新 2026-10-21(t-18 / t-19 まで完了。外部プロジェクトでの実運用で踏んだ不具合の修正)*
 
 > このファイルは Handover.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.handover_to_pyn`
 
@@ -14,7 +14,7 @@
 - `cli_usage`: `"python -m pyn {json|a|b|html|md|check|repair|patch} <file> [-o OUT]"`
 - `code_size`: `"pyn/ 2684行 + tools/ 319行 + tests/ 2056行(本体は標準ライブラリのみ)"`
 - `comment_policy`: `"# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)"`
-- `console_note`: `"Windowsのコンソールで日本語が化ける場合は PYTHONIOENCODING=utf-8 を付ける(ファイル出力は常にUTF-8)"`
+- `console_note`: `"CLI は標準出力・標準エラーも常に UTF-8 で書く(ファイル出力と同じ。t-19)。PYTHONIOENCODING の指定は不要"`
 - `created`: `2026-08-26`
 - `docs_command`: `"python -m tools.build_docs [--check]"`
 - `dogfooding_note`: `"Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)"`
@@ -23,7 +23,7 @@
 - `git`: `true`
 - `id_policy`: `"ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)"`
 - `language`: `ja`
-- `last_session`: `"2026-08-26 夜(t-17 まで完了。引継ぎを再開可能な状態へ整理)"`
+- `last_session`: `"2026-10-21(t-18 / t-19 まで完了。外部プロジェクトでの実運用で踏んだ不具合の修正)"`
 - `owner`: `alice`
 - `project`: `"Synthesis from HTML and JSON"`
 - `prose_dialect_doc`: `"docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"`
@@ -35,7 +35,7 @@
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
 - `tag`: `v1.0`
 - `test_command`: `"python -m pytest tests -q"`
-- `tests_passing`: `679`
+- `tests_passing`: `694`
 - `workdir`: `"."`
 
 **このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。
@@ -64,7 +64,7 @@
 <sub>`section` `readme-start`</sub>
 
 ```bash
-python -m pytest tests -q                    # 679 passed を確認
+python -m pytest tests -q                    # 694 passed を確認
 python -m pyn check Handover.pyn             # 往復・参照・schema の検証
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 ```
@@ -912,6 +912,29 @@ Handover.json は PYN の正準形ではなく独自形だったため、PYN へ
 
 テスト実行時の副次的な発見として、CLI を subprocess で起動するテストがこの環境(Windows / Python 3.14)で 8 件落ちていた。子プロセスのパイプ出力がロケール既定(cp932)になるため、日本語のメッセージを UTF-8 として復号した時点で `UnicodeDecodeError` となり、`proc.stdout` が None で返っていた。`conftest.py` で `PYTHONIOENCODING=utf-8` を既定にして解消した(`AGENTS.md` が利用者に案内している回避策と同じもの)。
 
+### <a id="t-19"></a>出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)
+
+<sub>`task` `t-19`</sub>
+
+- `depends`: `t-18`
+- `est`: `0.5h`
+- `status`: `done`
+
+外部プロジェクトでの実運用で、[効かないフラグを黙って無視しない(patch --dry-run を実装する)](#t-18) のあとに残っていた 2 件。
+
+- `pyn a` / `md` などを標準出力へ流すと、Windows でパイプやリダイレクトを受けたときにロケール既定(cp932)となり、`⇄` や `—` で `UnicodeEncodeError` になっていた。エージェントは出力を必ずパイプで受けるので、「たまに化ける」ではなく**確実に落ちる**。[効かないフラグを黙って無視しない(patch --dry-run を実装する)](#t-18) は dry-run で標準出力を使わないことで避けただけだった
+- 投影A は空行を持たないため、手書きの `.pyn` に patch を当てるたびに節と節のあいだの空行がすべて詰まっていた。2 行の追記に 7 箇所の空行削除が混ざり、本当の変更が埋もれる。コメント([コメント(#)は保存しない。残したい「なぜ」はデータとして書く](#d-02))と違い、警告も出ていなかった
+
+#### <a id="t-19.result"></a>結果
+
+<sub>`result` `t-19.result`</sub>
+
+CLI は標準出力・標準エラーを**常に UTF-8 で書く**(`pyn/cli.py` の `use_utf8_stdio`)。ファイル出力と同じ扱いで、`pyn a doc.pyn > out.pyn` もそのまま読み戻せる。`PYTHONIOENCODING` の案内は不要になり、[効かないフラグを黙って無視しない(patch --dry-run を実装する)](#t-18) で `conftest.py` に入れた回避策も外した(残すと、この保証が壊れてもテストが気づけない)。
+
+投影A は**子ノードの前に空行を置く**(宣言の直後に来る最初の子だけは詰める)。人が書く形と同じなので、patch の差分は変えた行だけになる。正準形は変えていないので往復([正準化の仕様と往復テストが必須](#cost-2))には触れない。この変更の適用で、`Handover.pyn` 自身にも一度だけ空行が増えた。
+
+コメントは引き続き保存しない([コメント(#)は保存しない。残したい「なぜ」はデータとして書く](#d-02))。テスト 694 件(+7)。いずれも修正前のコードで落ちることを確かめてある。
+
 ## <a id="questions"></a>未解決の問い
 
 <sub>`questions` `questions`</sub>
@@ -1048,6 +1071,17 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 - `status`: `candidate`
 
 `.pyn` は GitHub 上ではただのテキストで、diff レビュー・折りたたみ・検索補完・LSP が無い。[止揚3: 新しい『形式』ではなく新しい『射影』として定義する](#s-03) の「射影だから既存資産を継承できる」は正しいが、**継承できないもの**もこれだけ残っている。埋めるか、割り切るかは実運用の結果を見てから決める。
+
+### <a id="backlog.packaging"></a>pip で入れられるようにする(pyproject.toml)
+
+<sub>`idea` `backlog.packaging`</sub>
+
+- `priority`: `medium`
+- `status`: `candidate`
+
+外部プロジェクトの `Handover.pyn` を更新するのに、このリポジトリの clone が要った。`.pyn` は「sed で直さず `pyn patch` で書き換える」形式なので、**ツールが手元に無いことは、そのまま形式が使えないことになる**。
+
+本体は標準ライブラリのみなので、`pyproject.toml` と console script(`pyn`)を足すだけで済むはず。private リポジトリなので配布は `pip install git+...` 経由になる。
 
 ## <a id="artifacts"></a>成果物
 

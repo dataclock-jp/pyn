@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -434,3 +435,52 @@ def test_cli_refuses_flags_the_action_ignores(tmp_path, argv, spelling):
     assert proc.returncode == 2
     assert spelling in proc.stderr
     assert src.read_text(encoding="utf-8") == SRC
+
+
+def test_cli_patch_keeps_handwritten_blank_lines(tmp_path):
+    """手書きの空行が patch で詰まらない。差分は本当に変えた行だけになる(t-19)。"""
+    handwritten = (
+        'spec auth "認証システム仕様":\n'
+        "  owner: alice\n"
+        "\n"
+        '  task auth-01 "認可エンドポイント":\n'
+        "    status: todo\n"
+        "\n"
+        '  task auth-02 "トークン交換":\n'
+        '    """\n'
+        "    @auth-01 の後に着手する。\n"
+        '    """\n'
+    )
+    src = tmp_path / "doc.pyn"
+    src.write_text(handwritten, encoding="utf-8")
+    ops = tmp_path / "ops.json"
+    ops.write_text(json.dumps(
+        [{"op": "set_attr", "id": "auth-01", "key": "status", "value": "done"}]
+    ), encoding="utf-8")
+
+    proc = subprocess.run(
+        [sys.executable, "-m", "pyn", "patch", str(src), "--ops", str(ops)],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert src.read_text(encoding="utf-8") == handwritten.replace(
+        "status: todo", "status: done")
+
+
+@pytest.mark.parametrize("action", ["a", "b", "json", "md", "html"])
+def test_cli_stdout_is_utf8_even_on_cp932_pipe(tmp_path, action):
+    """cp932 のパイプへ書いても落ちない。出力は -o と同じく UTF-8(t-19)。
+
+    Windows でパイプ・リダイレクトを受けると、子プロセスの stdout はロケール既定に
+    なる。PYTHONIOENCODING=cp932 はその状況をどの OS でも再現する。
+    """
+    src = tmp_path / "doc.pyn"
+    src.write_text('spec s "往復 ⇄ 一致 — 確認":\n  k: v\n', encoding="utf-8")
+
+    proc = subprocess.run(
+        [sys.executable, "-m", "pyn", action, str(src)],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+        env={**os.environ, "PYTHONIOENCODING": "cp932"},
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert "⇄" in proc.stdout and "—" in proc.stdout

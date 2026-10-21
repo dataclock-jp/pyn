@@ -12,7 +12,7 @@
         "cli_usage": "python -m pyn {json|a|b|html|md|check|repair|patch} <file> [-o OUT]",
         "code_size": "pyn/ 2684行 + tools/ 319行 + tests/ 2056行(本体は標準ライブラリのみ)",
         "comment_policy": "# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)",
-        "console_note": "Windowsのコンソールで日本語が化ける場合は PYTHONIOENCODING=utf-8 を付ける(ファイル出力は常にUTF-8)",
+        "console_note": "CLI は標準出力・標準エラーも常に UTF-8 で書く(ファイル出力と同じ。t-19)。PYTHONIOENCODING の指定は不要",
         "created": "2026-08-26",
         "docs_command": "python -m tools.build_docs [--check]",
         "dogfooding_note": "Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)",
@@ -21,7 +21,7 @@
         "git": true,
         "id_policy": "ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)",
         "language": "ja",
-        "last_session": "2026-08-26 夜(t-17 まで完了。引継ぎを再開可能な状態へ整理)",
+        "last_session": "2026-10-21(t-18 / t-19 まで完了。外部プロジェクトでの実運用で踏んだ不具合の修正)",
         "owner": "alice",
         "project": "Synthesis from HTML and JSON",
         "prose_dialect_doc": "docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)",
@@ -33,7 +33,7 @@
         "status": "all_planned_tasks_done__ready_to_hand_over",
         "tag": "v1.0",
         "test_command": "python -m pytest tests -q",
-        "tests_passing": 679,
+        "tests_passing": 694,
         "workdir": "."
       },
       "prose": [
@@ -61,7 +61,7 @@
       "type": "section",
       "title": "30秒で再開するには",
       "prose": [
-        "```bash\npython -m pytest tests -q                    # 679 passed を確認\npython -m pyn check Handover.pyn             # 往復・参照・schema の検証\npython -m tools.handover_to_pyn              # Handover.md / .html を再生成\n```\n\n**AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。\n\nそのままAIに投げるなら:\n\n> `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。\n\n**予定していたタスクは全部終わっています(t-01〜t-17)。** 未解決の問いもありません。\nいま何をするかは @backlog にまとめてあります。経緯を追いたいときは @history、\n判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。"
+        "```bash\npython -m pytest tests -q                    # 694 passed を確認\npython -m pyn check Handover.pyn             # 往復・参照・schema の検証\npython -m tools.handover_to_pyn              # Handover.md / .html を再生成\n```\n\n**AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。\n\nそのままAIに投げるなら:\n\n> `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。\n\n**予定していたタスクは全部終わっています(t-01〜t-17)。** 未解決の問いもありません。\nいま何をするかは @backlog にまとめてあります。経緯を追いたいときは @history、\n判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。"
       ],
       "refs": [
         "backlog",
@@ -1146,6 +1146,41 @@
               ]
             }
           ]
+        },
+        {
+          "id": "t-19",
+          "type": "task",
+          "title": "出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)",
+          "attrs": {
+            "depends": [
+              "t-18"
+            ],
+            "est": "0.5h",
+            "status": "done"
+          },
+          "prose": [
+            "外部プロジェクトでの実運用で、@t-18 のあとに残っていた 2 件。\n\n- `pyn a` / `md` などを標準出力へ流すと、Windows でパイプやリダイレクトを受けたときにロケール既定(cp932)となり、`⇄` や `—` で `UnicodeEncodeError` になっていた。エージェントは出力を必ずパイプで受けるので、「たまに化ける」ではなく**確実に落ちる**。@t-18 は dry-run で標準出力を使わないことで避けただけだった\n- 投影A は空行を持たないため、手書きの `.pyn` に patch を当てるたびに節と節のあいだの空行がすべて詰まっていた。2 行の追記に 7 箇所の空行削除が混ざり、本当の変更が埋もれる。コメント(@d-02)と違い、警告も出ていなかった"
+          ],
+          "refs": [
+            "t-18",
+            "d-02"
+          ],
+          "children": [
+            {
+              "id": "t-19.result",
+              "type": "result",
+              "title": "結果",
+              "prose": [
+                "CLI は標準出力・標準エラーを**常に UTF-8 で書く**(`pyn/cli.py` の `use_utf8_stdio`)。ファイル出力と同じ扱いで、`pyn a doc.pyn > out.pyn` もそのまま読み戻せる。`PYTHONIOENCODING` の案内は不要になり、@t-18 で `conftest.py` に入れた回避策も外した(残すと、この保証が壊れてもテストが気づけない)。",
+                "投影A は**子ノードの前に空行を置く**(宣言の直後に来る最初の子だけは詰める)。人が書く形と同じなので、patch の差分は変えた行だけになる。正準形は変えていないので往復(@cost-2)には触れない。この変更の適用で、`Handover.pyn` 自身にも一度だけ空行が増えた。\n\nコメントは引き続き保存しない(@d-02)。テスト 694 件(+7)。いずれも修正前のコードで落ちることを確かめてある。"
+              ],
+              "refs": [
+                "t-18",
+                "cost-2",
+                "d-02"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -1334,6 +1369,18 @@
           ],
           "refs": [
             "s-03"
+          ]
+        },
+        {
+          "id": "backlog.packaging",
+          "type": "idea",
+          "title": "pip で入れられるようにする(pyproject.toml)",
+          "attrs": {
+            "priority": "medium",
+            "status": "candidate"
+          },
+          "prose": [
+            "外部プロジェクトの `Handover.pyn` を更新するのに、このリポジトリの clone が要った。`.pyn` は「sed で直さず `pyn patch` で書き換える」形式なので、**ツールが手元に無いことは、そのまま形式が使えないことになる**。\n\n本体は標準ライブラリのみなので、`pyproject.toml` と console script(`pyn`)を足すだけで済むはず。private リポジトリなので配布は `pip install git+...` 経由になる。"
           ]
         }
       ]
