@@ -350,3 +350,87 @@ def test_cli_patch_fails_on_dangling_ref(tmp_path):
     )
     assert proc.returncode == 1
     assert src.read_text(encoding="utf-8") == SRC  # 失敗時は書き換えない
+
+
+def test_cli_patch_dry_run_does_not_write(tmp_path):
+    """--dry-run は当ててみるだけ。原本は 1 バイトも変わらない。
+
+    patch は既定で入力を上書きするので、効かないフラグを黙って無視すると
+    「試したつもり」が上書きそのものになる。
+    """
+    src = tmp_path / "doc.pyn"
+    src.write_text(SRC, encoding="utf-8")
+    ops = tmp_path / "ops.json"
+    ops.write_text(json.dumps(
+        [{"op": "set_attr", "id": "auth-01", "key": "status", "value": "done"}]
+    ), encoding="utf-8")
+
+    proc = subprocess.run(
+        [sys.executable, "-m", "pyn", "patch", str(src), "--ops", str(ops), "--dry-run"],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert src.read_text(encoding="utf-8") == SRC
+    assert proc.stdout == ""  # 結果を見たいなら -o。dry-run は何も書かない
+    assert "--dry-run" in proc.stderr
+
+
+def test_cli_patch_dry_run_reports_failure_too(tmp_path):
+    """当たらないパッチは --dry-run でも失敗する(そのための試運転なので)。"""
+    src = tmp_path / "doc.pyn"
+    src.write_text(SRC, encoding="utf-8")
+    ops = tmp_path / "ops.json"
+    ops.write_text(json.dumps([{"op": "set_attr", "id": "no-such-id",
+                                "key": "status", "value": "done"}]), encoding="utf-8")
+
+    proc = subprocess.run(
+        [sys.executable, "-m", "pyn", "patch", str(src), "--ops", str(ops), "--dry-run"],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+    )
+    assert proc.returncode == 1
+    assert src.read_text(encoding="utf-8") == SRC
+
+
+def test_cli_dry_run_with_out_writes_nothing(tmp_path):
+    """-o と併用しても書かない。--dry-run の方が強い。
+
+    結果を見たいだけなら --dry-run を外して -o に出せばよい
+    (既存の test_cli_patch_can_switch_projection のとおり原本は触らない)。
+    """
+    src = tmp_path / "doc.pyn"
+    src.write_text(SRC, encoding="utf-8")
+    ops = tmp_path / "ops.json"
+    ops.write_text(json.dumps(
+        [{"op": "set_attr", "id": "auth-01", "key": "status", "value": "done"}]
+    ), encoding="utf-8")
+    out = tmp_path / "out.pyn"
+
+    proc = subprocess.run(
+        [sys.executable, "-m", "pyn", "patch", str(src), "--ops", str(ops),
+         "-o", str(out), "--dry-run"],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert not out.exists()
+    assert src.read_text(encoding="utf-8") == SRC
+
+
+@pytest.mark.parametrize("argv, spelling", [
+    (["check", "--dry-run"], "--dry-run"),
+    (["json", "--dry-run"], "--dry-run"),
+    (["html", "--ops", "ops.json"], "--ops"),
+    (["id", "--as", "b"], "--as"),
+    (["repair", "--no-refs"], "--no-refs"),
+])
+def test_cli_refuses_flags_the_action_ignores(tmp_path, argv, spelling):
+    """読まないフラグは黙って無視せず断る。無視は t-14 と同じ罪。"""
+    src = tmp_path / "doc.pyn"
+    src.write_text(SRC, encoding="utf-8")
+
+    proc = subprocess.run(
+        [sys.executable, "-m", "pyn", argv[0], str(src), *argv[1:]],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+    )
+    assert proc.returncode == 2
+    assert spelling in proc.stderr
+    assert src.read_text(encoding="utf-8") == SRC

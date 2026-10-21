@@ -8,6 +8,7 @@
     python -m pyn check  samples/auth-spec.pyn    # 検証のみ(往復 + 参照 + schema)
     python -m pyn repair broken.pyn               # インデント破損の診断と修復候補
     python -m pyn patch  doc.pyn --ops ops.json   # ID 宛のパッチを当てて射影を再生成
+    python -m pyn patch  doc.pyn --ops ops.json --dry-run  # 当ててみるだけ(書かない)
     python -m pyn id     draft.pyn                # ID の無い宣言に採番する(cost-1)
 
 入力は .pyn / .json のどちらでもよい(正本は同じものなので)。
@@ -67,6 +68,41 @@ def warn_dropped_comments(path: Path, destination: Path | None) -> None:
         print(f"  ... 他 {len(found) - COMMENT_PREVIEW} 行", file=sys.stderr)
 
 
+#: 各アクションが実際に読むフラグ。ここに無いフラグを渡されたら黙って無視せず断る。
+#:
+#: 無視は t-14 と同じ罪である。特に patch は既定で入力を上書きするので、効かない
+#: `--dry-run` を黙認すると「試したつもり」が上書きそのものになる(実際に起きた)。
+#: 使えないフラグは、書き換えの前に、その場で言う。
+ACCEPTED_FLAGS = {
+    "json": {"out", "no_refs"},
+    "a": {"out", "no_refs"},
+    "b": {"out", "no_refs"},
+    "html": {"out", "title", "no_refs"},
+    "md": {"out", "title", "no_refs"},
+    "check": {"no_refs"},
+    "repair": set(),
+    "patch": {"out", "no_refs", "dry_run", "ops", "as_projection"},
+    "id": {"out", "dry_run"},
+}
+
+#: 属性名 → コマンドラインでの綴り(エラーメッセージを利用者の語彙で書くため)
+FLAG_SPELLING = {
+    "out": "-o/--out",
+    "title": "--title",
+    "no_refs": "--no-refs",
+    "dry_run": "--dry-run",
+    "ops": "--ops",
+    "as_projection": "--as",
+}
+
+
+def unusable_flags(args) -> list[str]:
+    """指定されたが、そのアクションでは読まれないフラグの綴りを返す。"""
+    accepted = ACCEPTED_FLAGS[args.action]
+    return [spelling for name, spelling in FLAG_SPELLING.items()
+            if name not in accepted and getattr(args, name) not in (None, False)]
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="pyn", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -78,12 +114,19 @@ def main(argv=None) -> int:
     ap.add_argument("--no-refs", action="store_true",
                     help="未定義参照のチェックを行わない")
     ap.add_argument("--dry-run", action="store_true",
-                    help="id: 書き換えず、何が振られるかだけを出す")
+                    help="patch / id: 書き換えず、結果だけを出す")
     ap.add_argument("--ops", type=Path,
                     help="patch: 操作リスト(JSON配列)のファイル。- で標準入力")
     ap.add_argument("--as", dest="as_projection", choices=["json", "a", "b"],
                     help="patch: 出力の射影(既定は入力と同じ)")
     args = ap.parse_args(argv)
+
+    unusable = unusable_flags(args)
+    if unusable:
+        print(f"{args.action} は {', '.join(unusable)} を読みません"
+              f" — 効かないフラグを黙って無視しないためにここで止めます",
+              file=sys.stderr)
+        return 2
 
     if args.action == "id":
         # 採番はテキストのまま行う(コメントも並びも保つ)。壊れた入力は strict な
@@ -125,8 +168,10 @@ def main(argv=None) -> int:
             if args.ops is None:
                 print("patch には --ops が必要です", file=sys.stderr)
                 return 2
-            raw = sys.stdin.read() if str(args.ops) == "-"                 else args.ops.read_text(encoding="utf-8")
-            doc = apply_patch(doc, json.loads(raw))
+            raw = sys.stdin.read() if str(args.ops) == "-" \
+                else args.ops.read_text(encoding="utf-8")
+            ops = json.loads(raw)
+            doc = apply_patch(doc, ops)
             # パッチ後にリンク切れが出ていないかを必ず見る(s-02)
             if not args.no_refs:
                 validate_refs(doc)
@@ -138,6 +183,14 @@ def main(argv=None) -> int:
             out = {"json": dumps, "a": to_pyn_a, "b": to_pyn_b}[projection](doc)
             if args.out is None:
                 args.out = args.path  # パッチは既定で上書き(射影は再生成物なので)
+            if args.dry_run:
+                # 当ててみて、参照まで通ることを確かめて、何も書かずに終わる。
+                # 結果を見たいだけなら -o で別ファイルへ出せばよい(原本は触らない)ので、
+                # ここで標準出力へ流すことはしない。id --dry-run と同じ振る舞い。
+                print(f"{len(ops)} 件の操作を適用できます"
+                      f"(--dry-run のため {args.out} は書き換えていません)",
+                      file=sys.stderr)
+                return 0
             warn_dropped_comments(args.path, args.out)
             args.out.write_text(out, encoding="utf-8")
             print(f"patched {args.out}  (projection={projection})", file=sys.stderr)

@@ -1007,6 +1007,28 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <p>実装中に、番号の空きを埋める実装と「単調増加」と書いた docstring が食い違っていたので、削除された ID が別の意味で復活しないよう単調増加のほうに揃えた。</p></div>
 </section>
 </section>
+<section class="node node--task depth-1" id="t-18">
+<header class="node__head">
+<span class="badge">task</span>
+<h2 class="node__title">効かないフラグを黙って無視しない(patch --dry-run を実装する)</h2>
+<a class="node__id" href="#t-18">t-18</a>
+</header>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-11, t-14]</code></td></tr><tr><th>est</th><td><code>1h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
+<div class="prose"><p><code>--dry-run</code> は <code>id</code> でしか読まれていなかったが、argparse はどのアクションに付けても受け取るので、<code>patch --dry-run</code> は<strong>黙って無視されて入力を上書き</strong>していた。外部の利用者が実際に踏んで報告してきた。試運転のつもりの 1 回が本適用になる。</p>
+<p>これは <a class="ref" href="#t-14">コメントの位置づけを実態に合わせ、消える前に警告する</a> と同じ罪である。あそこで「コメントは黙って消さない」と決めたのと同じ理由で、読まないフラグも黙って捨ててはいけない。特に patch は既定で入力を上書きするので、<strong>防いだつもりが防げていない</strong>という最悪の形になる。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#t-14">コメントの位置づけを実態に合わせ、消える前に警告する</a></div>
+<section class="node node--result depth-2" id="t-18.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-18.result">t-18.result</a>
+</header>
+<div class="prose"><p><code>patch --dry-run</code> を実装した。当ててみて、参照解決まで確かめて、何も書かずに終わる。当たらないパッチは dry-run でも失敗する(そのための試運転なので)。結果を見たいときは <code>--dry-run</code> を外して <code>-o</code> で別ファイルへ出せばよく、原本を触らない経路は元からあった。</p>
+<p>結果を標準出力へ流す案は取り下げた。cp932 コンソールでは文書中の <code>—</code> などで <code>UnicodeEncodeError</code> になり、<strong>安全なはずのフラグが新しいクラッシュ経路になる</strong>ため。<code>id --dry-run</code> と同じく要約だけを出す。</p></div>
+<div class="prose"><p>あわせて、アクションごとに読むフラグの表(<code>ACCEPTED_FLAGS</code>)を置き、<strong>読まないフラグを渡されたら終了コード 2 で断る</strong>ようにした。<code>check --dry-run</code> も <code>html --ops</code> も、もう黙って無視されない。今回の事故は「無視」が一箇所あっただけでは済まず、同じ形の穴が<code>--ops</code> <code>--as</code> <code>--title</code> にも空いていた。</p></div>
+<div class="prose"><p>テスト実行時の副次的な発見として、CLI を subprocess で起動するテストがこの環境(Windows / Python 3.14)で 8 件落ちていた。子プロセスのパイプ出力がロケール既定(cp932)になるため、日本語のメッセージを UTF-8 として復号した時点で <code>UnicodeDecodeError</code> となり、<code>proc.stdout</code> が None で返っていた。<code>conftest.py</code> で <code>PYTHONIOENCODING=utf-8</code> を既定にして解消した(<code>AGENTS.md</code> が利用者に案内している回避策と同じもの)。</p></div>
+</section>
+</section>
 </section>
 <section class="node node--questions depth-0" id="questions">
 <header class="node__head">
