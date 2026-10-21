@@ -1,6 +1,6 @@
 # 引継ぎ — Synthesis from HTML and JSON
 
-*Synthesis from HTML and JSON / 最終更新 2026-10-21(t-18 / t-19 まで完了。外部プロジェクトでの実運用で踏んだ不具合の修正)*
+*Synthesis from HTML and JSON / 最終更新 2026-10-21(t-18 / t-19 と公開まで完了。履歴を書き換えてリポジトリを作り直した)*
 
 > このファイルは Handover.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.handover_to_pyn`
 
@@ -23,13 +23,13 @@
 - `git`: `true`
 - `id_policy`: `"ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)"`
 - `language`: `ja`
-- `last_session`: `"2026-10-21(t-18 / t-19 まで完了。外部プロジェクトでの実運用で踏んだ不具合の修正)"`
+- `last_session`: `"2026-10-21(t-18 / t-19 と公開まで完了。履歴を書き換えてリポジトリを作り直した)"`
 - `license`: `"MIT(LICENSE)"`
 - `project`: `"Synthesis from HTML and JSON"`
 - `prose_dialect_doc`: `"docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"`
 - `python`: `"3.14.3 / 標準ライブラリのみ(外部依存なし)"`
 - `regenerate_html_command`: `"python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)"`
-- `repo`: `"https://github.com/dataclock-jp/pyn(既定ブランチ main)"`
+- `repo`: `"https://github.com/dataclock-jp/pyn(public / 既定ブランチ main)"`
 - `resume_entry_point`: `"このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ"`
 - `schema_command`: `"python -m tools.build_schema [--check]"`
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
@@ -282,6 +282,20 @@ spec auth "認証システム仕様":       # Type id "title": → ノード宣�
 - 区切りとして **タグ `v1.0`** を打った
 - ID 規律を機械で支える二段構え([ID 規律を機械で支える(採番 + 消失検出)](#t-17)): `pyn id` で採番し、`tools/check_ids` で「一度振った ID が消えていないか」を CI で見張る
 - **テスト 679 件。**
+
+### <a id="history.s6"></a>第6セッション — 外部での実運用と公開(t-18 / t-19 / public)
+
+<sub>`session` `history.s6`</sub>
+
+外部プロジェクトで PYN を実際に使ってもらい([実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) の最初の例)、そこで踏んだ不具合を直したうえで、リポジトリを公開した。
+
+- `patch --dry-run` が黙って無視され、試運転のつもりで原本が上書きされていた。読まないフラグ全般を終了コード 2 で断るようにした([効かないフラグを黙って無視しない(patch --dry-run を実装する)](#t-18))
+- 標準出力が cp932 のパイプで落ちる件と、patch で手書きの空行が詰まる件を直した([出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)](#t-19))。エージェントは出力を必ずパイプで受けるので、前者は確実に落ちる経路だった
+- 見つかったのはどれも**形式ではなく CLI の不具合**で、テストは通っていた。外で使われて初めて出る種類のもの。`#` コメントが patch で消える件([コメント(#)は保存しない。残したい「なぜ」はデータとして書く](#d-02))は仕様どおりだが、手でコメントを戻す作業はこのセッションでも 2 回起きた
+- 公開の準備として `README.md`(正本 `docs/readme.pyn`)と `LICENSE`(MIT)を足した([README.md を射影として足す](#backlog.readme))
+- 公開前に、外部プロジェクト名・個人のハンドル・ローカルパスを**全履歴から**消した(`git filter-repo`)。push 済みの履歴は HEAD で直しても消えないため、リポジトリを作り直し、旧リポジトリは private のまま別名で保管している。**コミットの SHA はこのセッションより前のものもすべて変わった**(タグ `v1.0` も付け直し)。それ以前の clone は履歴がつながらないので clone し直すこと
+- `dataclock-jp/pyn` を **public** にした
+- **テスト 696 件。**
 
 ## <a id="d-00"></a>HTML vs JSON はトレードオフではなくレイヤーの違い
 
@@ -1054,6 +1068,8 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 - 生成物を手で編集する事故が起きるか(テストが検出するので数えられる)
 
 現時点で未検証なのは、**他エージェント(Codex CLI)での実運用**と、**複数人・数か月の運用**である。
+
+最初の外部運用(2026-10)で見つかったのは、形式ではなく CLI の不具合 3 件だった([効かないフラグを黙って無視しない(patch --dry-run を実装する)](#t-18) / [出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)](#t-19))。上の 3 指標はまだ測っていない。
 
 ### <a id="backlog.note-syntax"></a>保留: `##` を「直後のノードに結合する注記」にする案
 
