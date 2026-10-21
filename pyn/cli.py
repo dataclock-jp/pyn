@@ -219,7 +219,8 @@ def main(argv=None) -> int:
                 if parse(fmt(doc)) != doc:
                     print(f"NG: 投影{projection} の往復が一致しません", file=sys.stderr)
                     return 1
-            # t-10: 実装(canonicalize)だけでなく、配布物である schema にも通す
+            # t-10: 実装(canonicalize)だけでなく、配布している schema にも通す(t-20: pip で
+            # 入れた環境でも同じ schema になるよう、ファイルではなく build_schema() から作る)
             validate_schema(doc, load_schema())
             n = sum(1 for _ in iter_nodes(doc))
             src = detect_projection(args.path.read_text(encoding="utf-8")) \

@@ -17,3 +17,11 @@ Thumbs.db
 
 # Claude Code のローカル設定(環境ごとに異なる)
 .claude/settings.local.json
+
+# パッケージのビルド(pip install . / python -m build)の中間物と成果物。
+# build/ 直下は生成物(Handover.canonical.json)をコミットしているので、
+# setuptools が作る作業用ディレクトリだけを除外する。
+build/lib/
+build/bdist.*/
+dist/
+*.egg-info/

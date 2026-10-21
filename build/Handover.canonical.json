@@ -20,8 +20,9 @@
         "format_name": "PYN / 拡張子 .pyn(q-02 で確定)",
         "git": true,
         "id_policy": "ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)",
+        "install_command": "pip install git+https://github.com/dataclock-jp/pyn.git",
         "language": "ja",
-        "last_session": "2026-10-21(t-18 / t-19 と公開まで完了。履歴を書き換えてリポジトリを作り直した)",
+        "last_session": "2026-10-22(t-20 まで完了。pip で入れられるようにした)",
         "license": "MIT(LICENSE)",
         "project": "Synthesis from HTML and JSON",
         "prose_dialect_doc": "docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)",
@@ -33,7 +34,7 @@
         "status": "all_planned_tasks_done__ready_to_hand_over",
         "tag": "v1.0",
         "test_command": "python -m pytest tests -q",
-        "tests_passing": 696
+        "tests_passing": 702
       },
       "prose": [
         "**このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。\n\n書き換えは `python -m pyn patch Handover.pyn --ops ops.json` が安全です(ID 宛なので行番号がずれても当たり、失敗時は文書が変更されません)。\n\nなお `#` コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。",
@@ -60,7 +61,7 @@
       "type": "section",
       "title": "30秒で再開するには",
       "prose": [
-        "```bash\npython -m pytest tests -q                    # 696 passed を確認\npython -m pyn check Handover.pyn             # 往復・参照・schema の検証\npython -m tools.handover_to_pyn              # Handover.md / .html を再生成\n```\n\n**AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。\n\nそのままAIに投げるなら:\n\n> `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。\n\n**予定していたタスクは全部終わっています(t-01〜t-19)。** 未解決の問いもありません。\nいま何をするかは @backlog にまとめてあります。経緯を追いたいときは @history、\n判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。"
+        "```bash\npython -m pytest tests -q                    # 702 passed を確認\npython -m pyn check Handover.pyn             # 往復・参照・schema の検証\npython -m tools.handover_to_pyn              # Handover.md / .html を再生成\n```\n\n**AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。\n\nそのままAIに投げるなら:\n\n> `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。\n\n**予定していたタスクは全部終わっています(t-01〜t-20)。** 未解決の問いもありません。\nいま何をするかは @backlog にまとめてあります。経緯を追いたいときは @history、\n判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。"
       ],
       "refs": [
         "backlog",
@@ -240,16 +241,17 @@
         {
           "id": "history.s6",
           "type": "session",
-          "title": "第6セッション — 外部での実運用と公開(t-18 / t-19 / public)",
+          "title": "第6セッション — 外部での実運用と公開(t-18 / t-19 / public / t-20)",
           "prose": [
-            "外部プロジェクトで PYN を実際に使ってもらい(@backlog.trial の最初の例)、そこで踏んだ不具合を直したうえで、リポジトリを公開した。\n\n- `patch --dry-run` が黙って無視され、試運転のつもりで原本が上書きされていた。読まないフラグ全般を終了コード 2 で断るようにした(@t-18)\n- 標準出力が cp932 のパイプで落ちる件と、patch で手書きの空行が詰まる件を直した(@t-19)。エージェントは出力を必ずパイプで受けるので、前者は確実に落ちる経路だった\n- 見つかったのはどれも**形式ではなく CLI の不具合**で、テストは通っていた。外で使われて初めて出る種類のもの。`#` コメントが patch で消える件(@d-02)は仕様どおりだが、手でコメントを戻す作業はこのセッションでも 2 回起きた\n- 公開の準備として `README.md`(正本 `docs/readme.pyn`)と `LICENSE`(MIT)を足した(@backlog.readme)\n- 公開前に、外部プロジェクト名・個人のハンドル・ローカルパスを**全履歴から**消した(`git filter-repo`)。push 済みの履歴は HEAD で直しても消えないため、リポジトリを作り直し、旧リポジトリは private のまま別名で保管している。**コミットの SHA はこのセッションより前のものもすべて変わった**(タグ `v1.0` も付け直し)。それ以前の clone は履歴がつながらないので clone し直すこと\n- `dataclock-jp/pyn` を **public** にした\n- **テスト 696 件。**"
+            "外部プロジェクトで PYN を実際に使ってもらい(@backlog.trial の最初の例)、そこで踏んだ不具合を直したうえで、リポジトリを公開した。\n\n- `patch --dry-run` が黙って無視され、試運転のつもりで原本が上書きされていた。読まないフラグ全般を終了コード 2 で断るようにした(@t-18)\n- 標準出力が cp932 のパイプで落ちる件と、patch で手書きの空行が詰まる件を直した(@t-19)。エージェントは出力を必ずパイプで受けるので、前者は確実に落ちる経路だった\n- 見つかったのはどれも**形式ではなく CLI の不具合**で、テストは通っていた。外で使われて初めて出る種類のもの。`#` コメントが patch で消える件(@d-02)は仕様どおりだが、手でコメントを戻す作業はこのセッションでも 2 回起きた\n- 公開の準備として `README.md`(正本 `docs/readme.pyn`)と `LICENSE`(MIT)を足した(@backlog.readme)\n- 公開前に、外部プロジェクト名・個人のハンドル・ローカルパスを**全履歴から**消した(`git filter-repo`)。push 済みの履歴は HEAD で直しても消えないため、リポジトリを作り直し、旧リポジトリは private のまま別名で保管している。**コミットの SHA はこのセッションより前のものもすべて変わった**(タグ `v1.0` も付け直し)。それ以前の clone は履歴がつながらないので clone し直すこと\n- `dataclock-jp/pyn` を **public** にした\n- 続けて、pip で入れられるようにした(@t-20)。インストールした環境で `pyn check` が schema ファイルを見つけられない穴があり、CI に「リポジトリの外で動かす」ジョブを足して塞いだ\n- **テスト 702 件。**"
           ],
           "refs": [
             "backlog.trial",
             "t-18",
             "t-19",
             "d-02",
-            "backlog.readme"
+            "backlog.readme",
+            "t-20"
           ]
         }
       ]
@@ -1195,6 +1197,42 @@
               ]
             }
           ]
+        },
+        {
+          "id": "t-20",
+          "type": "task",
+          "title": "pip で入れられるようにする(pyproject.toml)",
+          "attrs": {
+            "depends": [
+              "t-19"
+            ],
+            "est": "1h",
+            "status": "done"
+          },
+          "prose": [
+            "@backlog.packaging の実施。`.pyn` は「sed で直さず `pyn patch` で書き換える」形式なので、ツールが手元に無いことは、そのまま形式が使えないことになる。外部プロジェクトで使うたびに、このリポジトリを clone してそこを cwd にする必要があった。"
+          ],
+          "refs": [
+            "backlog.packaging"
+          ],
+          "children": [
+            {
+              "id": "t-20.result",
+              "type": "result",
+              "title": "結果",
+              "prose": [
+                "`pyproject.toml` を足し、`pip install git+https://github.com/dataclock-jp/pyn.git` で入るようにした。`pyn` コマンド(`pyn.cli:main`)が使える。配布するのは `pyn/` だけで、`tools/` と `tests/` は含めない。依存は無し、`requires-python` は 3.11 以上、バージョンは `pyn.__version__`(1.1.0)を唯一の源にした。PyPI には出していない。",
+                "インストールした環境では `pyn check` が落ちるところだった。`load_schema()` がリポジトリ直下の `schema/canonical.schema.json` を読んでいたためである。ファイルを読むのをやめ、`build_schema()` から作るようにした。ファイルはもともとその生成物で、両者がバイト単位で一致することは `tests/test_schema.py` が強制しているので、検証の結果は変わらない(@t-10 の「配布物にも通す」はそのまま成り立つ)。",
+                "テストはリポジトリの中で動くので、この種の取りこぼしには気づけない。CI に install ジョブを足し、Ubuntu と Windows で `pip install .` してから**リポジトリの外で** `pyn check` などを動かすようにした。テストも 3.11 と 3.14 の両方で回す。",
+                "ほかに見つけたもの: description に `—` を入れていたら、Windows で `pip show pyn` が pip 自身の `UnicodeEncodeError` を出した(@t-19 と同じ種類の問題)。`PYN:` に変えた。また setuptools はビルド時に `build/` を作業場所に使うが、このリポジトリの `build/` は生成物をコミットしている場所なので、`build/lib/` などだけを `.gitignore` で除外した。",
+                "テスト 702 件(+6)。"
+              ],
+              "refs": [
+                "t-10",
+                "t-19"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -1313,7 +1351,7 @@
       "type": "actions",
       "title": "次にやること",
       "prose": [
-        "- `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)\n- `python -m pytest tests -q` が 696 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n  (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)\n- ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)\n- 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す\n- 予定タスクは完了(t-01〜t-19)。次に何をするかは @backlog"
+        "- `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)\n- `python -m pytest tests -q` が 702 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n  (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)\n- ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)\n- 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す\n- 予定タスクは完了(t-01〜t-20)。次に何をするかは @backlog"
       ],
       "refs": [
         "backlog"
@@ -1324,7 +1362,7 @@
       "type": "backlog",
       "title": "着手候補",
       "prose": [
-        "予定していた t-01〜t-19 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして @plan に足すこと。"
+        "予定していた t-01〜t-20 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして @plan に足すこと。"
       ],
       "refs": [
         "plan"
@@ -1397,10 +1435,14 @@
           "title": "pip で入れられるようにする(pyproject.toml)",
           "attrs": {
             "priority": "medium",
-            "status": "candidate"
+            "status": "done"
           },
           "prose": [
-            "外部プロジェクトの `Handover.pyn` を更新するのに、このリポジトリの clone が要った。`.pyn` は「sed で直さず `pyn patch` で書き換える」形式なので、**ツールが手元に無いことは、そのまま形式が使えないことになる**。\n\n本体は標準ライブラリのみなので、`pyproject.toml` と console script(`pyn`)を足すだけで済むはず。PyPI に出すか、少なくとも `pip install git+https://...` で入れられる形にする。"
+            "外部プロジェクトの `Handover.pyn` を更新するのに、このリポジトリの clone が要った。`.pyn` は「sed で直さず `pyn patch` で書き換える」形式なので、**ツールが手元に無いことは、そのまま形式が使えないことになる**。\n\n本体は標準ライブラリのみなので、`pyproject.toml` と console script(`pyn`)を足すだけで済むはず。PyPI に出すか、少なくとも `pip install git+https://...` で入れられる形にする。",
+            "済み(@t-20)。PyPI には出していない。"
+          ],
+          "refs": [
+            "t-20"
           ]
         }
       ]

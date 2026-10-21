@@ -678,3 +678,44 @@ clone は差し替え済み)。
 外部の名前や個人の情報は、書く前に止めるのがいちばん安い。
 
 **`dataclock-jp/pyn` は public。テスト 696 件、t-01〜t-19 完了。**
+
+---
+
+## t-20 — pip で入れられるようにする(pyproject.toml)
+
+backlog.packaging の実施です。外部プロジェクトで使うたびに、このリポジトリを clone して
+そこを cwd にする必要がありました。
+
+```bash
+pip install git+https://github.com/dataclock-jp/pyn.git
+pyn check doc.pyn
+```
+
+- `pyproject.toml`(setuptools 77 以上。`license = "MIT"` と `license-files` を使うため)
+- `pyn` コマンド = `pyn.cli:main`。配布するのは `pyn/` だけで、`tools/` と `tests/` は含めない
+- 依存なし、`requires-python >= 3.11`(3.10 では pip がはっきり断る)
+- バージョンは `pyn.__version__`(1.1.0)を唯一の源にした。PyPI には出していない
+
+### インストールすると `pyn check` が落ちるところだった
+
+`load_schema()` がリポジトリ直下の `schema/canonical.schema.json` を読んでいたため、
+pip で入れた環境ではファイルが見つかりません。ファイルを読むのをやめ、`build_schema()` から
+作るようにしました。ファイルはもともとその生成物で、両者がバイト単位で一致することは
+`tests/test_schema.py` が強制しているので、検証の結果は変わりません。
+
+テストはリポジトリの中で動くので、この種の取りこぼしには気づけません。CI に install ジョブを
+足し、Ubuntu と Windows で `pip install .` してから**リポジトリの外で** `pyn check` などを
+動かすようにしました。Windows の既定シェル(pwsh)は複数行の途中の失敗で止まらないので、
+このステップは `shell: bash` にしています。テストも 3.11 と 3.14 の両方で回します。
+
+### ほかに見つけたもの
+
+- description に `—` を入れていたら、Windows で `pip show pyn` が pip 自身の
+  `UnicodeEncodeError` を出しました(t-19 と同じ種類の問題)。`PYN:` に変えています
+- setuptools はビルド時に `build/` を作業場所に使いますが、このリポジトリの `build/` は
+  生成物をコミットしている場所です。`build/lib/` と `build/bdist.*/` だけを `.gitignore` で除外しました
+
+ローカルでは Python 3.12 の新しい venv に入れ、リポジトリの外から `pyn check`(サンプルと
+`Handover.pyn`)、cp932 のパイプでの `pyn md`、読まないフラグの拒否を確かめています。
+
+**テスト 702 件(+6)。t-01〜t-20 完了。**

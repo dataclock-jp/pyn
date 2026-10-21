@@ -160,8 +160,14 @@ def dumps_schema() -> str:
 
 
 def load_schema() -> dict:
-    """リポジトリに置かれた schema ファイルを読む(生成物の実体)。"""
-    return json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    """配布している schema を返す。
+
+    ファイル(``SCHEMA_PATH``)は読まずに ``build_schema()`` から作る。pip で
+    入れた環境にはリポジトリの ``schema/`` が無いためである(t-20)。ファイルは
+    ``build_schema()`` の生成物で、両者がバイト単位で一致することは
+    tests/test_schema.py が強制しているので、どちらに通しても結果は同じになる。
+    """
+    return json.loads(dumps_schema())
 
 
 # --------------------------------------------------------------------------

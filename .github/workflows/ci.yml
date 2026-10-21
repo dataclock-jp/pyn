@@ -14,6 +14,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # 下限(pyproject.toml の requires-python)と最新の両方で回す
+        python-version: ["3.11", "3.14"]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,7 +25,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: ${{ matrix.python-version }}
 
       # 本体は標準ライブラリのみ。pytest はテスト実行にだけ要る。
       - name: pytest を入れる
@@ -61,3 +65,31 @@ jobs:
           python -m pyn check docs/readme.pyn
         env:
           PYTHONIOENCODING: utf-8
+
+  # t-20: pip で入れたものが、リポジトリの外でそのまま動くこと。
+  # テストはリポジトリの中で動くので、schema/ のようなリポジトリ内のファイルに
+  # 頼っていても気づけない。ここではそれを外から確かめる。
+  install:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: pip で入れる
+        run: python -m pip install .
+
+      - name: リポジトリの外で pyn コマンドを動かす
+        working-directory: ${{ runner.temp }}
+        # Windows の既定(pwsh)は途中のコマンドの失敗で止まらないので bash に揃える
+        shell: bash
+        run: |
+          python -c "import pyn; print(pyn.__version__, pyn.__file__)"
+          pyn check "${{ github.workspace }}/samples/auth-spec.pyn"
+          pyn check "${{ github.workspace }}/Handover.pyn"
+          pyn md "${{ github.workspace }}/samples/auth-spec.pyn" -o out.md

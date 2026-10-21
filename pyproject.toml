@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyn"
+dynamic = ["version"]
+description = "PYN: JSON と HTML の良いとこ取りをする Python 風の文書形式。正準形 JSON に対する可逆な射影(.pyn / HTML / Markdown)"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+# 本体は標準ライブラリのみ。依存を足さないこと(s-03)。
+dependencies = []
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Natural Language :: Japanese",
+    "Topic :: Text Processing :: Markup",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+pyn = "pyn.cli:main"
+
+[project.urls]
+Repository = "https://github.com/dataclock-jp/pyn"
+
+[tool.setuptools]
+# 配布するのは本体だけ。tools/ と tests/ はこのリポジトリを保守するためのもの。
+packages = ["pyn"]
+
+[tool.setuptools.dynamic]
+version = { attr = "pyn.__version__" }

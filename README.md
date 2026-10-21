@@ -57,25 +57,28 @@ spec auth "認証システム仕様":
 
 <sub>`section` `rd-start`</sub>
 
-Python 3.11 以上が要ります。いまは PyPI に置いていないので、clone して使います。
+Python 3.11 以上が要ります。PyPI には置いていないので、GitHub から pip で入れます。
 
 ```bash
-git clone https://github.com/dataclock-jp/pyn.git
-cd pyn
-python -m pyn check samples/auth-spec.pyn    # 往復 + 参照 + schema の検証
+pip install git+https://github.com/dataclock-jp/pyn.git
+pyn check doc.pyn                   # 往復 + 参照 + schema の検証
 ```
 
+入れると `pyn` コマンドが使えます(`python -m pyn` と同じ)。外部依存はありません。
+
 ```bash
-python -m pyn json  doc.pyn          # 正準形 JSON へ
-python -m pyn a     doc.pyn          # 投影A(インデント形。人間が読む)へ
-python -m pyn b     doc.pyn          # 投影B(フラット形。行番号に依存しない)へ
-python -m pyn html  doc.pyn -o out.html
-python -m pyn md    doc.pyn -o out.md
-python -m pyn repair broken.pyn      # インデント破損の診断(自動修復はしない)
-python -m pyn id    draft.pyn        # ID の無い宣言に採番する
+pyn json  doc.pyn          # 正準形 JSON へ
+pyn a     doc.pyn          # 投影A(インデント形。人間が読む)へ
+pyn b     doc.pyn          # 投影B(フラット形。行番号に依存しない)へ
+pyn html  doc.pyn -o out.html
+pyn md    doc.pyn -o out.md
+pyn repair broken.pyn      # インデント破損の診断(自動修復はしない)
+pyn id    draft.pyn        # ID の無い宣言に採番する
 ```
 
 入力は `.pyn` でも `.json` でも構いません(同じ文書の別の射影なので)。
+
+開発に加わる場合は clone して、リポジトリの中で `python -m pyn …` と `python -m pytest tests -q` を使います。
 
 ## <a id="rd-patch"></a>AI に書き換えさせる
 
@@ -90,8 +93,8 @@ cat > ops.json <<'JSON'
   {"op": "add_prose", "id": "auth-01", "prose": "完了。次は auth-02。"}
 ]
 JSON
-python -m pyn patch doc.pyn --ops ops.json --dry-run   # 当ててみるだけ
-python -m pyn patch doc.pyn --ops ops.json             # 適用(既定で上書き)
+pyn patch doc.pyn --ops ops.json --dry-run   # 当ててみるだけ
+pyn patch doc.pyn --ops ops.json             # 適用(既定で上書き)
 ```
 
 使える操作(`set_attr` / `add` / `move` / `rename` ほか)と、エージェントに守らせる規律は `AGENTS.md` にまとめてあります。Claude Code や Codex CLI に作業させるなら、まずこれを読ませてください。
@@ -114,8 +117,8 @@ python -m pyn patch doc.pyn --ops ops.json             # 適用(既定で上書�
 
 <sub>`section` `rd-status`</sub>
 
-v1.0。仕様と実装はひととおり揃っていますが、運用実績はまだ少なく、実験的なプロジェクトです。
-未着手の候補(pip で入れられるようにする、など)は `Handover.md` の「着手候補」にあります。
+v1.1。仕様と実装はひととおり揃っていますが、運用実績はまだ少なく、実験的なプロジェクトです。
+未着手の候補は `Handover.md` の「着手候補」にあります。
 
 ## <a id="rd-license"></a>ライセンス
 
