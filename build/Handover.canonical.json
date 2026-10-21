@@ -22,19 +22,18 @@
         "id_policy": "ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)",
         "language": "ja",
         "last_session": "2026-10-21(t-18 / t-19 まで完了。外部プロジェクトでの実運用で踏んだ不具合の修正)",
-        "owner": "alice",
+        "license": "MIT(LICENSE)",
         "project": "Synthesis from HTML and JSON",
         "prose_dialect_doc": "docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)",
         "python": "3.14.3 / 標準ライブラリのみ(外部依存なし)",
         "regenerate_html_command": "python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)",
-        "repo": "https://github.com/dataclock-jp/pyn(private / 既定ブランチ main)",
+        "repo": "https://github.com/dataclock-jp/pyn(既定ブランチ main)",
         "resume_entry_point": "このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ",
         "schema_command": "python -m tools.build_schema [--check]",
         "status": "all_planned_tasks_done__ready_to_hand_over",
         "tag": "v1.0",
         "test_command": "python -m pytest tests -q",
-        "tests_passing": 694,
-        "workdir": "."
+        "tests_passing": 696
       },
       "prose": [
         "**このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。\n\n書き換えは `python -m pyn patch Handover.pyn --ops ops.json` が安全です(ID 宛なので行番号がずれても当たり、失敗時は文書が変更されません)。\n\nなお `#` コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。",
@@ -61,7 +60,7 @@
       "type": "section",
       "title": "30秒で再開するには",
       "prose": [
-        "```bash\npython -m pytest tests -q                    # 694 passed を確認\npython -m pyn check Handover.pyn             # 往復・参照・schema の検証\npython -m tools.handover_to_pyn              # Handover.md / .html を再生成\n```\n\n**AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。\n\nそのままAIに投げるなら:\n\n> `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。\n\n**予定していたタスクは全部終わっています(t-01〜t-17)。** 未解決の問いもありません。\nいま何をするかは @backlog にまとめてあります。経緯を追いたいときは @history、\n判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。"
+        "```bash\npython -m pytest tests -q                    # 696 passed を確認\npython -m pyn check Handover.pyn             # 往復・参照・schema の検証\npython -m tools.handover_to_pyn              # Handover.md / .html を再生成\n```\n\n**AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。\n\nそのままAIに投げるなら:\n\n> `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。\n\n**予定していたタスクは全部終わっています(t-01〜t-19)。** 未解決の問いもありません。\nいま何をするかは @backlog にまとめてあります。経緯を追いたいときは @history、\n判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。"
       ],
       "refs": [
         "backlog",
@@ -1299,7 +1298,7 @@
       "type": "actions",
       "title": "次にやること",
       "prose": [
-        "- `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)\n- `python -m pytest tests -q` が 679 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n  (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)\n- ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)\n- 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す\n- 予定タスクは完了(t-01〜t-17)。次に何をするかは @backlog"
+        "- `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)\n- `python -m pytest tests -q` が 696 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n  (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)\n- ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)\n- 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す\n- 予定タスクは完了(t-01〜t-19)。次に何をするかは @backlog"
       ],
       "refs": [
         "backlog"
@@ -1308,9 +1307,9 @@
     {
       "id": "backlog",
       "type": "backlog",
-      "title": "着手候補(いずれも未着手)",
+      "title": "着手候補",
       "prose": [
-        "予定していた t-01〜t-17 は完了している。ここにあるのは **まだ着手していない候補** であり、やると決まったものではない。着手するときは `task` ノードとして @plan に足すこと。"
+        "予定していた t-01〜t-19 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして @plan に足すこと。"
       ],
       "refs": [
         "plan"
@@ -1322,10 +1321,11 @@
           "title": "README.md を射影として足す",
           "attrs": {
             "priority": "low",
-            "status": "candidate"
+            "status": "done"
           },
           "prose": [
-            "GitHub のトップに説明が出ない。他の生成物と同じく `docs/readme.pyn` → `README.md` の射影として足すのが筋。`tools/build_docs.py` の `DOCS` に1行足すだけで済む。"
+            "GitHub のトップに説明が出ない。他の生成物と同じく `docs/readme.pyn` → `README.md` の射影として足すのが筋。`tools/build_docs.py` の `DOCS` に1行足すだけで済む。",
+            "済み(公開の準備として)。`docs/readme.pyn`(正本)→ `README.md`。あわせて `LICENSE`(MIT)を置いた。"
           ]
         },
         {
@@ -1380,7 +1380,7 @@
             "status": "candidate"
           },
           "prose": [
-            "外部プロジェクトの `Handover.pyn` を更新するのに、このリポジトリの clone が要った。`.pyn` は「sed で直さず `pyn patch` で書き換える」形式なので、**ツールが手元に無いことは、そのまま形式が使えないことになる**。\n\n本体は標準ライブラリのみなので、`pyproject.toml` と console script(`pyn`)を足すだけで済むはず。private リポジトリなので配布は `pip install git+...` 経由になる。"
+            "外部プロジェクトの `Handover.pyn` を更新するのに、このリポジトリの clone が要った。`.pyn` は「sed で直さず `pyn patch` で書き換える」形式なので、**ツールが手元に無いことは、そのまま形式が使えないことになる**。\n\n本体は標準ライブラリのみなので、`pyproject.toml` と console script(`pyn`)を足すだけで済むはず。PyPI に出すか、少なくとも `pip install git+https://...` で入れられる形にする。"
           ]
         }
       ]
@@ -1395,7 +1395,7 @@
           "type": "group",
           "title": "既存",
           "prose": [
-            "- `Handover.pyn` — **正本**(このファイル)\n- `Handover.md` / `Handover.html` / `build/Handover.canonical.json` — その射影(手で編集しない)\n- `PROGRESS.md` — セッションごとの作業記録(手書き。経緯の要約は @history)\n- `AGENTS.md` — エージェント向け操作ガイド(正本 `docs/agents.pyn`)。`CLAUDE.md` はその案内\n- `docs/prose-dialect.pyn` `.md` — 散文方言の仕様\n- `pyn/` — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli\n- `tools/` — handover_to_pyn, build_schema, build_docs, check_ids(いずれも `--check` あり)\n- `schema/canonical.schema.json` — `pyn/model.py` からの生成物\n- `editors/vscode/` — シンタックスハイライト\n- `samples/auth-spec.pyn` — 実物のサンプル\n- `retired-ids.txt` — 意図的に廃止した ID の記録\n- `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid\n- `.github/workflows/ci.yml` — テスト + 生成物の追従 + ID 消失検出"
+            "- `Handover.pyn` — **正本**(このファイル)\n- `Handover.md` / `Handover.html` / `build/Handover.canonical.json` — その射影(手で編集しない)\n- `PROGRESS.md` — セッションごとの作業記録(手書き。経緯の要約は @history)\n- `README.md` — リポジトリの説明(正本 `docs/readme.pyn`)。`LICENSE` は MIT\n- `AGENTS.md` — エージェント向け操作ガイド(正本 `docs/agents.pyn`)。`CLAUDE.md` はその案内\n- `docs/prose-dialect.pyn` `.md` — 散文方言の仕様\n- `pyn/` — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli\n- `tools/` — handover_to_pyn, build_schema, build_docs, check_ids(いずれも `--check` あり)\n- `schema/canonical.schema.json` — `pyn/model.py` からの生成物\n- `editors/vscode/` — シンタックスハイライト\n- `samples/auth-spec.pyn` — 実物のサンプル\n- `retired-ids.txt` — 意図的に廃止した ID の記録\n- `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid\n- `.github/workflows/ci.yml` — テスト + 生成物の追従 + ID 消失検出"
           ],
           "refs": [
             "history"

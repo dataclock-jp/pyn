@@ -24,19 +24,18 @@
 - `id_policy`: `"ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)"`
 - `language`: `ja`
 - `last_session`: `"2026-10-21(t-18 / t-19 まで完了。外部プロジェクトでの実運用で踏んだ不具合の修正)"`
-- `owner`: `alice`
+- `license`: `"MIT(LICENSE)"`
 - `project`: `"Synthesis from HTML and JSON"`
 - `prose_dialect_doc`: `"docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"`
 - `python`: `"3.14.3 / 標準ライブラリのみ(外部依存なし)"`
 - `regenerate_html_command`: `"python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)"`
-- `repo`: `"https://github.com/dataclock-jp/pyn(private / 既定ブランチ main)"`
+- `repo`: `"https://github.com/dataclock-jp/pyn(既定ブランチ main)"`
 - `resume_entry_point`: `"このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ"`
 - `schema_command`: `"python -m tools.build_schema [--check]"`
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
 - `tag`: `v1.0`
 - `test_command`: `"python -m pytest tests -q"`
-- `tests_passing`: `694`
-- `workdir`: `"."`
+- `tests_passing`: `696`
 
 **このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。
 
@@ -64,7 +63,7 @@
 <sub>`section` `readme-start`</sub>
 
 ```bash
-python -m pytest tests -q                    # 694 passed を確認
+python -m pytest tests -q                    # 696 passed を確認
 python -m pyn check Handover.pyn             # 往復・参照・schema の検証
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 ```
@@ -75,8 +74,8 @@ python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 
 > `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。
 
-**予定していたタスクは全部終わっています(t-01〜t-17)。** 未解決の問いもありません。
-いま何をするかは [着手候補(いずれも未着手)](#backlog) にまとめてあります。経緯を追いたいときは [これまでの経緯(セッション単位)](#history)、
+**予定していたタスクは全部終わっています(t-01〜t-19)。** 未解決の問いもありません。
+いま何をするかは [着手候補](#backlog) にまとめてあります。経緯を追いたいときは [これまでの経緯(セッション単位)](#history)、
 判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。
 
 ## <a id="readme-now"></a>いま何が動くか
@@ -1017,27 +1016,29 @@ s-02 で『純装飾は素通し』と決めたが、表・コードブロック
 <sub>`actions` `actions`</sub>
 
 - `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)
-- `python -m pytest tests -q` が 679 passed になることを確認する
+- `python -m pytest tests -q` が 696 passed になることを確認する
 - この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`
   (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)
 - ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)
 - 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す
-- 予定タスクは完了(t-01〜t-17)。次に何をするかは [着手候補(いずれも未着手)](#backlog)
+- 予定タスクは完了(t-01〜t-19)。次に何をするかは [着手候補](#backlog)
 
-## <a id="backlog"></a>着手候補(いずれも未着手)
+## <a id="backlog"></a>着手候補
 
 <sub>`backlog` `backlog`</sub>
 
-予定していた t-01〜t-17 は完了している。ここにあるのは **まだ着手していない候補** であり、やると決まったものではない。着手するときは `task` ノードとして [実装計画](#plan) に足すこと。
+予定していた t-01〜t-19 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして [実装計画](#plan) に足すこと。
 
 ### <a id="backlog.readme"></a>README.md を射影として足す
 
 <sub>`idea` `backlog.readme`</sub>
 
 - `priority`: `low`
-- `status`: `candidate`
+- `status`: `done`
 
 GitHub のトップに説明が出ない。他の生成物と同じく `docs/readme.pyn` → `README.md` の射影として足すのが筋。`tools/build_docs.py` の `DOCS` に1行足すだけで済む。
+
+済み(公開の準備として)。`docs/readme.pyn`(正本)→ `README.md`。あわせて `LICENSE`(MIT)を置いた。
 
 ### <a id="backlog.trial"></a>実運用で3つの指標を測る(いちばん価値が高い)
 
@@ -1081,7 +1082,7 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 
 外部プロジェクトの `Handover.pyn` を更新するのに、このリポジトリの clone が要った。`.pyn` は「sed で直さず `pyn patch` で書き換える」形式なので、**ツールが手元に無いことは、そのまま形式が使えないことになる**。
 
-本体は標準ライブラリのみなので、`pyproject.toml` と console script(`pyn`)を足すだけで済むはず。private リポジトリなので配布は `pip install git+...` 経由になる。
+本体は標準ライブラリのみなので、`pyproject.toml` と console script(`pyn`)を足すだけで済むはず。PyPI に出すか、少なくとも `pip install git+https://...` で入れられる形にする。
 
 ## <a id="artifacts"></a>成果物
 
@@ -1094,6 +1095,7 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 - `Handover.pyn` — **正本**(このファイル)
 - `Handover.md` / `Handover.html` / `build/Handover.canonical.json` — その射影(手で編集しない)
 - `PROGRESS.md` — セッションごとの作業記録(手書き。経緯の要約は [これまでの経緯(セッション単位)](#history))
+- `README.md` — リポジトリの説明(正本 `docs/readme.pyn`)。`LICENSE` は MIT
 - `AGENTS.md` — エージェント向け操作ガイド(正本 `docs/agents.pyn`)。`CLAUDE.md` はその案内
 - `docs/prose-dialect.pyn` `.md` — 散文方言の仕様
 - `pyn/` — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli
@@ -1109,4 +1111,4 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 
 <sub>`group` `artifacts.planned`</sub>
 
-なし。予定していたタスクは完了している。着手候補は [着手候補(いずれも未着手)](#backlog) を参照。
+なし。予定していたタスクは完了している。着手候補は [着手候補](#backlog) を参照。

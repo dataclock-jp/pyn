@@ -3,8 +3,8 @@
   "displayName": "PYN",
   "description": "PYN(.pyn)のシンタックスハイライト。正準形 JSON の人間向け射影を読み書きするための最小限の支援。",
   "version": "0.1.0",
-  "publisher": "alice",
-  "license": "UNLICENSED",
+  "publisher": "dataclock-jp",
+  "license": "MIT",
   "engines": { "vscode": "^1.75.0" },
   "categories": ["Programming Languages"],
   "contributes": {

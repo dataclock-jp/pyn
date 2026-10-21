@@ -26,6 +26,7 @@ DOCS = (
      "散文ブロックの Markdown 方言(PYN)"),
     ("docs/agents.pyn", "AGENTS.md",
      "AGENTS.md — AI エージェント向け操作ガイド(PYN)"),
+    ("docs/readme.pyn", "README.md", "PYN"),
 )
 
 

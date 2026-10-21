@@ -58,5 +58,6 @@ jobs:
           python -m pyn check Handover.pyn
           python -m pyn check docs/prose-dialect.pyn
           python -m pyn check docs/agents.pyn
+          python -m pyn check docs/readme.pyn
         env:
           PYTHONIOENCODING: utf-8

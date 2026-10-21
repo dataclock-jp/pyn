@@ -104,7 +104,7 @@ a{color:var(--accent)}
 <h2 class="node__title">この文書について</h2>
 <a class="node__id" href="#meta">meta</a>
 </header>
-<div class="table-wrap"><table class="attrs"><tbody><tr><th>agent_entry_point</th><td><code>&quot;AGENTS.md(正本は docs/agents.pyn)。CLAUDE.md はそこへの案内&quot;</code></td></tr><tr><th>check_command</th><td><code>&quot;python -m pyn check samples/auth-spec.pyn&quot;</code></td></tr><tr><th>ci</th><td><code>&quot;.github/workflows/ci.yml(pytest / schema 追従 / .pyn の check)&quot;</code></td></tr><tr><th>cli_usage</th><td><code>&quot;python -m pyn {json|a|b|html|md|check|repair|patch} &lt;file&gt; [-o OUT]&quot;</code></td></tr><tr><th>code_size</th><td><code>&quot;pyn/ 2684行 + tools/ 319行 + tests/ 2056行(本体は標準ライブラリのみ)&quot;</code></td></tr><tr><th>comment_policy</th><td><code>&quot;# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)&quot;</code></td></tr><tr><th>console_note</th><td><code>&quot;CLI は標準出力・標準エラーも常に UTF-8 で書く(ファイル出力と同じ。t-19)。PYTHONIOENCODING の指定は不要&quot;</code></td></tr><tr><th>created</th><td><code>2026-08-26</code></td></tr><tr><th>docs_command</th><td><code>&quot;python -m tools.build_docs [--check]&quot;</code></td></tr><tr><th>dogfooding_note</th><td><code>&quot;Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)&quot;</code></td></tr><tr><th>editor_support</th><td><code>&quot;editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)&quot;</code></td></tr><tr><th>format_name</th><td><code>&quot;PYN / 拡張子 .pyn(q-02 で確定)&quot;</code></td></tr><tr><th>git</th><td><code>true</code></td></tr><tr><th>id_policy</th><td><code>&quot;ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)&quot;</code></td></tr><tr><th>language</th><td><code>ja</code></td></tr><tr><th>last_session</th><td><code>&quot;2026-10-21(t-18 / t-19 まで完了。外部プロジェクトでの実運用で踏んだ不具合の修正)&quot;</code></td></tr><tr><th>owner</th><td><code>alice</code></td></tr><tr><th>project</th><td><code>&quot;Synthesis from HTML and JSON&quot;</code></td></tr><tr><th>prose_dialect_doc</th><td><code>&quot;docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)&quot;</code></td></tr><tr><th>python</th><td><code>&quot;3.14.3 / 標準ライブラリのみ(外部依存なし)&quot;</code></td></tr><tr><th>regenerate_html_command</th><td><code>&quot;python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)&quot;</code></td></tr><tr><th>repo</th><td><code>&quot;https://github.com/dataclock-jp/pyn(private / 既定ブランチ main)&quot;</code></td></tr><tr><th>resume_entry_point</th><td><code>&quot;このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ&quot;</code></td></tr><tr><th>schema_command</th><td><code>&quot;python -m tools.build_schema [--check]&quot;</code></td></tr><tr><th>status</th><td><code>all_planned_tasks_done__ready_to_hand_over</code></td></tr><tr><th>tag</th><td><code>v1.0</code></td></tr><tr><th>test_command</th><td><code>&quot;python -m pytest tests -q&quot;</code></td></tr><tr><th>tests_passing</th><td><code>694</code></td></tr><tr><th>workdir</th><td><code>&quot;.&quot;</code></td></tr></tbody></table></div>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>agent_entry_point</th><td><code>&quot;AGENTS.md(正本は docs/agents.pyn)。CLAUDE.md はそこへの案内&quot;</code></td></tr><tr><th>check_command</th><td><code>&quot;python -m pyn check samples/auth-spec.pyn&quot;</code></td></tr><tr><th>ci</th><td><code>&quot;.github/workflows/ci.yml(pytest / schema 追従 / .pyn の check)&quot;</code></td></tr><tr><th>cli_usage</th><td><code>&quot;python -m pyn {json|a|b|html|md|check|repair|patch} &lt;file&gt; [-o OUT]&quot;</code></td></tr><tr><th>code_size</th><td><code>&quot;pyn/ 2684行 + tools/ 319行 + tests/ 2056行(本体は標準ライブラリのみ)&quot;</code></td></tr><tr><th>comment_policy</th><td><code>&quot;# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)&quot;</code></td></tr><tr><th>console_note</th><td><code>&quot;CLI は標準出力・標準エラーも常に UTF-8 で書く(ファイル出力と同じ。t-19)。PYTHONIOENCODING の指定は不要&quot;</code></td></tr><tr><th>created</th><td><code>2026-08-26</code></td></tr><tr><th>docs_command</th><td><code>&quot;python -m tools.build_docs [--check]&quot;</code></td></tr><tr><th>dogfooding_note</th><td><code>&quot;Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)&quot;</code></td></tr><tr><th>editor_support</th><td><code>&quot;editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)&quot;</code></td></tr><tr><th>format_name</th><td><code>&quot;PYN / 拡張子 .pyn(q-02 で確定)&quot;</code></td></tr><tr><th>git</th><td><code>true</code></td></tr><tr><th>id_policy</th><td><code>&quot;ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)&quot;</code></td></tr><tr><th>language</th><td><code>ja</code></td></tr><tr><th>last_session</th><td><code>&quot;2026-10-21(t-18 / t-19 まで完了。外部プロジェクトでの実運用で踏んだ不具合の修正)&quot;</code></td></tr><tr><th>license</th><td><code>&quot;MIT(LICENSE)&quot;</code></td></tr><tr><th>project</th><td><code>&quot;Synthesis from HTML and JSON&quot;</code></td></tr><tr><th>prose_dialect_doc</th><td><code>&quot;docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)&quot;</code></td></tr><tr><th>python</th><td><code>&quot;3.14.3 / 標準ライブラリのみ(外部依存なし)&quot;</code></td></tr><tr><th>regenerate_html_command</th><td><code>&quot;python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)&quot;</code></td></tr><tr><th>repo</th><td><code>&quot;https://github.com/dataclock-jp/pyn(既定ブランチ main)&quot;</code></td></tr><tr><th>resume_entry_point</th><td><code>&quot;このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ&quot;</code></td></tr><tr><th>schema_command</th><td><code>&quot;python -m tools.build_schema [--check]&quot;</code></td></tr><tr><th>status</th><td><code>all_planned_tasks_done__ready_to_hand_over</code></td></tr><tr><th>tag</th><td><code>v1.0</code></td></tr><tr><th>test_command</th><td><code>&quot;python -m pytest tests -q&quot;</code></td></tr><tr><th>tests_passing</th><td><code>696</code></td></tr></tbody></table></div>
 <div class="prose"><p><strong>このファイルが正本(canonical)です。</strong> <code>Handover.md</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> は <code>python -m tools.handover_to_pyn</code> の生成物で、手では編集しません。</p>
 <p>書き換えは <code>python -m pyn patch Handover.pyn --ops ops.json</code> が安全です(ID 宛なので行番号がずれても当たり、失敗時は文書が変更されません)。</p>
 <p>なお <code>#</code> コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。</p></div>
@@ -131,14 +131,14 @@ a{color:var(--accent)}
 <h2 class="node__title">30秒で再開するには</h2>
 <a class="node__id" href="#readme-start">readme-start</a>
 </header>
-<div class="prose"><pre><code class="lang-bash">python -m pytest tests -q                    # 694 passed を確認
+<div class="prose"><pre><code class="lang-bash">python -m pytest tests -q                    # 696 passed を確認
 python -m pyn check Handover.pyn             # 往復・参照・schema の検証
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成</code></pre>
 <p><strong>AI に作業させるなら、まず <code>AGENTS.md</code> を読ませてください</strong>(Claude Code / Codex CLI 共通の操作ガイド。正本は <code>docs/agents.pyn</code>)。</p>
 <p>そのままAIに投げるなら:</p>
 <blockquote><p><code>Handover.pyn</code> を読んで、<code>task</code> ノードで <code>status</code> が <code>todo</code> のものから続けてください。無ければ <code>backlog</code> の候補を見てください。</p></blockquote>
-<p><strong>予定していたタスクは全部終わっています(t-01〜t-17)。</strong> 未解決の問いもありません。<br>いま何をするかは <a class="ref" href="#backlog">着手候補(いずれも未着手)</a> にまとめてあります。経緯を追いたいときは <a class="ref" href="#history">これまでの経緯(セッション単位)</a>、<br>判断の理由を知りたいときは各 <code>decision</code> / <code>synthesis</code> ノードを見てください。</p></div>
-<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補(いずれも未着手)</a><a class="chip" href="#history">これまでの経緯(セッション単位)</a></div>
+<p><strong>予定していたタスクは全部終わっています(t-01〜t-19)。</strong> 未解決の問いもありません。<br>いま何をするかは <a class="ref" href="#backlog">着手候補</a> にまとめてあります。経緯を追いたいときは <a class="ref" href="#history">これまでの経緯(セッション単位)</a>、<br>判断の理由を知りたいときは各 <code>decision</code> / <code>synthesis</code> ノードを見てください。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補</a><a class="chip" href="#history">これまでの経緯(セッション単位)</a></div>
 </section>
 <section class="node node--section depth-0" id="readme-now">
 <header class="node__head">
@@ -1161,18 +1161,18 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">次にやること</h2>
 <a class="node__id" href="#actions">actions</a>
 </header>
-<div class="prose"><ul><li><code>AGENTS.md</code> を読む(エージェントの入口。正本は <code>docs/agents.pyn</code>)</li><li><code>python -m pytest tests -q</code> が 679 passed になることを確認する</li><li>この文書を書き換えるときは <code>python -m pyn patch Handover.pyn --ops ops.json</code></li></ul>
+<div class="prose"><ul><li><code>AGENTS.md</code> を読む(エージェントの入口。正本は <code>docs/agents.pyn</code>)</li><li><code>python -m pytest tests -q</code> が 696 passed になることを確認する</li><li>この文書を書き換えるときは <code>python -m pyn patch Handover.pyn --ops ops.json</code></li></ul>
 <p>  (ops はシェルの文字列ではなく <strong>ファイル</strong> で渡すこと。バッククォートが展開されて本文が壊れる)</p>
-<ul><li>ID を書かずに下書きしてよい。<code>python -m pyn id</code> が採番する(ただし一度振った ID は変えない)</li><li>正本を直したら <code>python -m tools.handover_to_pyn</code> / <code>build_schema</code> / <code>build_docs</code> で生成物を作り直す</li><li>予定タスクは完了(t-01〜t-17)。次に何をするかは <a class="ref" href="#backlog">着手候補(いずれも未着手)</a></li></ul></div>
-<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補(いずれも未着手)</a></div>
+<ul><li>ID を書かずに下書きしてよい。<code>python -m pyn id</code> が採番する(ただし一度振った ID は変えない)</li><li>正本を直したら <code>python -m tools.handover_to_pyn</code> / <code>build_schema</code> / <code>build_docs</code> で生成物を作り直す</li><li>予定タスクは完了(t-01〜t-19)。次に何をするかは <a class="ref" href="#backlog">着手候補</a></li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補</a></div>
 </section>
 <section class="node node--backlog depth-0" id="backlog">
 <header class="node__head">
 <span class="badge">backlog</span>
-<h2 class="node__title">着手候補(いずれも未着手)</h2>
+<h2 class="node__title">着手候補</h2>
 <a class="node__id" href="#backlog">backlog</a>
 </header>
-<div class="prose"><p>予定していた t-01〜t-17 は完了している。ここにあるのは <strong>まだ着手していない候補</strong> であり、やると決まったものではない。着手するときは <code>task</code> ノードとして <a class="ref" href="#plan">実装計画</a> に足すこと。</p></div>
+<div class="prose"><p>予定していた t-01〜t-19 は完了している。ここにあるのは <strong>候補</strong> であり、やると決まったものではない。着手するときは <code>task</code> ノードとして <a class="ref" href="#plan">実装計画</a> に足すこと。</p></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#plan">実装計画</a></div>
 <section class="node node--idea depth-1" id="backlog.readme">
 <header class="node__head">
@@ -1180,8 +1180,9 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">README.md を射影として足す</h2>
 <a class="node__id" href="#backlog.readme">backlog.readme</a>
 </header>
-<div class="table-wrap"><table class="attrs"><tbody><tr><th>priority</th><td><code>low</code></td></tr><tr><th>status</th><td><code>candidate</code></td></tr></tbody></table></div>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>priority</th><td><code>low</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
 <div class="prose"><p>GitHub のトップに説明が出ない。他の生成物と同じく <code>docs/readme.pyn</code> → <code>README.md</code> の射影として足すのが筋。<code>tools/build_docs.py</code> の <code>DOCS</code> に1行足すだけで済む。</p></div>
+<div class="prose"><p>済み(公開の準備として)。<code>docs/readme.pyn</code>(正本)→ <code>README.md</code>。あわせて <code>LICENSE</code>(MIT)を置いた。</p></div>
 </section>
 <section class="node node--idea depth-1" id="backlog.trial">
 <header class="node__head">
@@ -1222,7 +1223,7 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 </header>
 <div class="table-wrap"><table class="attrs"><tbody><tr><th>priority</th><td><code>medium</code></td></tr><tr><th>status</th><td><code>candidate</code></td></tr></tbody></table></div>
 <div class="prose"><p>外部プロジェクトの <code>Handover.pyn</code> を更新するのに、このリポジトリの clone が要った。<code>.pyn</code> は「sed で直さず <code>pyn patch</code> で書き換える」形式なので、<strong>ツールが手元に無いことは、そのまま形式が使えないことになる</strong>。</p>
-<p>本体は標準ライブラリのみなので、<code>pyproject.toml</code> と console script(<code>pyn</code>)を足すだけで済むはず。private リポジトリなので配布は <code>pip install git+...</code> 経由になる。</p></div>
+<p>本体は標準ライブラリのみなので、<code>pyproject.toml</code> と console script(<code>pyn</code>)を足すだけで済むはず。PyPI に出すか、少なくとも <code>pip install git+https://...</code> で入れられる形にする。</p></div>
 </section>
 </section>
 <section class="node node--artifacts depth-0" id="artifacts">
@@ -1237,7 +1238,7 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">既存</h2>
 <a class="node__id" href="#artifacts.existing">artifacts.existing</a>
 </header>
-<div class="prose"><ul><li><code>Handover.pyn</code> — <strong>正本</strong>(このファイル)</li><li><code>Handover.md</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> — その射影(手で編集しない)</li><li><code>PROGRESS.md</code> — セッションごとの作業記録(手書き。経緯の要約は <a class="ref" href="#history">これまでの経緯(セッション単位)</a>)</li><li><code>AGENTS.md</code> — エージェント向け操作ガイド(正本 <code>docs/agents.pyn</code>)。<code>CLAUDE.md</code> はその案内</li><li><code>docs/prose-dialect.pyn</code> <code>.md</code> — 散文方言の仕様</li><li><code>pyn/</code> — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli</li><li><code>tools/</code> — handover_to_pyn, build_schema, build_docs, check_ids(いずれも <code>--check</code> あり)</li><li><code>schema/canonical.schema.json</code> — <code>pyn/model.py</code> からの生成物</li><li><code>editors/vscode/</code> — シンタックスハイライト</li><li><code>samples/auth-spec.pyn</code> — 実物のサンプル</li><li><code>retired-ids.txt</code> — 意図的に廃止した ID の記録</li><li><code>tests/</code> — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid</li><li><code>.github/workflows/ci.yml</code> — テスト + 生成物の追従 + ID 消失検出</li></ul></div>
+<div class="prose"><ul><li><code>Handover.pyn</code> — <strong>正本</strong>(このファイル)</li><li><code>Handover.md</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> — その射影(手で編集しない)</li><li><code>PROGRESS.md</code> — セッションごとの作業記録(手書き。経緯の要約は <a class="ref" href="#history">これまでの経緯(セッション単位)</a>)</li><li><code>README.md</code> — リポジトリの説明(正本 <code>docs/readme.pyn</code>)。<code>LICENSE</code> は MIT</li><li><code>AGENTS.md</code> — エージェント向け操作ガイド(正本 <code>docs/agents.pyn</code>)。<code>CLAUDE.md</code> はその案内</li><li><code>docs/prose-dialect.pyn</code> <code>.md</code> — 散文方言の仕様</li><li><code>pyn/</code> — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli</li><li><code>tools/</code> — handover_to_pyn, build_schema, build_docs, check_ids(いずれも <code>--check</code> あり)</li><li><code>schema/canonical.schema.json</code> — <code>pyn/model.py</code> からの生成物</li><li><code>editors/vscode/</code> — シンタックスハイライト</li><li><code>samples/auth-spec.pyn</code> — 実物のサンプル</li><li><code>retired-ids.txt</code> — 意図的に廃止した ID の記録</li><li><code>tests/</code> — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid</li><li><code>.github/workflows/ci.yml</code> — テスト + 生成物の追従 + ID 消失検出</li></ul></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#history">これまでの経緯(セッション単位)</a></div>
 </section>
 <section class="node node--group depth-1" id="artifacts.planned">
@@ -1246,8 +1247,8 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">予定</h2>
 <a class="node__id" href="#artifacts.planned">artifacts.planned</a>
 </header>
-<div class="prose"><p>なし。予定していたタスクは完了している。着手候補は <a class="ref" href="#backlog">着手候補(いずれも未着手)</a> を参照。</p></div>
-<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補(いずれも未着手)</a></div>
+<div class="prose"><p>なし。予定していたタスクは完了している。着手候補は <a class="ref" href="#backlog">着手候補</a> を参照。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補</a></div>
 </section>
 </section>
 </div>

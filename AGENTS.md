@@ -40,13 +40,14 @@
 | `Handover.pyn` | `Handover.md` / `Handover.html` / `build/Handover.canonical.json` |
 | `docs/prose-dialect.pyn` | `docs/prose-dialect.md` |
 | `docs/agents.pyn` | `AGENTS.md` |
+| `docs/readme.pyn` | `README.md` |
 
 再生成:
 
 ```bash
 python -m tools.handover_to_pyn    # Handover.* を作り直す
 python -m tools.build_schema       # schema を作り直す(--check で追従確認のみ)
-python -m tools.build_docs         # docs/*.md と AGENTS.md を作り直す
+python -m tools.build_docs         # docs/*.md・AGENTS.md・README.md を作り直す
 ```
 
 生成物はリポジトリにコミットされている(読めるようにするため)。
