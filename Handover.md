@@ -1,6 +1,6 @@
 # 引継ぎ — Synthesis from HTML and JSON
 
-*Synthesis from HTML and JSON / 最終更新 2026-10-22 夜(t-21 まで完了・v1.1.1。ここで終了。続きは backlog から)*
+*Synthesis from HTML and JSON / 最終更新 2026-11-15(t-22 まで完了・v1.1.1。続きは backlog から)*
 
 > このファイルは Handover.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.handover_to_pyn`
 
@@ -12,9 +12,9 @@
 - `check_command`: `"python -m pyn check samples/auth-spec.pyn"`
 - `ci`: `".github/workflows/ci.yml(pytest 3.11 / 3.14・生成物の追従・ID 消失検出・.pyn の check・install ジョブ = Ubuntu / Windows で pip install してリポジトリの外から動かす)"`
 - `cli_usage`: `"pyn {json|a|b|html|md|check|repair|patch|id} <file> [-o OUT](pip で入れた場合。このリポジトリの中では python -m pyn)"`
-- `code_size`: `"pyn/ 2776行 + tools/ 320行 + tests/ 2321行(本体は標準ライブラリのみ)"`
+- `code_size`: `"pyn/ 2776行 + tools/ 328行 + tests/ 2360行(本体は標準ライブラリのみ)"`
 - `comment_policy`: `"# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)"`
-- `console_note`: `"CLI は標準出力・標準エラーも常に UTF-8・LF で書く(ファイル出力と同じ。t-19 / t-21)。PYTHONIOENCODING の指定は不要"`
+- `console_note`: `"CLI と tools/ は標準出力・標準エラーも常に UTF-8・LF で書く(ファイル出力と同じ。t-19 / t-21 / t-22)。PYTHONIOENCODING の指定は不要"`
 - `created`: `2026-08-26`
 - `docs_command`: `"python -m tools.build_docs [--check]"`
 - `dogfooding_note`: `"Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)"`
@@ -24,7 +24,7 @@
 - `id_policy`: `"ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)"`
 - `install_command`: `"pip install git+https://github.com/dataclock-jp/pyn.git"`
 - `language`: `ja`
-- `last_session`: `"2026-10-22 夜(t-21 まで完了・v1.1.1。ここで終了。続きは backlog から)"`
+- `last_session`: `"2026-11-15(t-22 まで完了・v1.1.1。続きは backlog から)"`
 - `license`: `"MIT(LICENSE)"`
 - `project`: `"Synthesis from HTML and JSON"`
 - `prose_dialect_doc`: `"docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"`
@@ -36,7 +36,7 @@
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
 - `tag`: `v1.1.1`
 - `test_command`: `"python -m pytest tests -q"`
-- `tests_passing`: `709`
+- `tests_passing`: `713`
 - `version`: `"1.1.1(pyn.__version__ が唯一の源)"`
 
 **このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。
@@ -65,12 +65,12 @@
 <sub>`section` `readme-start`</sub>
 
 ```bash
-python -m pytest tests -q                    # 709 passed を確認
+python -m pytest tests -q                    # 713 passed を確認
 python -m pyn check Handover.pyn             # 往復・参照・schema の検証
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 ```
 
-**直近の終了点(2026-10-22 夜)**: `main` は push 済みで作業ツリーはきれい、CI は全ジョブ成功。タグ `v1.1.1` のあとに入っているのは、サンプルのコメントの直しとこの引継ぎの整理だけ。続きは [着手候補](#backlog) から選ぶ。いちばん価値が高いのは [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial)、すぐ片付く小物は [docs/*.pyn の先頭コメントを、patch のたびに手で戻さずに済むようにする](#backlog.doc-comments) と [tools/ のメッセージも UTF-8 で出す](#backlog.tools-stdio)。
+**直近の終了点(2026-11-15)**: [tools/ のメッセージも UTF-8 で出す](#t-22) を済ませた(タグ `v1.1.1` のあと。配布物には影響しないのでバージョンは据え置き)。続きは [着手候補](#backlog) から選ぶ。いちばん価値が高いのは [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、これは外部の文書を運用しないと進まない。すぐ片付く小物は [docs/*.pyn の先頭コメントを、patch のたびに手で戻さずに済むようにする](#backlog.doc-comments)、リポジトリの中だけで進められるのは [手書きの .pyn に初めて patch を当てたときの差分を予告する](#backlog.first-patch-diff)。
 
 **AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。
 
@@ -78,7 +78,7 @@ python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 
 > `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。
 
-**予定していたタスクは全部終わっています(t-01〜t-21)。** 未解決の問いもありません。
+**予定していたタスクは全部終わっています(t-01〜t-22)。** 未解決の問いもありません。
 いま何をするかは [着手候補](#backlog) にまとめてあります。経緯を追いたいときは [これまでの経緯(セッション単位)](#history)、
 判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。
 
@@ -305,6 +305,15 @@ spec auth "認証システム仕様":       # Type id "title": → ノード宣�
 - 続けて、pip で入れられるようにした([pip で入れられるようにする(pyproject.toml)](#t-20))。インストールした環境で `pyn check` が schema ファイルを見つけられない穴があり、CI に「リポジトリの外で動かす」ジョブを足して塞いだ
 - CLI の書き出しを OS によらず LF にした([CLI の書き出しを OS によらず LF にする](#t-21))。Windows では CRLF になっていた
 - **テスト 709 件。**
+
+### <a id="history.s7"></a>第7セッション — 小物の片付け(t-22)
+
+<sub>`session` `history.s7`</sub>
+
+[着手候補](#backlog) から、すぐ片付く小物を実施した。
+
+- `tools/` のメッセージも UTF-8・LF で出すようにした([tools/ のメッセージも UTF-8 で出す](#t-22))。再開時の状態確認で、実際に化けていた
+- **テスト 713 件。**
 
 ## <a id="d-00"></a>HTML vs JSON はトレードオフではなくレイヤーの違い
 
@@ -999,6 +1008,24 @@ CLI のファイル書き出しを `write_text()`(UTF-8・`newline="\n"`)に集�
 
 テストは書き出したファイルと標準出力のバイト列に `\r` が無いことを見る(Linux では元から通るので、Windows で修正前に落ちることを確かめた)。CI の install ジョブでも、Windows で `pyn a … -o` の結果に `\r` が無いことを確かめる。バージョンは 1.1.1。テスト 709 件(+7)。
 
+### <a id="t-22"></a>tools/ のメッセージも UTF-8 で出す
+
+<sub>`task` `t-22`</sub>
+
+- `depends`: `t-19`, `t-21`
+- `est`: `0.5h`
+- `status`: `done`
+
+[tools/ のメッセージも UTF-8 で出す](#backlog.tools-stdio) の実施。`tools/` の 4 本は pyn の CLI を通らないので、[出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)](#t-19) の「標準出力は常に UTF-8」が届いていなかった。Windows でパイプを受けると `OK  生成物は追従しています` のような日本語のメッセージが cp932 で出て、UTF-8 として読む側(エージェント・CI のログ)では化けていた。第7セッションの再開時に、状態確認の出力で実際に化けているのを見て着手した。
+
+#### <a id="t-22.result"></a>結果
+
+<sub>`result` `t-22.result`</sub>
+
+handover_to_pyn / build_docs / build_schema / check_ids の `main()` の先頭で `pyn.cli.use_utf8_stdio()` を呼ぶようにした。標準出力・標準エラーは CLI と同じく UTF-8・LF になる。
+
+テストは `tests/test_tools.py`。[出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)](#t-19) と同じく `PYTHONIOENCODING=cp932` でパイプの状況をどの OS でも再現し、各ツールの出力が UTF-8 として読めて CR を含まないことを見る。修正前に 4 件とも落ちることを確かめた。tools/ は配布物に含まれないのでバージョンは上げていない。
+
 ## <a id="questions"></a>未解決の問い
 
 <sub>`questions` `questions`</sub>
@@ -1081,7 +1108,7 @@ s-02 で『純装飾は素通し』と決めたが、表・コードブロック
 <sub>`actions` `actions`</sub>
 
 - `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)
-- `python -m pytest tests -q` が 709 passed になることを確認する
+- `python -m pytest tests -q` が 713 passed になることを確認する
 - この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`
   (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)
 - ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)
@@ -1090,7 +1117,7 @@ s-02 で『純装飾は素通し』と決めたが、表・コードブロック
 - 修正前のコードでテストが落ちるかを確かめるとき、`git stash` は使わない(戻したあとに修正が消えたことがある。PROGRESS.md の t-19)。`git worktree add` で HEAD を別の場所に出して回す
 - バックスラッシュを含む書き換えはシェルを通さない(コマンドの中で `\\` と書くと `\` に減ってから渡ることがある。PROGRESS.md の t-21)。置換スクリプトも ops もファイルに書く
 - `docs/agents.pyn` / `docs/readme.pyn` に patch を当てると先頭の `#` コメントが消えるので、当てたあとに戻す([docs/*.pyn の先頭コメントを、patch のたびに手で戻さずに済むようにする](#backlog.doc-comments))
-- 予定タスクは完了(t-01〜t-21)。次に何をするかは [着手候補](#backlog)
+- 予定タスクは完了(t-01〜t-22)。次に何をするかは [着手候補](#backlog)
 
 ## <a id="backlog"></a>着手候補
 
@@ -1171,9 +1198,11 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 <sub>`idea` `backlog.tools-stdio`</sub>
 
 - `priority`: `low`
-- `status`: `candidate`
+- `status`: `done`
 
 `tools/` の 4 本は pyn の CLI を通らないので、Windows では標準出力が今も cp932 になる。日本語は表示が化けるだけで、今のところ落ちる経路は見つかっていない。`pyn.cli.use_utf8_stdio()` を呼べば CLI と揃う([出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)](#t-19) / [CLI の書き出しを OS によらず LF にする](#t-21))。
+
+済み([tools/ のメッセージも UTF-8 で出す](#t-22))。
 
 ### <a id="backlog.first-patch-diff"></a>手書きの .pyn に初めて patch を当てたときの差分を予告する
 
@@ -1208,12 +1237,12 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 - `AGENTS.md` — エージェント向け操作ガイド(正本 `docs/agents.pyn`)。`CLAUDE.md` はその案内
 - `docs/prose-dialect.pyn` `.md` — 散文方言の仕様
 - `pyn/` — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli
-- `tools/` — handover_to_pyn, build_schema, build_docs, check_ids(いずれも `--check` あり)
+- `tools/` — handover_to_pyn, build_schema, build_docs, check_ids(いずれも `--check` あり。出力は CLI と同じく UTF-8・LF)
 - `schema/canonical.schema.json` — `pyn/model.py` からの生成物
 - `editors/vscode/` — シンタックスハイライト
 - `samples/auth-spec.pyn` — 実物のサンプル
 - `retired-ids.txt` — 意図的に廃止した ID の記録
-- `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging
+- `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging / tools
 - `pyproject.toml` — pip で入れるための定義([pip で入れられるようにする(pyproject.toml)](#t-20))
 - `.github/workflows/ci.yml` — テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ
 

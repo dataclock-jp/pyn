@@ -24,6 +24,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from pyn.cli import use_utf8_stdio  # noqa: E402
 from pyn import index_by_id, parse  # noqa: E402
 from pyn.errors import PynError  # noqa: E402
 
@@ -59,6 +60,7 @@ def retired_ids() -> set[str]:
 
 
 def main(argv=None) -> int:
+    use_utf8_stdio()  # CLI と同じく UTF-8・LF で書く(t-19 / t-21)
     ap = argparse.ArgumentParser(prog="check_ids", description=__doc__)
     ap.add_argument("--base", default="HEAD",
                     help="比較元のリビジョン(既定: HEAD = 作業ツリーと比べる)")

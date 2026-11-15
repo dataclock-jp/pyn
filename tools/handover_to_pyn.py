@@ -21,6 +21,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from pyn.cli import use_utf8_stdio  # noqa: E402
 from pyn import (  # noqa: E402
     dumps,
     index_by_id,
@@ -63,6 +64,7 @@ def outputs(doc: dict) -> dict[Path, str]:
 
 
 def main(argv=None) -> int:
+    use_utf8_stdio()  # CLI と同じく UTF-8・LF で書く(t-19 / t-21)
     ap = argparse.ArgumentParser(prog="handover_to_pyn", description=__doc__)
     ap.add_argument("--check", action="store_true",
                     help="書き出さず、追従しているかだけを見る")

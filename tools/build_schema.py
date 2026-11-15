@@ -15,10 +15,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from pyn.cli import use_utf8_stdio  # noqa: E402
 from pyn.schema import SCHEMA_PATH, dumps_schema  # noqa: E402
 
 
 def main(argv=None) -> int:
+    use_utf8_stdio()  # CLI と同じく UTF-8・LF で書く(t-19 / t-21)
     ap = argparse.ArgumentParser(prog="build_schema", description=__doc__)
     ap.add_argument("--check", action="store_true",
                     help="書き出さず、追従しているかだけを見る")
