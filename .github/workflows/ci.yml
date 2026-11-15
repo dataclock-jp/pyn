@@ -63,6 +63,9 @@ jobs:
           python -m pyn check docs/prose-dialect.pyn
           python -m pyn check docs/agents.pyn
           python -m pyn check docs/readme.pyn
+          python -m pyn check docs/knowledge-intake.pyn
+          python -m pyn.knowledge check samples/intake/knowledge.pyn
+          python -m pyn.guardrails scan-tree samples
         env:
           PYTHONIOENCODING: utf-8
 
@@ -93,6 +96,8 @@ jobs:
           pyn check "${{ github.workspace }}/samples/auth-spec.pyn"
           pyn check "${{ github.workspace }}/Handover.pyn"
           pyn md "${{ github.workspace }}/samples/auth-spec.pyn" -o out.md
+          # t-26: 拡張モジュールも配布物に入っている(終了コード 0 = approvable)
+          python -m pyn.intake evaluate "${{ github.workspace }}/samples/intake/knowledge.pyn" "${{ github.workspace }}/samples/intake/proposal-observation.pyn" -o report.json
           # t-21: 書き出しは OS によらず LF(Windows の既定のままだと CRLF になる)
           pyn a "${{ github.workspace }}/samples/auth-spec.pyn" -o out.pyn
           python -c "import sys; sys.exit(b'\r' in open('out.pyn', 'rb').read())"

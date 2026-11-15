@@ -3,19 +3,20 @@ meta meta "この文書について":
   check_command: "python -m pyn check samples/auth-spec.pyn"
   ci: ".github/workflows/ci.yml(pytest 3.11 / 3.14・生成物の追従・ID 消失検出・.pyn の check・install ジョブ = Ubuntu / Windows で pip install してリポジトリの外から動かす)"
   cli_usage: "pyn {json|a|b|html|md|check|repair|patch|id} <file> [-o OUT](pip で入れた場合。このリポジトリの中では python -m pyn)"
-  code_size: "pyn/ 2776行 + tools/ 340行 + tests/ 2379行(本体は標準ライブラリのみ)"
+  code_size: "pyn/ 4495行 + tools/ 348行 + tests/ 3596行(本体は標準ライブラリのみ)"
   comment_policy: "# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)"
   console_note: "CLI と tools/ は標準出力・標準エラーも常に UTF-8・LF で書く(ファイル出力と同じ。t-19 / t-21 / t-22)。PYTHONIOENCODING の指定は不要"
   created: 2026-08-26
   docs_command: "python -m tools.build_docs [--check]"
   dogfooding_note: "Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)"
   editor_support: "editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)"
+  extensions: "python -m pyn.{knowledge|xrefs|impact|guardrails|intake}(本体の構文・正準形は変えない拡張。仕様は docs/knowledge-intake.md ほか)"
   format_name: "PYN / 拡張子 .pyn(q-02 で確定)"
   git: true
   id_policy: "ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)"
   install_command: "pip install git+https://github.com/dataclock-jp/pyn.git"
   language: ja
-  last_session: "2026-11-15(t-23 まで完了・v1.1.1。続きは backlog から)"
+  last_session: "2026-11-15(t-26 まで完了・v1.2.0。続きは backlog から)"
   license: "MIT(LICENSE)"
   project: "Synthesis from HTML and JSON"
   prose_dialect_doc: "docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"
@@ -25,10 +26,10 @@ meta meta "この文書について":
   resume_entry_point: "このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ"
   schema_command: "python -m tools.build_schema [--check]"
   status: all_planned_tasks_done__ready_to_hand_over
-  tag: v1.1.1
+  tag: v1.2.0
   test_command: "python -m pytest tests -q"
-  tests_passing: 843
-  version: "1.1.1(pyn.__version__ が唯一の源)"
+  tests_passing: 886
+  version: "1.2.0(pyn.__version__ が唯一の源)"
   """
   **このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。
 
@@ -52,12 +53,12 @@ goal goal "JSONとHTMLの良いとこ取りをする、Python風の文書形式 
 section readme-start "30秒で再開するには":
   """
   ```bash
-  python -m pytest tests -q                    # 719 passed を確認
+  python -m pytest tests -q                    # 886 passed を確認
   python -m pyn check Handover.pyn             # 往復・参照・schema の検証
   python -m tools.handover_to_pyn              # Handover.md / .html を再生成
   ```
 
-  **直近の終了点(2026-11-15)**: @t-22 と @t-23 を済ませた(タグ `v1.1.1` のあと。どちらも配布物には影響しないのでバージョンは据え置き)。続きは @backlog から選ぶ。いちばん価値が高いのは @backlog.trial で、これは外部の文書を運用しないと進まない。リポジトリの中だけで進められるのは @backlog.first-patch-diff。
+  **直近の終了点(2026-11-15)**: **v1.2.0**。ChatGPT の実験版(知識関係・文書間リンク・影響分析・安全検査)を検証して取り込み(@t-24)、HTML の危険なリンクを塞ぎ(@t-25)、記憶する前に審査する `pyn.intake` を足した(@t-26 / @d-03)。続きは @backlog から選ぶ。いちばん価値が高いのは引き続き @backlog.trial で、`pyn.intake` の誤検出・見逃しもそこで測れる。設計上の宿題は @backlog.approval-auth。
 
   **AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。
 
@@ -65,7 +66,7 @@ section readme-start "30秒で再開するには":
 
   > `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。
 
-  **予定していたタスクは全部終わっています(t-01〜t-23)。** 未解決の問いもありません。
+  **予定していたタスクは全部終わっています(t-01〜t-26)。** 未解決の問いもありません。
   いま何をするかは @backlog にまとめてあります。経緯を追いたいときは @history、
   判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。
   """
@@ -277,13 +278,17 @@ history history "これまでの経緯(セッション単位)":
     - **テスト 709 件。**
     """
 
-  session history.s7 "第7セッション — 小物の片付け(t-22 / t-23)":
+  session history.s7 "第7セッション — 小物の片付けと、知識管理の拡張(t-22〜t-26 / v1.2.0)":
     """
-    @backlog から、すぐ片付く 2 件を実施した。
+    前半は @backlog から、すぐ片付く小物を 2 件。後半は、オーナーが ChatGPT と議論しながら作らせた拡張を検証して取り込み、その先の段階まで進めた。
 
-    - `tools/` のメッセージも UTF-8・LF で出すようにした(@t-22)。再開時の状態確認で、実際に化けていた
-    - `docs/*.pyn` の先頭の `#` コメントをやめ、同じ注記を `tools/build_docs` が生成物の先頭に出すようにした(@t-23)。patch のたびに手で戻す作業がなくなった
-    - **テスト 719 件。**
+    - `tools/` のメッセージも UTF-8・LF で出すようにした(@t-22)
+    - `docs/*.pyn` の先頭の `#` コメントをやめ、同じ注記を生成物の先頭に出すようにした(@t-23)
+    - ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込んだ(@t-24)。本体には手を入れない追加だったが、Windows で落ちるテストと cp932 で落ちる CLI があった
+    - ChatGPT が指摘した「HTML 射影が `javascript:` のリンクを出す」を直した(@t-25)
+    - 記憶する前に出典・信頼性・既存知識との矛盾を評価し、承認されたものだけを反映する `pyn.intake` を実装した(@t-26 / @d-03)。バージョンを **1.2.0** に上げた
+    - 作業中、シェル経由の置換でバックスラッシュが減る事故が 2 回起きた(1 回は NUL 文字がソースに入った)。@actions に書いてある注意は正しく、置換はファイルに書いたスクリプトで行うこと
+    - **テスト 886 件。**
     """
 
 decision d-00 "HTML vs JSON はトレードオフではなくレイヤーの違い":
@@ -519,6 +524,33 @@ decision d-02 "コメント(#)は保存しない。残したい「なぜ」は�
   rule d-02.rule "原則":
     """
     > 残したい理由は散文ブロックか `note:` 属性へ。`#` は消えてよいものだけに使う
+    """
+
+decision d-03 "知識は記憶する前に審査し、承認されたものだけを反映する":
+  """
+  関連: @s-meta @d-02 @t-24 @t-26
+  """
+
+  conclusion d-03.conclusion "結論":
+    """
+    AI が知識体系へ直接書き足す経路を作らない。新しい知識は提案(`proposal`)として出し、`pyn.intake` が出典・信頼性・既存知識との矛盾を評価する。人が承認した記録が今の提案と知識体系に一致するときだけ、ID 宛のパッチとして全か無かで反映する。構文は増やさず、約束事はすべてノードと属性で書く。
+    """
+
+  rationale d-03.rationale "根拠":
+    """
+    - 記憶することと、記憶から学ぶことは別である(ChatGPT との議論の要点)。検証の無い蓄積は、出典の無い主張や食い違う主張を黙って積み上げる
+    - 評価は決定的で説明可能にする。所見は規則名と ID だけで出し、本文を写さない(ログも攻撃文の通り道になりうる)
+    - 提案者に出典の信頼性を自己申告させない。信頼性を決めるのは人で、台帳(`source` ノード)に書く
+    - 承認記録をダイジェストで提案と知識体系に結びつける。承認後の差し替えも、前提の崩れた承認の使い回しも、反映の直前に断れる
+    - 反映を `pyn patch` と同じ経路にすれば、全か無か・参照切れの検出・射影の再生成をそのまま継承できる(@s-03 と同じ考え方)
+    """
+
+  rejected d-03.rejected "見送った案":
+    """
+    - 出典を `source:` 属性で書く(ChatGPT 版のサンプル): relation の `source`(辺の始点)と名前がぶつかる。出典は `cites` に分けた
+    - 提案の一部だけを取り込む: 候補どうしが参照し合うと部分集合が壊れやすい。提案をひとまとまりにし、分けたいなら提案を分ける
+    - 方針の範囲内(approvable)なら自動で反映する: 「承認されたものだけ」に反する。approvable でも承認記録を求める
+    - 承認記録に署名を付ける: 鍵の管理がこの層の責任を超える。承認者が人であることはホスト側で担保し、着手候補に残した(@backlog.approval-auth)
     """
 
 constraint cost "止揚が要求する代償(受け入れ済み)":
@@ -956,6 +988,31 @@ plan plan "実装計画":
       Markdown 射影は従来どおり素通し(表示の安全はビューア側の責任)。テストは `tests/test_render_html_links.py`。修正前に 7 件落ちることを確かめた。テスト 843 件(+12)。
       """
 
+  task t-26 "知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する":
+    depends: [t-24, t-25]
+    est: 3h
+    status: done
+    """
+    ChatGPT が v0.3 の最後に「次の段階で最も重要」と挙げたもの。AI が新しい知識を記憶する前に、出典・信頼性・既存知識との矛盾を評価し、承認された内容だけを知識体系へ反映する。これで記憶の蓄積から、検証を伴う知識の発展へ進める。設計判断は @d-03。
+    """
+
+    result t-26.result "結果":
+      """
+      `pyn/intake.py` に `evaluate`(評価だけ。何も書き換えない)→ `approve`(人が承認記録を作る)→ `admit`(承認記録が今の状態と一致すれば反映)の 3 段を実装した。判定は `reject` / `review` / `approvable` の 3 つで、CLI の終了コードは 4 / 3 / 0。所見の一覧と意味は `docs/knowledge-intake.md`(正本 `docs/knowledge-intake.pyn`)。
+      """
+      """
+      - **出典**: 主張は `cites` で `source` ノード(出典台帳)を指す。出典の無い主張と`blocked` の出典は却下、信頼性が `min_reliability` 未満なら review、`confidence` が出典の信頼性を超えたら review
+      - **矛盾**: `subject` / `predicate` / `value` が同じ主語・述語で値の違う既存の主張と(有効期間が重なるときだけ)、提案の中どうしでも突き合わせる。既存知識への `contradicts` / `supersedes` と、もう有効でない知識への依拠も review
+      - **安全**: 候補のタイトル・散文・属性を `pyn.guardrails` に通し、当たれば却下。CLI は提案ファイルを読む前に検査する。`policy` / `intake` / `proposal` 型は提案から足せない
+      - **承認と反映**: 承認記録は提案と知識体系の SHA-256 を持ち、`admit` は直前に評価し直して一致しなければ断る。反映すると、足したノードに `admitted_via` を、`policy` の `ledger` の下に`intake` ノード(承認者・時刻・所見・提案の散文)を残す
+      """
+      """
+      あわせて `pyn.knowledge` が `cites` と `source` の `reliability` を検証するようにし、`pyn.impact` は `cites` も依存として追う(出典の信頼性が変われば、引用した主張が再検討の候補に上がる)。ChatGPT 版のサンプル `agent-memory.pyn` も `cites` に移した。サンプルは `samples/intake/`(知識体系 1 本と、approvable / review になる提案 2 本)。
+      """
+      """
+      バージョンは 1.2.0。CI の install ジョブで、入れた環境から `pyn.intake` が動くことも確かめる。テスト 886 件(+43)。
+      """
+
 questions questions "未解決の問い":
   question q-01 "実装言語は? (Python / TypeScript)":
     default_if_no_answer: Python
@@ -1015,7 +1072,7 @@ questions questions "未解決の問い":
 actions actions "次にやること":
   """
   - `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)
-  - `python -m pytest tests -q` が 719 passed になることを確認する
+  - `python -m pytest tests -q` が 886 passed になることを確認する
   - この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`
     (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)
   - ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)
@@ -1023,7 +1080,8 @@ actions actions "次にやること":
   - pyn を直して外部で使うときは、push してから `pip install --user --upgrade --force-reinstall "git+https://github.com/dataclock-jp/pyn.git"` で入れ直す
   - 修正前のコードでテストが落ちるかを確かめるとき、`git stash` は使わない(戻したあとに修正が消えたことがある。PROGRESS.md の t-19)。`git worktree add` で HEAD を別の場所に出して回す
   - バックスラッシュを含む書き換えはシェルを通さない(コマンドの中で `\\` と書くと `\` に減ってから渡ることがある。PROGRESS.md の t-21)。置換スクリプトも ops もファイルに書く
-  - 予定タスクは完了(t-01〜t-23)。次に何をするかは @backlog
+  - `pyn.intake` で管理している知識体系には直接書き足さない。提案を書いて `evaluate` し、承認(`approve`)は人に任せる(@d-03)
+  - 予定タスクは完了(t-01〜t-26)。次に何をするかは @backlog
   """
 
 backlog backlog "着手候補":
@@ -1055,6 +1113,9 @@ backlog backlog "着手候補":
     """
     """
     最初の外部運用(2026-10)で見つかったのは、形式ではなく CLI の不具合 3 件だった(@t-18 / @t-19)。上の 3 指標はまだ測っていない。
+    """
+    """
+    1.2.0 で知識管理の拡張(@t-24 / @t-26)が入ったので、測る対象が増えた。`pyn.intake` を実際の知識体系で回し、誤って却下・review にしたもの(誤検出)と、通してしまった誤り(見逃し)を数えれば、審査の規則を数字で直せる。
     """
 
   idea backlog.note-syntax "保留: `##` を「直後のノードに結合する注記」にする案":
@@ -1117,6 +1178,20 @@ backlog backlog "着手候補":
     いまは `pip install git+https://github.com/dataclock-jp/pyn.git` で入れる(@t-20)。PyPI の `pyn` という名前は、2026-10 時点で配布物が見つからなかった(名前が登録済みかどうかは未確認)。出すなら `README.md` の英語の説明を厚くし、タグからの自動公開を CI に足す。
     """
 
+  idea backlog.approval-auth "承認記録の真正性を担保するか決める":
+    priority: medium
+    status: candidate
+    """
+    `pyn.intake` の承認記録は JSON で、作ったのが本当に人かどうかは保証していない(@d-03)。エージェントが `approve` を実行できる環境では「承認されたものだけ」が形だけになる。署名(鍵は人だけが持つ)を付けるか、承認をホスト側の UI に限るかを、実運用の形を見て決める。
+    """
+
+  idea backlog.ci-node20 "CI の action を Node.js 24 対応の版へ上げる":
+    priority: low
+    status: candidate
+    """
+    `actions/checkout@v4` と `actions/setup-python@v5` が Node.js 20 向けで、CI のログに非推奨の警告が出ている(今は Node.js 24 で強制的に動かされている)。`ubuntu-latest` も Ubuntu 26 へ移行中。動かなくなる前に版を上げる。
+    """
+
 artifacts artifacts "成果物":
   group artifacts.existing "既存":
     """
@@ -1126,13 +1201,14 @@ artifacts artifacts "成果物":
     - `README.md` — リポジトリの説明(正本 `docs/readme.pyn`)。`LICENSE` は MIT
     - `AGENTS.md` — エージェント向け操作ガイド(正本 `docs/agents.pyn`)。`CLAUDE.md` はその案内
     - `docs/prose-dialect.pyn` `.md` — 散文方言の仕様
-    - `pyn/` — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli
+    - `docs/knowledge-intake.pyn` `docs/knowledge-memory.pyn` `docs/cross-file-links.pyn` `docs/impact-security.pyn`(と `.md`)— 知識管理の拡張の仕様(@t-24 / @t-26)
+    - `pyn/` — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli(本体)/ knowledge, xrefs, impact, guardrails, intake(拡張。`python -m pyn.<名前>`)
     - `tools/` — handover_to_pyn, build_schema, build_docs, check_ids(いずれも `--check` あり。出力は CLI と同じく UTF-8・LF)
     - `schema/canonical.schema.json` — `pyn/model.py` からの生成物
     - `editors/vscode/` — シンタックスハイライト
-    - `samples/auth-spec.pyn` — 実物のサンプル
+    - `samples/auth-spec.pyn` — 実物のサンプル。`samples/intake/` `samples/agent-memory.pyn` `samples/xrefs/` `samples/impact/` は拡張のサンプル
     - `retired-ids.txt` — 意図的に廃止した ID の記録
-    - `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging / tools
+    - `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging / tools / knowledge / xrefs / impact / guardrails / intake / extensions_cli / render_html_links
     - `pyproject.toml` — pip で入れるための定義(@t-20)
     - `.github/workflows/ci.yml` — テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ
     """

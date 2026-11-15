@@ -109,6 +109,8 @@ pyn patch doc.pyn --ops ops.json             # 適用(既定で上書き)
 |---|---|
 | `AGENTS.md` | エージェント向けの操作ガイド。正本と生成物の対応、パッチの操作一覧、書くときの制約 |
 | `docs/prose-dialect.md` | 散文ブロックに書いてよい Markdown の範囲 |
+| `docs/knowledge-intake.md` | 知識の取り込み審査。記憶する前に出典・信頼性・矛盾を評価し、承認されたものだけを反映する(実験的) |
+| `docs/knowledge-memory.md` `docs/cross-file-links.md` `docs/impact-security.md` | 型付きの知識関係・文書間リンク・変更の影響分析と安全検査(実験的) |
 | `Handover.md` | 設計に至った経緯と、受け入れた代償。判断の理由はすべてここにある |
 | `samples/auth-spec.pyn` | 実物のサンプル |
 | `editors/vscode/` | VS Code 用のシンタックスハイライト |
@@ -119,7 +121,8 @@ pyn patch doc.pyn --ops ops.json             # 適用(既定で上書き)
 
 <sub>`section` `rd-status`</sub>
 
-v1.1。仕様と実装はひととおり揃っていますが、運用実績はまだ少なく、実験的なプロジェクトです。
+v1.2。仕様と実装はひととおり揃っていますが、運用実績はまだ少なく、実験的なプロジェクトです。
+1.2 では、AI の知識管理に使う拡張(型付きの関係・文書間リンク・影響分析・安全検査・取り込み審査)を足しました。どれも本体の構文と正準形は変えていません。
 未着手の候補は `Handover.md` の「着手候補」にあります。
 
 ## <a id="rd-license"></a>ライセンス

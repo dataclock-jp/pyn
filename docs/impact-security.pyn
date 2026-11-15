@@ -1,5 +1,5 @@
 spec impact-security "PYN知識更新の影響分析と安全検査（実験版v0.3）":
-  compatibility: "PYN 1.1.1 / v0.2 overlay"
+  compatibility: "PYN 1.2.0"
   implementation: [pyn/impact.py, pyn/guardrails.py]
   status: experimental
   """

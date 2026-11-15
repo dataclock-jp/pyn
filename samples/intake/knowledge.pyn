@@ -1,0 +1,64 @@
+spec kb "実験知識ベース":
+  """
+  承認された知識だけを置く知識体系。新しい知識はここへ直接書き足さず、
+  提案(proposal)として出して `python -m pyn.intake` で評価・承認・反映する。
+  """
+
+  policy kb-policy "取り込みの方針":
+    ledger: kb-ledger
+    min_reliability: 0.7
+    unverified_reliability: 0.2
+    """
+    出典の信頼性が 0.7 未満の主張は人が確認する。台帳に無い出典は 0.2 とみなす。
+    """
+
+  section kb-sources "出典台帳":
+    """
+    信頼性(reliability)を決めるのは人。提案の中で出典の信頼性を書いても採用しない。
+    """
+
+    source src-lab "研究室の計測ログ":
+      reliability: 0.9
+      status: trusted
+
+    source src-handbook "化学便覧":
+      reliability: 0.95
+      status: trusted
+
+    source src-forum "匿名掲示板":
+      reliability: 0.2
+      status: unverified
+
+    source src-hoax "誤情報として確認済みのサイト":
+      reliability: 0
+      status: blocked
+
+  section kb-claims "知識":
+    claim c-boil-1atm "1 気圧での水の沸点は 100℃":
+      cites: src-handbook
+      confidence: 0.95
+      predicate: boiling_point_c_at_1atm
+      subject: water
+      value: 100
+
+    observation o-lab-01 "標高 1500m で水は約 95℃ で沸騰した":
+      cites: src-lab
+      confidence: 0.85
+      occurred_at: "2026-11-10T10:00:00+09:00"
+      predicate: boiling_point_c_at_1500m
+      subject: water
+      value: 95
+
+    hypothesis h-pressure "沸点は気圧が下がると下がる":
+      cites: src-handbook
+      confidence: 0.9
+
+    relation r-01 "高地の観測が仮説を支持":
+      kind: supports
+      source: o-lab-01
+      target: h-pressure
+
+  section kb-ledger "取り込みの記録":
+    """
+    承認されて反映された提案の記録(`intake` ノード)がここに並ぶ。
+    """

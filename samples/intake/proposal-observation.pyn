@@ -1,0 +1,21 @@
+proposal p-2026-11-15-01 "標高 3000m での沸点の観測":
+  into: kb-claims
+  proposed_by: "agent:example"
+  recorded_at: "2026-11-15T10:00:00+09:00"
+  """
+  高地での観測を 1 件足し、既存の仮説 `h-pressure` を支持する関係を張る。
+  出典は台帳にある研究室の計測ログで、既存の知識とも食い違わない。
+  """
+
+  observation o-lab-02 "標高 3000m で水は約 90℃ で沸騰した":
+    cites: src-lab
+    confidence: 0.85
+    occurred_at: "2026-11-14T09:00:00+09:00"
+    predicate: boiling_point_c_at_3000m
+    subject: water
+    value: 90
+
+  relation r-02 "3000m の観測も仮説を支持":
+    kind: supports
+    source: o-lab-02
+    target: h-pressure

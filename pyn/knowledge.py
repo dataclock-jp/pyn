@@ -122,6 +122,24 @@ def _validated(doc: dict) -> tuple[list[dict], list[dict]]:
             if not isinstance(evidence, str) or evidence not in by_id:
                 raise KnowledgeError(f"{ident}: unknown evidence_id {evidence!r}")
 
+        # 出典は `cites` に書く(t-26)。relation の `source` は辺の始点なので、
+        # 出典に同じ名前を使うと意味がぶつかる。cites は `source` 型のノードを指す。
+        if "cites" in attrs:
+            cited = attrs["cites"] if isinstance(attrs["cites"], list) else [attrs["cites"]]
+            if not cited:
+                raise KnowledgeError(f"{ident}: cites must not be empty")
+            for ref in cited:
+                if not isinstance(ref, str) or ref not in by_id:
+                    raise KnowledgeError(f"{ident}: unknown cites {ref!r}")
+                if by_id[ref].get("type") != "source":
+                    raise KnowledgeError(f"{ident}: cites must point to a source node: {ref!r}")
+
+        if node.get("type") == "source" and "reliability" in attrs:
+            value = attrs["reliability"]
+            if (isinstance(value, bool) or not isinstance(value, (int, float))
+                    or not math.isfinite(value) or not 0 <= value <= 1):
+                raise KnowledgeError(f"{ident}: reliability must be a finite number in [0, 1]")
+
         if node.get("type") != "relation":
             continue
         source, target, kind = (attrs.get(key) for key in ("source", "target", "kind"))
@@ -166,7 +184,8 @@ def _validated(doc: dict) -> tuple[list[dict], list[dict]]:
 def validate_knowledge(doc: dict) -> None:
     """Validate opt-in relation nodes and optional evidence/temporal metadata.
 
-    Checks referential integrity, provenance references, confidence range,
+    Checks referential integrity, provenance references (``evidence_id`` and
+    ``cites`` -> ``source`` nodes), confidence / reliability ranges,
     timezone-aware timestamps, valid-time ordering and supersession cycles.
     Does not mutate ``doc`` or infer truth from contradictory claims.
     """

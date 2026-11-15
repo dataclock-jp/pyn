@@ -6,7 +6,7 @@
 
 <sub>`spec` `xrefs`</sub>
 
-- `compatible_with`: `"PYN 1.1.1"`
+- `compatible_with`: `"PYN 1.2.0"`
 - `implementation`: `pyn/xrefs.py`
 - `status`: `experimental`
 

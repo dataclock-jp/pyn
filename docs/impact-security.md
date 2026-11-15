@@ -6,7 +6,7 @@
 
 <sub>`spec` `impact-security`</sub>
 
-- `compatibility`: `"PYN 1.1.1 / v0.2 overlay"`
+- `compatibility`: `"PYN 1.2.0"`
 - `implementation`: `pyn/impact.py`, `pyn/guardrails.py`
 - `status`: `experimental`
 

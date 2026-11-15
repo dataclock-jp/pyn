@@ -1,7 +1,7 @@
 spec xrefs "PYN 文書間リンクの実験仕様 v0.1":
-  status: experimental
-  compatible_with: "PYN 1.1.1"
+  compatible_with: "PYN 1.2.0"
   implementation: pyn/xrefs.py
+  status: experimental
   """
   PYN の既存形式に一切手を加えず、散文中に文書間の参照を記述する。
   既存の `@id` と `§id` は同一文書内のノードを参照する。文書をまたぐときだけ、

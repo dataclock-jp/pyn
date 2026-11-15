@@ -97,7 +97,8 @@ def snapshot_workspace(root: str | Path, *, max_files: int = MAX_FILES) -> dict:
             for target in node.get("refs", []):
                 dependencies.add((here, _key(rel, target), "local_ref"))
             attrs = node.get("attrs") or {}
-            for field in ("evidence_id", "depends", "depends_on"):
+            # cites: 出典の信頼性が変われば、それを引用する主張も見直す(t-26)
+            for field in ("evidence_id", "cites", "depends", "depends_on"):
                 value = attrs.get(field, [])
                 for target in (value if isinstance(value, list) else [value]):
                     if target and isinstance(target, str):

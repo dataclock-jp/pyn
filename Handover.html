@@ -96,7 +96,7 @@ a{color:var(--accent)}
 <div class="wrap">
 <header class="doc-head">
 <h1>引継ぎ — Synthesis from HTML and JSON</h1>
-<p class="sub">Synthesis from HTML and JSON / 最終更新 2026-11-15(t-23 まで完了・v1.1.1。続きは backlog から)</p><p class="generated">このページは Handover.pyn から生成されています(手で編集しないこと)。 生成: python -m tools.handover_to_pyn</p>
+<p class="sub">Synthesis from HTML and JSON / 最終更新 2026-11-15(t-26 まで完了・v1.2.0。続きは backlog から)</p><p class="generated">このページは Handover.pyn から生成されています(手で編集しないこと)。 生成: python -m tools.handover_to_pyn</p>
 </header>
 <section class="node node--meta depth-0" id="meta">
 <header class="node__head">
@@ -104,7 +104,7 @@ a{color:var(--accent)}
 <h2 class="node__title">この文書について</h2>
 <a class="node__id" href="#meta">meta</a>
 </header>
-<div class="table-wrap"><table class="attrs"><tbody><tr><th>agent_entry_point</th><td><code>&quot;AGENTS.md(正本は docs/agents.pyn)。CLAUDE.md はそこへの案内&quot;</code></td></tr><tr><th>check_command</th><td><code>&quot;python -m pyn check samples/auth-spec.pyn&quot;</code></td></tr><tr><th>ci</th><td><code>&quot;.github/workflows/ci.yml(pytest 3.11 / 3.14・生成物の追従・ID 消失検出・.pyn の check・install ジョブ = Ubuntu / Windows で pip install してリポジトリの外から動かす)&quot;</code></td></tr><tr><th>cli_usage</th><td><code>&quot;pyn {json|a|b|html|md|check|repair|patch|id} &lt;file&gt; [-o OUT](pip で入れた場合。このリポジトリの中では python -m pyn)&quot;</code></td></tr><tr><th>code_size</th><td><code>&quot;pyn/ 2776行 + tools/ 340行 + tests/ 2379行(本体は標準ライブラリのみ)&quot;</code></td></tr><tr><th>comment_policy</th><td><code>&quot;# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)&quot;</code></td></tr><tr><th>console_note</th><td><code>&quot;CLI と tools/ は標準出力・標準エラーも常に UTF-8・LF で書く(ファイル出力と同じ。t-19 / t-21 / t-22)。PYTHONIOENCODING の指定は不要&quot;</code></td></tr><tr><th>created</th><td><code>2026-08-26</code></td></tr><tr><th>docs_command</th><td><code>&quot;python -m tools.build_docs [--check]&quot;</code></td></tr><tr><th>dogfooding_note</th><td><code>&quot;Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)&quot;</code></td></tr><tr><th>editor_support</th><td><code>&quot;editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)&quot;</code></td></tr><tr><th>format_name</th><td><code>&quot;PYN / 拡張子 .pyn(q-02 で確定)&quot;</code></td></tr><tr><th>git</th><td><code>true</code></td></tr><tr><th>id_policy</th><td><code>&quot;ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)&quot;</code></td></tr><tr><th>install_command</th><td><code>&quot;pip install git+https://github.com/dataclock-jp/pyn.git&quot;</code></td></tr><tr><th>language</th><td><code>ja</code></td></tr><tr><th>last_session</th><td><code>&quot;2026-11-15(t-23 まで完了・v1.1.1。続きは backlog から)&quot;</code></td></tr><tr><th>license</th><td><code>&quot;MIT(LICENSE)&quot;</code></td></tr><tr><th>project</th><td><code>&quot;Synthesis from HTML and JSON&quot;</code></td></tr><tr><th>prose_dialect_doc</th><td><code>&quot;docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)&quot;</code></td></tr><tr><th>python</th><td><code>&quot;3.11 以上(CI は 3.11 / 3.14)。本体は標準ライブラリのみ(外部依存なし)&quot;</code></td></tr><tr><th>regenerate_html_command</th><td><code>&quot;python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)&quot;</code></td></tr><tr><th>repo</th><td><code>&quot;https://github.com/dataclock-jp/pyn(public / 既定ブランチ main)&quot;</code></td></tr><tr><th>resume_entry_point</th><td><code>&quot;このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ&quot;</code></td></tr><tr><th>schema_command</th><td><code>&quot;python -m tools.build_schema [--check]&quot;</code></td></tr><tr><th>status</th><td><code>all_planned_tasks_done__ready_to_hand_over</code></td></tr><tr><th>tag</th><td><code>v1.1.1</code></td></tr><tr><th>test_command</th><td><code>&quot;python -m pytest tests -q&quot;</code></td></tr><tr><th>tests_passing</th><td><code>843</code></td></tr><tr><th>version</th><td><code>&quot;1.1.1(pyn.__version__ が唯一の源)&quot;</code></td></tr></tbody></table></div>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>agent_entry_point</th><td><code>&quot;AGENTS.md(正本は docs/agents.pyn)。CLAUDE.md はそこへの案内&quot;</code></td></tr><tr><th>check_command</th><td><code>&quot;python -m pyn check samples/auth-spec.pyn&quot;</code></td></tr><tr><th>ci</th><td><code>&quot;.github/workflows/ci.yml(pytest 3.11 / 3.14・生成物の追従・ID 消失検出・.pyn の check・install ジョブ = Ubuntu / Windows で pip install してリポジトリの外から動かす)&quot;</code></td></tr><tr><th>cli_usage</th><td><code>&quot;pyn {json|a|b|html|md|check|repair|patch|id} &lt;file&gt; [-o OUT](pip で入れた場合。このリポジトリの中では python -m pyn)&quot;</code></td></tr><tr><th>code_size</th><td><code>&quot;pyn/ 4495行 + tools/ 348行 + tests/ 3596行(本体は標準ライブラリのみ)&quot;</code></td></tr><tr><th>comment_policy</th><td><code>&quot;# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)&quot;</code></td></tr><tr><th>console_note</th><td><code>&quot;CLI と tools/ は標準出力・標準エラーも常に UTF-8・LF で書く(ファイル出力と同じ。t-19 / t-21 / t-22)。PYTHONIOENCODING の指定は不要&quot;</code></td></tr><tr><th>created</th><td><code>2026-08-26</code></td></tr><tr><th>docs_command</th><td><code>&quot;python -m tools.build_docs [--check]&quot;</code></td></tr><tr><th>dogfooding_note</th><td><code>&quot;Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)&quot;</code></td></tr><tr><th>editor_support</th><td><code>&quot;editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)&quot;</code></td></tr><tr><th>extensions</th><td><code>&quot;python -m pyn.{knowledge|xrefs|impact|guardrails|intake}(本体の構文・正準形は変えない拡張。仕様は docs/knowledge-intake.md ほか)&quot;</code></td></tr><tr><th>format_name</th><td><code>&quot;PYN / 拡張子 .pyn(q-02 で確定)&quot;</code></td></tr><tr><th>git</th><td><code>true</code></td></tr><tr><th>id_policy</th><td><code>&quot;ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)&quot;</code></td></tr><tr><th>install_command</th><td><code>&quot;pip install git+https://github.com/dataclock-jp/pyn.git&quot;</code></td></tr><tr><th>language</th><td><code>ja</code></td></tr><tr><th>last_session</th><td><code>&quot;2026-11-15(t-26 まで完了・v1.2.0。続きは backlog から)&quot;</code></td></tr><tr><th>license</th><td><code>&quot;MIT(LICENSE)&quot;</code></td></tr><tr><th>project</th><td><code>&quot;Synthesis from HTML and JSON&quot;</code></td></tr><tr><th>prose_dialect_doc</th><td><code>&quot;docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)&quot;</code></td></tr><tr><th>python</th><td><code>&quot;3.11 以上(CI は 3.11 / 3.14)。本体は標準ライブラリのみ(外部依存なし)&quot;</code></td></tr><tr><th>regenerate_html_command</th><td><code>&quot;python -m tools.handover_to_pyn  (Handover.pyn → Handover.md / build/Handover.canonical.json / Handover.html)&quot;</code></td></tr><tr><th>repo</th><td><code>&quot;https://github.com/dataclock-jp/pyn(public / 既定ブランチ main)&quot;</code></td></tr><tr><th>resume_entry_point</th><td><code>&quot;このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ&quot;</code></td></tr><tr><th>schema_command</th><td><code>&quot;python -m tools.build_schema [--check]&quot;</code></td></tr><tr><th>status</th><td><code>all_planned_tasks_done__ready_to_hand_over</code></td></tr><tr><th>tag</th><td><code>v1.2.0</code></td></tr><tr><th>test_command</th><td><code>&quot;python -m pytest tests -q&quot;</code></td></tr><tr><th>tests_passing</th><td><code>886</code></td></tr><tr><th>version</th><td><code>&quot;1.2.0(pyn.__version__ が唯一の源)&quot;</code></td></tr></tbody></table></div>
 <div class="prose"><p><strong>このファイルが正本(canonical)です。</strong> <code>Handover.md</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> は <code>python -m tools.handover_to_pyn</code> の生成物で、手では編集しません。</p>
 <p>書き換えは <code>python -m pyn patch Handover.pyn --ops ops.json</code> が安全です(ID 宛なので行番号がずれても当たり、失敗時は文書が変更されません)。</p>
 <p>なお <code>#</code> コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。</p></div>
@@ -132,15 +132,15 @@ a{color:var(--accent)}
 <h2 class="node__title">30秒で再開するには</h2>
 <a class="node__id" href="#readme-start">readme-start</a>
 </header>
-<div class="prose"><pre><code class="lang-bash">python -m pytest tests -q                    # 719 passed を確認
+<div class="prose"><pre><code class="lang-bash">python -m pytest tests -q                    # 886 passed を確認
 python -m pyn check Handover.pyn             # 往復・参照・schema の検証
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成</code></pre>
-<p><strong>直近の終了点(2026-11-15)</strong>: <a class="ref" href="#t-22">tools/ のメッセージも UTF-8 で出す</a> と <a class="ref" href="#t-23">docs/*.pyn の先頭コメントを生成物側の注記に移す</a> を済ませた(タグ <code>v1.1.1</code> のあと。どちらも配布物には影響しないのでバージョンは据え置き)。続きは <a class="ref" href="#backlog">着手候補</a> から選ぶ。いちばん価値が高いのは <a class="ref" href="#backlog.trial">実運用で3つの指標を測る(いちばん価値が高い)</a> で、これは外部の文書を運用しないと進まない。リポジトリの中だけで進められるのは <a class="ref" href="#backlog.first-patch-diff">手書きの .pyn に初めて patch を当てたときの差分を予告する</a>。</p>
+<p><strong>直近の終了点(2026-11-15)</strong>: <strong>v1.2.0</strong>。ChatGPT の実験版(知識関係・文書間リンク・影響分析・安全検査)を検証して取り込み(<a class="ref" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a>)、HTML の危険なリンクを塞ぎ(<a class="ref" href="#t-25">HTML 射影で危険な URL スキームをリンクにしない</a>)、記憶する前に審査する <code>pyn.intake</code> を足した(<a class="ref" href="#t-26">知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する</a> / <a class="ref" href="#d-03">知識は記憶する前に審査し、承認されたものだけを反映する</a>)。続きは <a class="ref" href="#backlog">着手候補</a> から選ぶ。いちばん価値が高いのは引き続き <a class="ref" href="#backlog.trial">実運用で3つの指標を測る(いちばん価値が高い)</a> で、<code>pyn.intake</code> の誤検出・見逃しもそこで測れる。設計上の宿題は <a class="ref" href="#backlog.approval-auth">承認記録の真正性を担保するか決める</a>。</p>
 <p><strong>AI に作業させるなら、まず <code>AGENTS.md</code> を読ませてください</strong>(Claude Code / Codex CLI 共通の操作ガイド。正本は <code>docs/agents.pyn</code>)。</p>
 <p>そのままAIに投げるなら:</p>
 <blockquote><p><code>Handover.pyn</code> を読んで、<code>task</code> ノードで <code>status</code> が <code>todo</code> のものから続けてください。無ければ <code>backlog</code> の候補を見てください。</p></blockquote>
-<p><strong>予定していたタスクは全部終わっています(t-01〜t-23)。</strong> 未解決の問いもありません。<br>いま何をするかは <a class="ref" href="#backlog">着手候補</a> にまとめてあります。経緯を追いたいときは <a class="ref" href="#history">これまでの経緯(セッション単位)</a>、<br>判断の理由を知りたいときは各 <code>decision</code> / <code>synthesis</code> ノードを見てください。</p></div>
-<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#t-22">tools/ のメッセージも UTF-8 で出す</a><a class="chip" href="#t-23">docs/*.pyn の先頭コメントを生成物側の注記に移す</a><a class="chip" href="#backlog">着手候補</a><a class="chip" href="#backlog.trial">実運用で3つの指標を測る(いちばん価値が高い)</a><a class="chip" href="#backlog.first-patch-diff">手書きの .pyn に初めて patch を当てたときの差分を予告する</a><a class="chip" href="#history">これまでの経緯(セッション単位)</a></div>
+<p><strong>予定していたタスクは全部終わっています(t-01〜t-26)。</strong> 未解決の問いもありません。<br>いま何をするかは <a class="ref" href="#backlog">着手候補</a> にまとめてあります。経緯を追いたいときは <a class="ref" href="#history">これまでの経緯(セッション単位)</a>、<br>判断の理由を知りたいときは各 <code>decision</code> / <code>synthesis</code> ノードを見てください。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a><a class="chip" href="#t-25">HTML 射影で危険な URL スキームをリンクにしない</a><a class="chip" href="#t-26">知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する</a><a class="chip" href="#d-03">知識は記憶する前に審査し、承認されたものだけを反映する</a><a class="chip" href="#backlog">着手候補</a><a class="chip" href="#backlog.trial">実運用で3つの指標を測る(いちばん価値が高い)</a><a class="chip" href="#backlog.approval-auth">承認記録の真正性を担保するか決める</a><a class="chip" href="#history">これまでの経緯(セッション単位)</a></div>
 </section>
 <section class="node node--section depth-0" id="readme-now">
 <header class="node__head">
@@ -330,12 +330,12 @@ spec auth &quot;認証システム仕様&quot;:       # Type id &quot;title&quot
 <section class="node node--session depth-1" id="history.s7">
 <header class="node__head">
 <span class="badge">session</span>
-<h2 class="node__title">第7セッション — 小物の片付け(t-22 / t-23)</h2>
+<h2 class="node__title">第7セッション — 小物の片付けと、知識管理の拡張(t-22〜t-26 / v1.2.0)</h2>
 <a class="node__id" href="#history.s7">history.s7</a>
 </header>
-<div class="prose"><p><a class="ref" href="#backlog">着手候補</a> から、すぐ片付く 2 件を実施した。</p>
-<ul><li><code>tools/</code> のメッセージも UTF-8・LF で出すようにした(<a class="ref" href="#t-22">tools/ のメッセージも UTF-8 で出す</a>)。再開時の状態確認で、実際に化けていた</li><li><code>docs/*.pyn</code> の先頭の <code>#</code> コメントをやめ、同じ注記を <code>tools/build_docs</code> が生成物の先頭に出すようにした(<a class="ref" href="#t-23">docs/*.pyn の先頭コメントを生成物側の注記に移す</a>)。patch のたびに手で戻す作業がなくなった</li><li><strong>テスト 719 件。</strong></li></ul></div>
-<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補</a><a class="chip" href="#t-22">tools/ のメッセージも UTF-8 で出す</a><a class="chip" href="#t-23">docs/*.pyn の先頭コメントを生成物側の注記に移す</a></div>
+<div class="prose"><p>前半は <a class="ref" href="#backlog">着手候補</a> から、すぐ片付く小物を 2 件。後半は、オーナーが ChatGPT と議論しながら作らせた拡張を検証して取り込み、その先の段階まで進めた。</p>
+<ul><li><code>tools/</code> のメッセージも UTF-8・LF で出すようにした(<a class="ref" href="#t-22">tools/ のメッセージも UTF-8 で出す</a>)</li><li><code>docs/*.pyn</code> の先頭の <code>#</code> コメントをやめ、同じ注記を生成物の先頭に出すようにした(<a class="ref" href="#t-23">docs/*.pyn の先頭コメントを生成物側の注記に移す</a>)</li><li>ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込んだ(<a class="ref" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a>)。本体には手を入れない追加だったが、Windows で落ちるテストと cp932 で落ちる CLI があった</li><li>ChatGPT が指摘した「HTML 射影が <code>javascript:</code> のリンクを出す」を直した(<a class="ref" href="#t-25">HTML 射影で危険な URL スキームをリンクにしない</a>)</li><li>記憶する前に出典・信頼性・既存知識との矛盾を評価し、承認されたものだけを反映する <code>pyn.intake</code> を実装した(<a class="ref" href="#t-26">知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する</a> / <a class="ref" href="#d-03">知識は記憶する前に審査し、承認されたものだけを反映する</a>)。バージョンを <strong>1.2.0</strong> に上げた</li><li>作業中、シェル経由の置換でバックスラッシュが減る事故が 2 回起きた(1 回は NUL 文字がソースに入った)。<a class="ref" href="#actions">次にやること</a> に書いてある注意は正しく、置換はファイルに書いたスクリプトで行うこと</li><li><strong>テスト 886 件。</strong></li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補</a><a class="chip" href="#t-22">tools/ のメッセージも UTF-8 で出す</a><a class="chip" href="#t-23">docs/*.pyn の先頭コメントを生成物側の注記に移す</a><a class="chip" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a><a class="chip" href="#t-25">HTML 射影で危険な URL スキームをリンクにしない</a><a class="chip" href="#t-26">知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する</a><a class="chip" href="#d-03">知識は記憶する前に審査し、承認されたものだけを反映する</a><a class="chip" href="#actions">次にやること</a></div>
 </section>
 </section>
 <section class="node node--decision depth-0" id="d-00">
@@ -681,6 +681,41 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <a class="node__id" href="#d-02.rule">d-02.rule</a>
 </header>
 <div class="prose"><blockquote><p>残したい理由は散文ブロックか <code>note:</code> 属性へ。<code>#</code> は消えてよいものだけに使う</p></blockquote></div>
+</section>
+</section>
+<section class="node node--decision depth-0" id="d-03">
+<header class="node__head">
+<span class="badge">decision</span>
+<h2 class="node__title">知識は記憶する前に審査し、承認されたものだけを反映する</h2>
+<a class="node__id" href="#d-03">d-03</a>
+</header>
+<div class="prose"><p>関連: <a class="ref" href="#s-meta">メタ止揚: 3つの反はすべて同じ根から出ていた</a> <a class="ref" href="#d-02">コメント(#)は保存しない。残したい「なぜ」はデータとして書く</a> <a class="ref" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a> <a class="ref" href="#t-26">知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する</a></p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#s-meta">メタ止揚: 3つの反はすべて同じ根から出ていた</a><a class="chip" href="#d-02">コメント(#)は保存しない。残したい「なぜ」はデータとして書く</a><a class="chip" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a><a class="chip" href="#t-26">知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する</a></div>
+<section class="node node--conclusion depth-1" id="d-03.conclusion">
+<header class="node__head">
+<span class="badge">conclusion</span>
+<h2 class="node__title">結論</h2>
+<a class="node__id" href="#d-03.conclusion">d-03.conclusion</a>
+</header>
+<div class="prose"><p>AI が知識体系へ直接書き足す経路を作らない。新しい知識は提案(<code>proposal</code>)として出し、<code>pyn.intake</code> が出典・信頼性・既存知識との矛盾を評価する。人が承認した記録が今の提案と知識体系に一致するときだけ、ID 宛のパッチとして全か無かで反映する。構文は増やさず、約束事はすべてノードと属性で書く。</p></div>
+</section>
+<section class="node node--rationale depth-1" id="d-03.rationale">
+<header class="node__head">
+<span class="badge">rationale</span>
+<h2 class="node__title">根拠</h2>
+<a class="node__id" href="#d-03.rationale">d-03.rationale</a>
+</header>
+<div class="prose"><ul><li>記憶することと、記憶から学ぶことは別である(ChatGPT との議論の要点)。検証の無い蓄積は、出典の無い主張や食い違う主張を黙って積み上げる</li><li>評価は決定的で説明可能にする。所見は規則名と ID だけで出し、本文を写さない(ログも攻撃文の通り道になりうる)</li><li>提案者に出典の信頼性を自己申告させない。信頼性を決めるのは人で、台帳(<code>source</code> ノード)に書く</li><li>承認記録をダイジェストで提案と知識体系に結びつける。承認後の差し替えも、前提の崩れた承認の使い回しも、反映の直前に断れる</li><li>反映を <code>pyn patch</code> と同じ経路にすれば、全か無か・参照切れの検出・射影の再生成をそのまま継承できる(<a class="ref" href="#s-03">止揚3: 新しい『形式』ではなく新しい『射影』として定義する</a> と同じ考え方)</li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#s-03">止揚3: 新しい『形式』ではなく新しい『射影』として定義する</a></div>
+</section>
+<section class="node node--rejected depth-1" id="d-03.rejected">
+<header class="node__head">
+<span class="badge">rejected</span>
+<h2 class="node__title">見送った案</h2>
+<a class="node__id" href="#d-03.rejected">d-03.rejected</a>
+</header>
+<div class="prose"><ul><li>出典を <code>source:</code> 属性で書く(ChatGPT 版のサンプル): relation の <code>source</code>(辺の始点)と名前がぶつかる。出典は <code>cites</code> に分けた</li><li>提案の一部だけを取り込む: 候補どうしが参照し合うと部分集合が壊れやすい。提案をひとまとまりにし、分けたいなら提案を分ける</li><li>方針の範囲内(approvable)なら自動で反映する: 「承認されたものだけ」に反する。approvable でも承認記録を求める</li><li>承認記録に署名を付ける: 鍵の管理がこの層の責任を超える。承認者が人であることはホスト側で担保し、着手候補に残した(<a class="ref" href="#backlog.approval-auth">承認記録の真正性を担保するか決める</a>)</li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog.approval-auth">承認記録の真正性を担保するか決める</a></div>
 </section>
 </section>
 <section class="node node--constraint depth-0" id="cost">
@@ -1201,6 +1236,27 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <div class="prose"><p>Markdown 射影は従来どおり素通し(表示の安全はビューア側の責任)。テストは <code>tests/test_render_html_links.py</code>。修正前に 7 件落ちることを確かめた。テスト 843 件(+12)。</p></div>
 </section>
 </section>
+<section class="node node--task depth-1" id="t-26">
+<header class="node__head">
+<span class="badge">task</span>
+<h2 class="node__title">知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する</h2>
+<a class="node__id" href="#t-26">t-26</a>
+</header>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-24, t-25]</code></td></tr><tr><th>est</th><td><code>3h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
+<div class="prose"><p>ChatGPT が v0.3 の最後に「次の段階で最も重要」と挙げたもの。AI が新しい知識を記憶する前に、出典・信頼性・既存知識との矛盾を評価し、承認された内容だけを知識体系へ反映する。これで記憶の蓄積から、検証を伴う知識の発展へ進める。設計判断は <a class="ref" href="#d-03">知識は記憶する前に審査し、承認されたものだけを反映する</a>。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#d-03">知識は記憶する前に審査し、承認されたものだけを反映する</a></div>
+<section class="node node--result depth-2" id="t-26.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-26.result">t-26.result</a>
+</header>
+<div class="prose"><p><code>pyn/intake.py</code> に <code>evaluate</code>(評価だけ。何も書き換えない)→ <code>approve</code>(人が承認記録を作る)→ <code>admit</code>(承認記録が今の状態と一致すれば反映)の 3 段を実装した。判定は <code>reject</code> / <code>review</code> / <code>approvable</code> の 3 つで、CLI の終了コードは 4 / 3 / 0。所見の一覧と意味は <code>docs/knowledge-intake.md</code>(正本 <code>docs/knowledge-intake.pyn</code>)。</p></div>
+<div class="prose"><ul><li><strong>出典</strong>: 主張は <code>cites</code> で <code>source</code> ノード(出典台帳)を指す。出典の無い主張と<code>blocked</code> の出典は却下、信頼性が <code>min_reliability</code> 未満なら review、<code>confidence</code> が出典の信頼性を超えたら review</li><li><strong>矛盾</strong>: <code>subject</code> / <code>predicate</code> / <code>value</code> が同じ主語・述語で値の違う既存の主張と(有効期間が重なるときだけ)、提案の中どうしでも突き合わせる。既存知識への <code>contradicts</code> / <code>supersedes</code> と、もう有効でない知識への依拠も review</li><li><strong>安全</strong>: 候補のタイトル・散文・属性を <code>pyn.guardrails</code> に通し、当たれば却下。CLI は提案ファイルを読む前に検査する。<code>policy</code> / <code>intake</code> / <code>proposal</code> 型は提案から足せない</li><li><strong>承認と反映</strong>: 承認記録は提案と知識体系の SHA-256 を持ち、<code>admit</code> は直前に評価し直して一致しなければ断る。反映すると、足したノードに <code>admitted_via</code> を、<code>policy</code> の <code>ledger</code> の下に<code>intake</code> ノード(承認者・時刻・所見・提案の散文)を残す</li></ul></div>
+<div class="prose"><p>あわせて <code>pyn.knowledge</code> が <code>cites</code> と <code>source</code> の <code>reliability</code> を検証するようにし、<code>pyn.impact</code> は <code>cites</code> も依存として追う(出典の信頼性が変われば、引用した主張が再検討の候補に上がる)。ChatGPT 版のサンプル <code>agent-memory.pyn</code> も <code>cites</code> に移した。サンプルは <code>samples/intake/</code>(知識体系 1 本と、approvable / review になる提案 2 本)。</p></div>
+<div class="prose"><p>バージョンは 1.2.0。CI の install ジョブで、入れた環境から <code>pyn.intake</code> が動くことも確かめる。テスト 886 件(+43)。</p></div>
+</section>
+</section>
 </section>
 <section class="node node--questions depth-0" id="questions">
 <header class="node__head">
@@ -1311,10 +1367,10 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">次にやること</h2>
 <a class="node__id" href="#actions">actions</a>
 </header>
-<div class="prose"><ul><li><code>AGENTS.md</code> を読む(エージェントの入口。正本は <code>docs/agents.pyn</code>)</li><li><code>python -m pytest tests -q</code> が 719 passed になることを確認する</li><li>この文書を書き換えるときは <code>python -m pyn patch Handover.pyn --ops ops.json</code></li></ul>
+<div class="prose"><ul><li><code>AGENTS.md</code> を読む(エージェントの入口。正本は <code>docs/agents.pyn</code>)</li><li><code>python -m pytest tests -q</code> が 886 passed になることを確認する</li><li>この文書を書き換えるときは <code>python -m pyn patch Handover.pyn --ops ops.json</code></li></ul>
 <p>  (ops はシェルの文字列ではなく <strong>ファイル</strong> で渡すこと。バッククォートが展開されて本文が壊れる)</p>
-<ul><li>ID を書かずに下書きしてよい。<code>python -m pyn id</code> が採番する(ただし一度振った ID は変えない)</li><li>正本を直したら <code>python -m tools.handover_to_pyn</code> / <code>build_schema</code> / <code>build_docs</code> で生成物を作り直す</li><li>pyn を直して外部で使うときは、push してから <code>pip install --user --upgrade --force-reinstall &quot;git+https://github.com/dataclock-jp/pyn.git&quot;</code> で入れ直す</li><li>修正前のコードでテストが落ちるかを確かめるとき、<code>git stash</code> は使わない(戻したあとに修正が消えたことがある。PROGRESS.md の t-19)。<code>git worktree add</code> で HEAD を別の場所に出して回す</li><li>バックスラッシュを含む書き換えはシェルを通さない(コマンドの中で <code>\\</code> と書くと <code>\</code> に減ってから渡ることがある。PROGRESS.md の t-21)。置換スクリプトも ops もファイルに書く</li><li>予定タスクは完了(t-01〜t-23)。次に何をするかは <a class="ref" href="#backlog">着手候補</a></li></ul></div>
-<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog">着手候補</a></div>
+<ul><li>ID を書かずに下書きしてよい。<code>python -m pyn id</code> が採番する(ただし一度振った ID は変えない)</li><li>正本を直したら <code>python -m tools.handover_to_pyn</code> / <code>build_schema</code> / <code>build_docs</code> で生成物を作り直す</li><li>pyn を直して外部で使うときは、push してから <code>pip install --user --upgrade --force-reinstall &quot;git+https://github.com/dataclock-jp/pyn.git&quot;</code> で入れ直す</li><li>修正前のコードでテストが落ちるかを確かめるとき、<code>git stash</code> は使わない(戻したあとに修正が消えたことがある。PROGRESS.md の t-19)。<code>git worktree add</code> で HEAD を別の場所に出して回す</li><li>バックスラッシュを含む書き換えはシェルを通さない(コマンドの中で <code>\\</code> と書くと <code>\</code> に減ってから渡ることがある。PROGRESS.md の t-21)。置換スクリプトも ops もファイルに書く</li><li><code>pyn.intake</code> で管理している知識体系には直接書き足さない。提案を書いて <code>evaluate</code> し、承認(<code>approve</code>)は人に任せる(<a class="ref" href="#d-03">知識は記憶する前に審査し、承認されたものだけを反映する</a>)</li><li>予定タスクは完了(t-01〜t-26)。次に何をするかは <a class="ref" href="#backlog">着手候補</a></li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#d-03">知識は記憶する前に審査し、承認されたものだけを反映する</a><a class="chip" href="#backlog">着手候補</a></div>
 </section>
 <section class="node node--backlog depth-0" id="backlog">
 <header class="node__head">
@@ -1345,7 +1401,8 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <ul><li>AI の編集失敗率は下がったか(パッチ失敗・手戻りの回数)</li><li>人間が ID 規律を保てるか(<code>check_ids</code> / <code>pyn check</code> が落ちる頻度)</li><li>生成物を手で編集する事故が起きるか(テストが検出するので数えられる)</li></ul>
 <p>現時点で未検証なのは、<strong>他エージェント(Codex CLI)での実運用</strong>と、<strong>複数人・数か月の運用</strong>である。</p></div>
 <div class="prose"><p>最初の外部運用(2026-10)で見つかったのは、形式ではなく CLI の不具合 3 件だった(<a class="ref" href="#t-18">効かないフラグを黙って無視しない(patch --dry-run を実装する)</a> / <a class="ref" href="#t-19">出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)</a>)。上の 3 指標はまだ測っていない。</p></div>
-<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#t-18">効かないフラグを黙って無視しない(patch --dry-run を実装する)</a><a class="chip" href="#t-19">出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)</a></div>
+<div class="prose"><p>1.2.0 で知識管理の拡張(<a class="ref" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a> / <a class="ref" href="#t-26">知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する</a>)が入ったので、測る対象が増えた。<code>pyn.intake</code> を実際の知識体系で回し、誤って却下・review にしたもの(誤検出)と、通してしまった誤り(見逃し)を数えれば、審査の規則を数字で直せる。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#t-18">効かないフラグを黙って無視しない(patch --dry-run を実装する)</a><a class="chip" href="#t-19">出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)</a><a class="chip" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a><a class="chip" href="#t-26">知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する</a></div>
 </section>
 <section class="node node--idea depth-1" id="backlog.note-syntax">
 <header class="node__head">
@@ -1421,6 +1478,25 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <div class="prose"><p>いまは <code>pip install git+https://github.com/dataclock-jp/pyn.git</code> で入れる(<a class="ref" href="#t-20">pip で入れられるようにする(pyproject.toml)</a>)。PyPI の <code>pyn</code> という名前は、2026-10 時点で配布物が見つからなかった(名前が登録済みかどうかは未確認)。出すなら <code>README.md</code> の英語の説明を厚くし、タグからの自動公開を CI に足す。</p></div>
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#t-20">pip で入れられるようにする(pyproject.toml)</a></div>
 </section>
+<section class="node node--idea depth-1" id="backlog.approval-auth">
+<header class="node__head">
+<span class="badge">idea</span>
+<h2 class="node__title">承認記録の真正性を担保するか決める</h2>
+<a class="node__id" href="#backlog.approval-auth">backlog.approval-auth</a>
+</header>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>priority</th><td><code>medium</code></td></tr><tr><th>status</th><td><code>candidate</code></td></tr></tbody></table></div>
+<div class="prose"><p><code>pyn.intake</code> の承認記録は JSON で、作ったのが本当に人かどうかは保証していない(<a class="ref" href="#d-03">知識は記憶する前に審査し、承認されたものだけを反映する</a>)。エージェントが <code>approve</code> を実行できる環境では「承認されたものだけ」が形だけになる。署名(鍵は人だけが持つ)を付けるか、承認をホスト側の UI に限るかを、実運用の形を見て決める。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#d-03">知識は記憶する前に審査し、承認されたものだけを反映する</a></div>
+</section>
+<section class="node node--idea depth-1" id="backlog.ci-node20">
+<header class="node__head">
+<span class="badge">idea</span>
+<h2 class="node__title">CI の action を Node.js 24 対応の版へ上げる</h2>
+<a class="node__id" href="#backlog.ci-node20">backlog.ci-node20</a>
+</header>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>priority</th><td><code>low</code></td></tr><tr><th>status</th><td><code>candidate</code></td></tr></tbody></table></div>
+<div class="prose"><p><code>actions/checkout@v4</code> と <code>actions/setup-python@v5</code> が Node.js 20 向けで、CI のログに非推奨の警告が出ている(今は Node.js 24 で強制的に動かされている)。<code>ubuntu-latest</code> も Ubuntu 26 へ移行中。動かなくなる前に版を上げる。</p></div>
+</section>
 </section>
 <section class="node node--artifacts depth-0" id="artifacts">
 <header class="node__head">
@@ -1434,8 +1510,8 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <h2 class="node__title">既存</h2>
 <a class="node__id" href="#artifacts.existing">artifacts.existing</a>
 </header>
-<div class="prose"><ul><li><code>Handover.pyn</code> — <strong>正本</strong>(このファイル)</li><li><code>Handover.md</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> — その射影(手で編集しない)</li><li><code>PROGRESS.md</code> — セッションごとの作業記録(手書き。経緯の要約は <a class="ref" href="#history">これまでの経緯(セッション単位)</a>)</li><li><code>README.md</code> — リポジトリの説明(正本 <code>docs/readme.pyn</code>)。<code>LICENSE</code> は MIT</li><li><code>AGENTS.md</code> — エージェント向け操作ガイド(正本 <code>docs/agents.pyn</code>)。<code>CLAUDE.md</code> はその案内</li><li><code>docs/prose-dialect.pyn</code> <code>.md</code> — 散文方言の仕様</li><li><code>pyn/</code> — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli</li><li><code>tools/</code> — handover_to_pyn, build_schema, build_docs, check_ids(いずれも <code>--check</code> あり。出力は CLI と同じく UTF-8・LF)</li><li><code>schema/canonical.schema.json</code> — <code>pyn/model.py</code> からの生成物</li><li><code>editors/vscode/</code> — シンタックスハイライト</li><li><code>samples/auth-spec.pyn</code> — 実物のサンプル</li><li><code>retired-ids.txt</code> — 意図的に廃止した ID の記録</li><li><code>tests/</code> — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging / tools</li><li><code>pyproject.toml</code> — pip で入れるための定義(<a class="ref" href="#t-20">pip で入れられるようにする(pyproject.toml)</a>)</li><li><code>.github/workflows/ci.yml</code> — テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ</li></ul></div>
-<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#history">これまでの経緯(セッション単位)</a><a class="chip" href="#t-20">pip で入れられるようにする(pyproject.toml)</a></div>
+<div class="prose"><ul><li><code>Handover.pyn</code> — <strong>正本</strong>(このファイル)</li><li><code>Handover.md</code> / <code>Handover.html</code> / <code>build/Handover.canonical.json</code> — その射影(手で編集しない)</li><li><code>PROGRESS.md</code> — セッションごとの作業記録(手書き。経緯の要約は <a class="ref" href="#history">これまでの経緯(セッション単位)</a>)</li><li><code>README.md</code> — リポジトリの説明(正本 <code>docs/readme.pyn</code>)。<code>LICENSE</code> は MIT</li><li><code>AGENTS.md</code> — エージェント向け操作ガイド(正本 <code>docs/agents.pyn</code>)。<code>CLAUDE.md</code> はその案内</li><li><code>docs/prose-dialect.pyn</code> <code>.md</code> — 散文方言の仕様</li><li><code>docs/knowledge-intake.pyn</code> <code>docs/knowledge-memory.pyn</code> <code>docs/cross-file-links.pyn</code> <code>docs/impact-security.pyn</code>(と <code>.md</code>)— 知識管理の拡張の仕様(<a class="ref" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a> / <a class="ref" href="#t-26">知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する</a>)</li><li><code>pyn/</code> — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli(本体)/ knowledge, xrefs, impact, guardrails, intake(拡張。<code>python -m pyn.&lt;名前&gt;</code>)</li><li><code>tools/</code> — handover_to_pyn, build_schema, build_docs, check_ids(いずれも <code>--check</code> あり。出力は CLI と同じく UTF-8・LF)</li><li><code>schema/canonical.schema.json</code> — <code>pyn/model.py</code> からの生成物</li><li><code>editors/vscode/</code> — シンタックスハイライト</li><li><code>samples/auth-spec.pyn</code> — 実物のサンプル。<code>samples/intake/</code> <code>samples/agent-memory.pyn</code> <code>samples/xrefs/</code> <code>samples/impact/</code> は拡張のサンプル</li><li><code>retired-ids.txt</code> — 意図的に廃止した ID の記録</li><li><code>tests/</code> — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging / tools / knowledge / xrefs / impact / guardrails / intake / extensions_cli / render_html_links</li><li><code>pyproject.toml</code> — pip で入れるための定義(<a class="ref" href="#t-20">pip で入れられるようにする(pyproject.toml)</a>)</li><li><code>.github/workflows/ci.yml</code> — テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ</li></ul></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#history">これまでの経緯(セッション単位)</a><a class="chip" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a><a class="chip" href="#t-26">知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する</a><a class="chip" href="#t-20">pip で入れられるようにする(pyproject.toml)</a></div>
 </section>
 <section class="node node--group depth-1" id="artifacts.planned">
 <header class="node__head">

@@ -1,0 +1,20 @@
+proposal p-2026-11-15-02 "1 気圧での沸点は 90℃ という書き込み":
+  into: kb-claims
+  proposed_by: "agent:example"
+  recorded_at: "2026-11-15T11:00:00+09:00"
+  """
+  掲示板で見かけた主張。出典の信頼性が低く、既存の知識 `c-boil-1atm` とも食い違う。
+  取り込むかどうかは人が確認して決める。
+  """
+
+  claim c-boil-forum "1 気圧での水の沸点は 90℃":
+    cites: src-forum
+    confidence: 0.8
+    predicate: boiling_point_c_at_1atm
+    subject: water
+    value: 90
+
+  relation r-03 "既存の沸点の知識と矛盾する":
+    kind: contradicts
+    source: c-boil-forum
+    target: c-boil-1atm

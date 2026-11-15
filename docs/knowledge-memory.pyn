@@ -1,6 +1,6 @@
 spec knowledge-memory "PYN 知識グラフ実験仕様 v0.1":
-  status: experimental
   scope: opt-in
+  status: experimental
   """
   これはPYNの文法や正準形JSONを変更しない実験的な意味層です。
   既存の `@id` / `§id` 参照はそのまま維持します。
@@ -28,7 +28,9 @@ spec knowledge-memory "PYN 知識グラフ実験仕様 v0.1":
     - `occurred_at` は事象の時刻、`recorded_at` は記録した時刻
     - `valid_from` と `valid_until` は主張の有効期間。前後関係を検査します
     - 日時には必ず `Z` または `+09:00` などのタイムゾーンを付けます
-    - `source`、`status` などその他の通常属性も使用できます
+    - 出典は `cites` で `source` 型のノードを指します(複数なら配列)。relation の `source` 属性は辺の始点なので、出典には使いません
+    - `source` ノードの `reliability` は0から1の有限な数値です
+    - `status` などその他の通常属性も使用できます
 
     根拠や観察の真偽そのものは自動判定しません。
     異なる主張は上書き・削除する代わりにノードとして残せます。
@@ -55,5 +57,6 @@ spec knowledge-memory "PYN 知識グラフ実験仕様 v0.1":
     - `pyn check` は従来どおりの検査です。関係の意味検証は専用コマンドで行います
     - 関係の名前は検証しますが、その科学的・論理的妥当性は検証しません
     - ローカルJSONの抽出が主目的で、DB、検索インデックスや自動学習は未実装です
-    - 将来は複数文書のID空間、出典の厳密化、競合解決、時間軸検索を検討します
+    - 出典と既存知識との矛盾を評価してから取り込む仕組みは `pyn.intake`(`docs/knowledge-intake.md`)で実装しました
+    - 将来は複数文書のID空間、競合解決、時間軸検索を検討します
     """
