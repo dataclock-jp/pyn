@@ -1,0 +1,74 @@
+# 文書間リンク(PYN 拡張・実験的)
+
+> このファイルは docs/cross-file-links.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.build_docs`
+
+## <a id="xrefs"></a>PYN 文書間リンクの実験仕様 v0.1
+
+<sub>`spec` `xrefs`</sub>
+
+- `compatible_with`: `"PYN 1.1.1"`
+- `implementation`: `pyn/xrefs.py`
+- `status`: `experimental`
+
+PYN の既存形式に一切手を加えず、散文中に文書間の参照を記述する。
+既存の `@id` と `§id` は同一文書内のノードを参照する。文書をまたぐときだけ、
+`@{relative/path.pyn#node-id}` と記述する。参照先は *PYN ファイル内のノード*。
+
+主眼は AI が複数の経験記録や仮説を参照できるようにすることで、
+記憶の信頼性や学習を自動的に保証するものではない。
+
+### <a id="xrefs-syntax"></a>記法
+
+<sub>`section` `xrefs-syntax`</sub>
+
+下記は PYN の散文で使う形式である。
+
+- `@overview` : 同一ファイル内の `overview` ノード
+- `@{observations.pyn#obs-01}` : 同じディレクトリの他ファイル
+- `@{hypotheses/theory.pyn#hyp-01}` : 子ディレクトリ
+- `@{../observations.pyn#obs-01}` : 親ディレクトリ(`--root` 範囲内のみ)
+
+`@{...}` を含むインラインコードやフェンス付きコードは参照として扱わない。
+外部URLや `.md`/`.html` を参照する場合は既存Markdownの `[表示](URL)` を使う。
+
+### <a id="xrefs-cli"></a>操作
+
+<sub>`section` `xrefs-cli`</sub>
+
+```bash
+python -m pyn.xrefs check samples/xrefs/index.pyn --root samples/xrefs
+python -m pyn.xrefs edges samples/xrefs/index.pyn --root samples/xrefs
+python -m pyn.xrefs build samples/xrefs/index.pyn \
+  --root samples/xrefs --out-dir site --format both
+```
+
+`check` は到達可能な文書を再帰的に調べ、相手ファイルの有無と相手ノードのIDを検証する。
+`edges` は文書をまたぐ有向辺を JSON として出力する。
+`build` は参照可能な全PYNを読み、同じディレクトリ構造で HTML と Markdown に射影する。
+HTML では `other.html#node-id`、Markdown では `other.md#node-id` へのリンクに変わる。
+出力を生成する前に検証を終えるため、リンク切れは書き込み前に検出される。
+
+### <a id="xrefs-safety"></a>安全性と互換性
+
+<sub>`section` `xrefs-safety`</sub>
+
+- 参照はローカル相対パスのみ。絶対パス、URL、Windowsドライブパスは拒否する
+- 実パスとシンボリックリンクを解決し、`--root` 外部への参照を拒否する
+- 循環参照は正当。ファイルは一回だけ解析する
+- 1ファイル 2MB、到達ファイル数 256 の既定上限を設ける(`--max-files` で個数は変更可)
+- 実装は標準ライブラリのみ。ネットワークアクセスは行わない
+- 既存PYNパーサ/正準形/IDパッチ/Markdown方言を変更しない
+- `.pyn` ⇄ 正準JSON の可逆性を維持する。文書間リンクは表示時の補助的射影
+- `pyn check` は従来どおり同一文書のみ。文書間の検証は `pyn.xrefs check` で行う
+
+### <a id="xrefs-caveats"></a>既知の制約
+
+<sub>`section` `xrefs-caveats`</sub>
+
+- 今回は追加モジュールとして実装したため、通常の `pyn html` / `pyn md` コマンドは
+  文書間リンクを解決しない。正しいリンク先を持つ生成物には `pyn.xrefs build` を使う
+- 参照先となるPYNファイルの移動・改名は自動追従しない
+- 標準の `refs[]` は同一文書の `@id` のみ。文書間の辺は `pyn.xrefs edges` で抽出する
+- 前回の `pyn.knowledge` の typed relation は同一文書IDが対象で、文書間IDはまだ未対応
+- ファイルの中に信頼できないHTMLがある場合、生成されたMarkdownはビューアによって
+  生HTMLを解釈する可能性がある。外部公開時は生成物の扱いに注意する

@@ -1,0 +1,5 @@
+decision d-01 "次の検証方針":
+  status: pending
+  """
+  仮説 @{hypotheses.pyn#hyp-01} の根拠が変わった場合は再検討する。
+  """

@@ -28,6 +28,12 @@ DOCS = (
     ("docs/agents.pyn", "AGENTS.md",
      "AGENTS.md — AI エージェント向け操作ガイド(PYN)"),
     ("docs/readme.pyn", "README.md", "PYN"),
+    ("docs/knowledge-memory.pyn", "docs/knowledge-memory.md",
+     "型付きの知識関係(PYN 拡張・実験的)"),
+    ("docs/cross-file-links.pyn", "docs/cross-file-links.md",
+     "文書間リンク(PYN 拡張・実験的)"),
+    ("docs/impact-security.pyn", "docs/impact-security.md",
+     "変更の影響分析と取り込み前の安全検査(PYN 拡張・実験的)"),
 )
 
 

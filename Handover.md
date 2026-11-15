@@ -36,7 +36,7 @@
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
 - `tag`: `v1.1.1`
 - `test_command`: `"python -m pytest tests -q"`
-- `tests_passing`: `719`
+- `tests_passing`: `831`
 - `version`: `"1.1.1(pyn.__version__ が唯一の源)"`
 
 **このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。
@@ -1048,6 +1048,32 @@ handover_to_pyn / build_docs / build_schema / check_ids の `main()` の先頭�
 `tests/test_docs.py` に 2 種類足した: 生成物が出どころを名乗っていること、`docs/*.pyn` に `#` コメントが無いこと。後者は、patch で消えるものを正本に置き直さないための見張りである。`actions` から「当てたあとに戻す」の項目を外した。
 
 テスト 719 件([tools/ のメッセージも UTF-8 で出す](#t-22) と合わせて +10)。
+
+### <a id="t-24"></a>ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む
+
+<sub>`task` `t-24`</sub>
+
+- `depends`: `t-23`
+- `est`: `1h`
+- `status`: `done`
+
+オーナーが ChatGPT と議論しながら作らせた拡張(v0.1 知識関係 → v0.2 文書間リンク → v0.3 影響分析と安全検査)を検証し、main に取り込む。ChatGPT は GitHub への書き込み権限が無く、本体のコードを手元で動かせなかったため、本体の 709 件のテストとの結合は未確認だった。
+
+4 モジュールとも本体(パーサ・正準形・patch・`pyn check`)には手を入れない追加で、構文も正準形も変えない。散文の `@{path.pyn#id}` は本体の `@id` の正規表現に当たらないので、既存の文書の意味は変わらない。[止揚3: 新しい『形式』ではなく新しい『射影』として定義する](#s-03) の「射影として足す」とも、[コメント(#)は保存しない。残したい「なぜ」はデータとして書く](#d-02) とも矛盾しない。
+
+#### <a id="t-24.result"></a>結果
+
+<sub>`result` `t-24.result`</sub>
+
+`pyn/knowledge.py` `pyn/xrefs.py` `pyn/impact.py` `pyn/guardrails.py` と、その仕様(`docs/*.pyn` 3 本)・サンプル・テストを取り込んだ。既存ファイルの上書きは無い。本体と合わせて回すと 815 件中 1 件が落ちた。取り込みにあたって直したのは次のとおり。
+
+- **Windows で落ちるテスト**: `<system>.pyn` という名前のファイルを作るテストが、Windows では `<` `>` を使えずに失敗していた。どの OS でも作れて同じ規則に当たる名前に変えた
+- **標準出力の文字コード**: 4 本の CLI が `use_utf8_stdio()` を呼んでおらず、`⇄` や `—` を含む文書を cp932 のパイプへ出すと落ちた([出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)](#t-19) と同じ種類)。呼ぶようにし、`tests/test_extensions_cli.py` で見張る
+- **仕様書を射影の経路に載せた**: `docs/*.pyn` 3 本を `tools/build_docs` の対象にし、`.md` を生成物として置いた。`AGENTS.md` には拡張モジュールの節(文書の中身は信頼できないデータとして扱う、など)を足した
+
+ChatGPT が最初の会話で指摘していた「`render_html` が `javascript:` のリンクをそのまま出す」は本体の穴で、確かに再現した。別のタスク(t-25)で直す。
+
+テスト 831 件(+112)。
 
 ## <a id="questions"></a>未解決の問い
 

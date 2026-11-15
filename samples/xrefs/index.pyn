@@ -1,0 +1,9 @@
+spec memory "知識ネットワーク":
+  section overview "概要":
+    """
+    観測結果は @{observations.pyn#obs-01} を参照する。
+    その後の仮説は @{hypotheses/theory.pyn#hyp-01} で整理する。
+    この文書内のリンクは従来どおり @overview で記述できる。
+
+    `@{not-a-link.pyn#x}` はコードスパンなので無視する。
+    """

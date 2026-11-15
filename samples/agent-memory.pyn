@@ -1,0 +1,56 @@
+# AI の経験を「観察→仮説→検証→修正」として残す PYN の実験例。
+# このファイルに専用構文はありません。全て既存のノードと属性です。
+
+spec learning "AI の実験記憶":
+  version: 1
+
+  observation obs-01 "方法Aは条件Xで失敗":
+    source: "experiment:trial-001"
+    occurred_at: "2026-11-14T09:00:00+09:00"
+    recorded_at: "2026-11-14T09:01:00+09:00"
+    confidence: 1.0
+    """
+    条件Xで方法Aを試したところ、指定した成功基準を満たさなかった。
+    """
+
+  hypothesis hyp-01 "条件Xでは方法Bが有効かもしれない":
+    status: tentative
+    confidence: 0.4
+    evidence_id: obs-01
+    """
+    @obs-01 は方法Aの限界を示すが、方法Bの成功までは証明しない。
+    """
+
+  observation obs-02 "方法Bで成功基準を満たした":
+    source: "experiment:trial-002"
+    occurred_at: "2026-11-14T10:00:00+09:00"
+    confidence: 0.9
+    """
+    条件Xで方法Bを3回試し、すべて成功基準を満たした。
+    """
+
+  hypothesis hyp-02 "条件Xでは方法Bが有効である可能性が高い":
+    status: tentative
+    confidence: 0.8
+    evidence_id: obs-02
+    """
+    @obs-02 に基づく暫定的な判断。未知の条件への一般化は保留する。
+    """
+
+  relation rel-01 "失敗観察から仮説へ":
+    source: hyp-01
+    kind: derived_from
+    target: obs-01
+
+  relation rel-02 "成功観察が新仮説を支持":
+    source: obs-02
+    kind: supports
+    target: hyp-02
+    confidence: 0.9
+    evidence_id: obs-02
+
+  relation rel-03 "新仮説が旧仮説を更新":
+    source: hyp-02
+    kind: supersedes
+    target: hyp-01
+    recorded_at: "2026-11-14T10:05:00+09:00"

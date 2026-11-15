@@ -1,0 +1,69 @@
+# 型付きの知識関係(PYN 拡張・実験的)
+
+> このファイルは docs/knowledge-memory.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.build_docs`
+
+## <a id="knowledge-memory"></a>PYN 知識グラフ実験仕様 v0.1
+
+<sub>`spec` `knowledge-memory`</sub>
+
+- `scope`: `opt-in`
+- `status`: `experimental`
+
+これはPYNの文法や正準形JSONを変更しない実験的な意味層です。
+既存の `@id` / `§id` 参照はそのまま維持します。
+
+追加されるのは通常の `relation` ノードの解釈と、その検証・抽出・局所検索です。
+AIが真理を自動的に判定したり、モデルの重みを更新したりはしません。
+
+### <a id="km-relation"></a>型付き関係の書き方
+
+<sub>`section` `km-relation`</sub>
+
+`relation` ノードは `source` / `kind` / `target` 属性を持ちます。
+`source` と `target` は同じ文書に実在するIDである必要があります。
+`kind` は小文字の述語名です。例: `supports`、`contradicts`、
+`supersedes`、`derived_from`、`causes`、`tests`、`depends_on`。
+
+**方向を保存します。** 例えば `supersedes` は新しい仮説から古い仮説へ張ります。
+`supersedes` の循環はエラーですが、`contradicts` の循環は許されます。
+関係名は拡張可能なので、アプリ固有の述語も追加できます。
+
+### <a id="km-metadata"></a>証拠・時刻・確信度
+
+<sub>`section` `km-metadata`</sub>
+
+- `evidence_id` は根拠となるノードのID。存在チェックを行います
+- `confidence` は0から1の有限な数値。確率が校正済みであることは保証しません
+- `occurred_at` は事象の時刻、`recorded_at` は記録した時刻
+- `valid_from` と `valid_until` は主張の有効期間。前後関係を検査します
+- 日時には必ず `Z` または `+09:00` などのタイムゾーンを付けます
+- `source`、`status` などその他の通常属性も使用できます
+
+根拠や観察の真偽そのものは自動判定しません。
+異なる主張は上書き・削除する代わりにノードとして残せます。
+
+### <a id="km-commands"></a>実験用コマンド
+
+<sub>`section` `km-commands`</sub>
+
+```bash
+python -m pyn check samples/agent-memory.pyn
+python -m pyn.knowledge check samples/agent-memory.pyn
+python -m pyn.knowledge edges samples/agent-memory.pyn
+python -m pyn.knowledge context samples/agent-memory.pyn --id hyp-02 --hops 2
+python -m pyn html samples/agent-memory.pyn -o /tmp/memory.html
+```
+
+`context` は必要なノードと関係のみを返すJSON射影です。
+返り値はPYNの正準文書そのものではありません（元の階層の一部を切り取るため）。
+PYNの更新は従来どおり `pyn patch` を使用してください。
+
+### <a id="km-limits"></a>現時点の制約と今後
+
+<sub>`section` `km-limits`</sub>
+
+- 関係と根拠IDの検証は文書内に限ります。別文書の参照はまだ扱いません
+- `pyn check` は従来どおりの検査です。関係の意味検証は専用コマンドで行います
+- 関係の名前は検証しますが、その科学的・論理的妥当性は検証しません
+- ローカルJSONの抽出が主目的で、DB、検索インデックスや自動学習は未実装です
+- 将来は複数文書のID空間、出典の厳密化、競合解決、時間軸検索を検討します

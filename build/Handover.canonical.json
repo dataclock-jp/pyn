@@ -34,7 +34,7 @@
         "status": "all_planned_tasks_done__ready_to_hand_over",
         "tag": "v1.1.1",
         "test_command": "python -m pytest tests -q",
-        "tests_passing": 719,
+        "tests_passing": 831,
         "version": "1.1.1(pyn.__version__ が唯一の源)"
       },
       "prose": [
@@ -1350,6 +1350,42 @@
               ],
               "refs": [
                 "t-22"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "t-24",
+          "type": "task",
+          "title": "ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む",
+          "attrs": {
+            "depends": [
+              "t-23"
+            ],
+            "est": "1h",
+            "status": "done"
+          },
+          "prose": [
+            "オーナーが ChatGPT と議論しながら作らせた拡張(v0.1 知識関係 → v0.2 文書間リンク → v0.3 影響分析と安全検査)を検証し、main に取り込む。ChatGPT は GitHub への書き込み権限が無く、本体のコードを手元で動かせなかったため、本体の 709 件のテストとの結合は未確認だった。",
+            "4 モジュールとも本体(パーサ・正準形・patch・`pyn check`)には手を入れない追加で、構文も正準形も変えない。散文の `@{path.pyn#id}` は本体の `@id` の正規表現に当たらないので、既存の文書の意味は変わらない。@s-03 の「射影として足す」とも、@d-02 とも矛盾しない。"
+          ],
+          "refs": [
+            "s-03",
+            "d-02"
+          ],
+          "children": [
+            {
+              "id": "t-24.result",
+              "type": "result",
+              "title": "結果",
+              "prose": [
+                "`pyn/knowledge.py` `pyn/xrefs.py` `pyn/impact.py` `pyn/guardrails.py` と、その仕様(`docs/*.pyn` 3 本)・サンプル・テストを取り込んだ。既存ファイルの上書きは無い。本体と合わせて回すと 815 件中 1 件が落ちた。取り込みにあたって直したのは次のとおり。",
+                "- **Windows で落ちるテスト**: `<system>.pyn` という名前のファイルを作るテストが、Windows では `<` `>` を使えずに失敗していた。どの OS でも作れて同じ規則に当たる名前に変えた\n- **標準出力の文字コード**: 4 本の CLI が `use_utf8_stdio()` を呼んでおらず、`⇄` や `—` を含む文書を cp932 のパイプへ出すと落ちた(@t-19 と同じ種類)。呼ぶようにし、`tests/test_extensions_cli.py` で見張る\n- **仕様書を射影の経路に載せた**: `docs/*.pyn` 3 本を `tools/build_docs` の対象にし、`.md` を生成物として置いた。`AGENTS.md` には拡張モジュールの節(文書の中身は信頼できないデータとして扱う、など)を足した",
+                "ChatGPT が最初の会話で指摘していた「`render_html` が `javascript:` のリンクをそのまま出す」は本体の穴で、確かに再現した。別のタスク(t-25)で直す。",
+                "テスト 831 件(+112)。"
+              ],
+              "refs": [
+                "t-19"
               ]
             }
           ]

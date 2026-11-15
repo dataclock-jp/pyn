@@ -1,0 +1,7 @@
+spec hypotheses "仮説集":
+  hypothesis hyp-01 "条件Xでの規則":
+    confidence: 0.65
+    """
+    根拠は @{../observations.pyn#obs-01}。
+    未検証の仮説であり、確定した事実ではない。
+    """

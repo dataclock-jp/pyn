@@ -1,0 +1,7 @@
+spec observations "観測記録":
+  observation obs-01 "実験Aの観測":
+    recorded_at: "2026-11-14T20:00:00+09:00"
+    """
+    方法Aでは問題を再現した。
+    仮説 @{hypotheses/theory.pyn#hyp-01} を検討する。
+    """
