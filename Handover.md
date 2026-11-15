@@ -1,6 +1,6 @@
 # 引継ぎ — Synthesis from HTML and JSON
 
-*Synthesis from HTML and JSON / 最終更新 2026-11-15(t-26 まで完了・v1.2.0。続きは backlog から)*
+*Synthesis from HTML and JSON / 最終更新 2026-11-15 夜(t-26 まで完了・v1.2.0。ここで終了。続きは backlog から)*
 
 > このファイルは Handover.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.handover_to_pyn`
 
@@ -25,7 +25,7 @@
 - `id_policy`: `"ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)"`
 - `install_command`: `"pip install git+https://github.com/dataclock-jp/pyn.git"`
 - `language`: `ja`
-- `last_session`: `"2026-11-15(t-26 まで完了・v1.2.0。続きは backlog から)"`
+- `last_session`: `"2026-11-15 夜(t-26 まで完了・v1.2.0。ここで終了。続きは backlog から)"`
 - `license`: `"MIT(LICENSE)"`
 - `project`: `"Synthesis from HTML and JSON"`
 - `prose_dialect_doc`: `"docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"`
@@ -46,7 +46,7 @@
 
 なお `#` コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。
 
-このリポジトリの外でも、3 つのプロジェクトが pip で入れた pyn で `.pyn` を運用している(名前はここに書かない)。pyn の整形や書き出しを変えると、それらの文書に次に patch を当てたとき一度だけ差分が出る([出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)](#t-19) の空行、正準化による属性の並べ替え)。pyn を直して push したら、使う側では `pip install --user --upgrade --force-reinstall "git+https://github.com/dataclock-jp/pyn.git"` で入れ直す(バージョンが同じだと入れ替わらないことがある)。
+このリポジトリの外でも、3 つのプロジェクトが pip で入れた pyn で `.pyn` を運用している(名前はここに書かない)。pyn の整形や書き出しを変えると、それらの文書に次に patch を当てたとき一度だけ差分が出る([出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)](#t-19) の空行、正準化による属性の並べ替え)。pyn を直して push したら、使う側では `pip install --user --upgrade --force-reinstall "git+https://github.com/dataclock-jp/pyn.git"` で入れ直す(バージョンが同じだと入れ替わらないことがある)。1.2.0 は 2026-11-15 に入れ替え済み。1.2.0 は正準形の整形を変えていないので、1.1.1 で一度 patch を当てた文書に新しい差分は出ない。
 
 ## <a id="goal"></a>JSONとHTMLの良いとこ取りをする、Python風の文書形式 PYN(.pyn)を設計・実装する
 
@@ -71,7 +71,7 @@ python -m pyn check Handover.pyn             # 往復・参照・schema の検�
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 ```
 
-**直近の終了点(2026-11-15)**: **v1.2.0**。ChatGPT の実験版(知識関係・文書間リンク・影響分析・安全検査)を検証して取り込み([ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む](#t-24))、HTML の危険なリンクを塞ぎ([HTML 射影で危険な URL スキームをリンクにしない](#t-25))、記憶する前に審査する `pyn.intake` を足した([知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する](#t-26) / [知識は記憶する前に審査し、承認されたものだけを反映する](#d-03))。続きは [着手候補](#backlog) から選ぶ。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、`pyn.intake` の誤検出・見逃しもそこで測れる。設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
+**直近の終了点(2026-11-15 夜)**: **v1.2.0**。`main` とタグ `v1.2.0` は push 済みで作業ツリーはきれい、CI は全ジョブ成功。手元に pip で入れてある pyn も 1.2.0 に入れ替え、リポジトリの外から `pyn.intake` が動くことを確かめた。ChatGPT の実験版(知識関係・文書間リンク・影響分析・安全検査)を検証して取り込み([ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む](#t-24))、HTML の危険なリンクを塞ぎ([HTML 射影で危険な URL スキームをリンクにしない](#t-25))、記憶する前に審査する `pyn.intake` を足した([知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する](#t-26) / [知識は記憶する前に審査し、承認されたものだけを反映する](#d-03))。続きは [着手候補](#backlog) から選ぶ。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、`pyn.intake` の誤検出・見逃しもそこで測れる。設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
 
 **AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。
 
