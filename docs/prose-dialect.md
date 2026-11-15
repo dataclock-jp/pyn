@@ -1,5 +1,7 @@
 # 散文ブロックの Markdown 方言(PYN)
 
+> このファイルは docs/prose-dialect.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.build_docs`
+
 ## <a id="prose-dialect"></a>散文ブロックの Markdown 方言
 
 <sub>`spec` `prose-dialect`</sub>

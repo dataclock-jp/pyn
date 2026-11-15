@@ -45,3 +45,22 @@ def test_claude_md_points_at_agents_md_without_duplicating_it():
     text = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
     assert "AGENTS.md" in text
     assert len(text.splitlines()) < 15
+
+
+@pytest.mark.parametrize("source,target,title", DOCS)
+def test_generated_markdown_says_where_it_comes_from(source, target, title):
+    """「手で編集しない」は生成物の側に出す。開いた人が読むのはこちら。"""
+    text = (ROOT / target).read_text(encoding="utf-8")
+    assert f"このファイルは {source} から生成されています" in text.split("\n## ")[0]
+
+
+@pytest.mark.parametrize("source,target,title", DOCS)
+def test_source_documents_have_no_comments(source, target, title):
+    """docs/*.pyn は patch で書き換えるので、`#` コメントは次の patch で消える(d-02)。
+
+    以前は 1 行目のコメントを patch のたびに手で戻していた。残したいことは
+    散文か属性に書くこと。
+    """
+    from pyn import comment_lines
+
+    assert comment_lines((ROOT / source).read_text(encoding="utf-8")) == []

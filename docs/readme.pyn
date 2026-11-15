@@ -1,5 +1,3 @@
-# この文書の正本。README.md は python -m tools.build_docs の生成物なので手で編集しない。
-
 section rd-overview "概要":
   """
   PYN(`.pyn`)は、**JSON と HTML の良いとこ取り**をねらった、Python 風の文書形式です。

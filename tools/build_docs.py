@@ -31,8 +31,20 @@ DOCS = (
 )
 
 
+def note(source: str) -> str:
+    """生成物の先頭に出す注記。Handover.md と同じ形(tools/handover_to_pyn の NOTE_MD)。
+
+    以前は正本の `.pyn` の 1 行目に `#` コメントで書いていたが、コメントは
+    正準形に保存されないので patch のたびに消え、手で戻していた(d-02)。
+    「手で編集しない」を読む必要があるのは生成物を開いた人なので、こちらに出す。
+    """
+    return (f"このファイルは {source} から生成されています(手で編集しないこと)。"
+            " 生成: `python -m tools.build_docs`")
+
+
 def render(source: str, title: str) -> str:
-    return render_md(parse((ROOT / source).read_text(encoding="utf-8")), title=title)
+    return render_md(parse((ROOT / source).read_text(encoding="utf-8")),
+                     title=title, note=note(source))
 
 
 def main(argv=None) -> int:

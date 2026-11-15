@@ -1,5 +1,7 @@
 # PYN
 
+> このファイルは docs/readme.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.build_docs`
+
 ## <a id="rd-overview"></a>概要
 
 <sub>`section` `rd-overview`</sub>

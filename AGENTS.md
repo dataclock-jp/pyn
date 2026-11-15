@@ -1,5 +1,7 @@
 # AGENTS.md — AI エージェント向け操作ガイド(PYN)
 
+> このファイルは docs/agents.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.build_docs`
+
 ## <a id="agents"></a>AI エージェント向け操作ガイド(PYN)
 
 <sub>`spec` `agents`</sub>
