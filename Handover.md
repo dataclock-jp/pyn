@@ -36,7 +36,7 @@
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
 - `tag`: `v1.1.1`
 - `test_command`: `"python -m pytest tests -q"`
-- `tests_passing`: `831`
+- `tests_passing`: `843`
 - `version`: `"1.1.1(pyn.__version__ が唯一の源)"`
 
 **このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。
@@ -1074,6 +1074,26 @@ handover_to_pyn / build_docs / build_schema / check_ids の `main()` の先頭�
 ChatGPT が最初の会話で指摘していた「`render_html` が `javascript:` のリンクをそのまま出す」は本体の穴で、確かに再現した。別のタスク(t-25)で直す。
 
 テスト 831 件(+112)。
+
+### <a id="t-25"></a>HTML 射影で危険な URL スキームをリンクにしない
+
+<sub>`task` `t-25`</sub>
+
+- `depends`: `t-06`
+- `est`: `0.5h`
+- `status`: `done`
+
+散文の `[文字](javascript:...)` が、`pyn html` でそのまま `<a href="javascript:...">` になっていた。ChatGPT がこのリポジトリを読んで最初に指摘した点で([ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む](#t-24))、再現した。PYN は AI が書いた文書や外から来た文書を HTML にして人が開く使い方をするので、クリック一つでスクリプトが動くリンクを生成物に出してはいけない。
+
+#### <a id="t-25.result"></a>結果
+
+<sub>`result` `t-25.result`</sub>
+
+`pyn/render_html.py` でリンクにするのは `http` / `https` / `mailto` と、スキームの無い相対 URL・`#id` だけにした。それ以外(`javascript:` `data:` `vbscript:` `file:` など)はリンクにせず、文字だけを `link--blocked` の span で残す。ブラウザは URL 中の制御文字や空白を読み飛ばすので、判定の前に同じく取り除いている。
+
+直している途中で、URL の `&` が二重にエスケープされて `&amp;amp;` になる別の不具合も見つけた。本文を先にエスケープしてから href を再びエスケープしていたためで、いったん元に戻してから一度だけエスケープするようにした。
+
+Markdown 射影は従来どおり素通し(表示の安全はビューア側の責任)。テストは `tests/test_render_html_links.py`。修正前に 7 件落ちることを確かめた。テスト 843 件(+12)。
 
 ## <a id="questions"></a>未解決の問い
 

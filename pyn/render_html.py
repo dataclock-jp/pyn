@@ -29,6 +29,28 @@ BOLD = re.compile(r"\*\*([^*\n]+)\*\*")
 ITALIC = re.compile(r"(?<!\*)\*([^*\n]+)\*(?!\*)")
 REF = re.compile(r"(?<![A-Za-z0-9_])([@§])([A-Za-z0-9_][A-Za-z0-9_.-]*)")
 
+#: リンクにしてよい URL スキーム。スキームの無い相対 URL・`#id` も通す(t-25)。
+#: `javascript:` / `data:` / `vbscript:` / `file:` などはリンクにせず、文字だけ残す。
+SAFE_SCHEMES = frozenset({"http", "https", "mailto"})
+_SCHEME = re.compile(r"([A-Za-z][A-Za-z0-9+.\-]*):")
+#: ブラウザは URL 中の制御文字・空白を読み飛ばすので、判定の前に同じく取り除く
+_URL_IGNORED = re.compile(r"[\x00-\x20\x7f]")
+
+
+def _link(m) -> str:
+    """散文の `[label](url)` を HTML にする。危険なスキームはリンクにしない。
+
+    本文は先に html.escape 済みなので、URL をいったん元に戻してから判定し、
+    href に入れるときに一度だけエスケープする(以前は & が二重にエスケープされていた)。
+    """
+    label = m.group(1)
+    url = html.unescape(m.group(2))
+    scheme = _SCHEME.match(_URL_IGNORED.sub("", url))
+    if scheme and scheme.group(1).lower() not in SAFE_SCHEMES:
+        return (f'<span class="link--blocked" title="許可していない URL スキーム">'
+                f"{label}</span>")
+    return f'<a href="{html.escape(url, quote=True)}">{label}</a>'
+
 _SENTINEL = "\x00CODE{}\x00"
 
 
@@ -53,9 +75,7 @@ def _inline(text: str, index: dict) -> str:
                 f"{html.escape(label)}</a>")
 
     text = REF.sub(_ref, text)
-    text = LINK.sub(
-        lambda m: f'<a href="{html.escape(m.group(2), quote=True)}">{m.group(1)}</a>',
-        text)
+    text = LINK.sub(_link, text)
     text = BOLD.sub(lambda m: f"<strong>{m.group(1)}</strong>", text)
     text = ITALIC.sub(lambda m: f"<em>{m.group(1)}</em>", text)
 
