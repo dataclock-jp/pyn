@@ -18,6 +18,11 @@ Thumbs.db
 # Claude Code のローカル設定(環境ごとに異なる)
 .claude/settings.local.json
 
+# pyn.db の DB(t-28)。正準形からの生成物で、文書から作り直せる。
+# バイト列が安定しない(SQLite のファイル形式)ので、ほかの生成物と違ってコミットしない。
+*.sqlite
+*.sqlite.tmp
+
 # パッケージのビルド(pip install . / python -m build)の中間物と成果物。
 # build/ 直下は生成物(Handover.canonical.json)をコミットしているので、
 # setuptools が作る作業用ディレクトリだけを除外する。

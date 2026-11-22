@@ -1,6 +1,6 @@
 # 引継ぎ — Synthesis from HTML and JSON
 
-*Synthesis from HTML and JSON / 最終更新 2026-11-22(t-27 まで完了・v1.3.0。続きは backlog から)*
+*Synthesis from HTML and JSON / 最終更新 2026-11-22(t-28 まで完了・v1.4.0。続きは backlog から)*
 
 > このファイルは Handover.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.handover_to_pyn`
 
@@ -12,20 +12,20 @@
 - `check_command`: `"python -m pyn check samples/auth-spec.pyn"`
 - `ci`: `".github/workflows/ci.yml(pytest 3.11 / 3.14・生成物の追従・ID 消失検出・.pyn の check・install ジョブ = Ubuntu / Windows で pip install してリポジトリの外から動かす)"`
 - `cli_usage`: `"pyn {json|a|b|html|md|check|repair|patch|id} <file> [-o OUT](pip で入れた場合。このリポジトリの中では python -m pyn)"`
-- `code_size`: `"pyn/ 5204行 + tools/ 350行 + tests/ 3982行(本体は標準ライブラリのみ)"`
+- `code_size`: `"pyn/ 5856行 + tools/ 352行 + tests/ 4367行(本体は標準ライブラリのみ)"`
 - `comment_policy`: `"# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)"`
 - `console_note`: `"CLI と tools/ は標準出力・標準エラーも常に UTF-8・LF で書く(ファイル出力と同じ。t-19 / t-21 / t-22)。PYTHONIOENCODING の指定は不要"`
 - `created`: `2026-08-26`
 - `docs_command`: `"python -m tools.build_docs [--check]"`
 - `dogfooding_note`: `"Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)"`
 - `editor_support`: `"editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)"`
-- `extensions`: `"python -m pyn.{knowledge|xrefs|impact|guardrails|intake|query}(本体の構文・正準形は変えない拡張。仕様は docs/query.md・docs/knowledge-intake.md ほか)"`
+- `extensions`: `"python -m pyn.{knowledge|xrefs|impact|guardrails|intake|query|db}(本体の構文・正準形は変えない拡張。仕様は docs/db.md・docs/query.md・docs/knowledge-intake.md ほか)"`
 - `format_name`: `"PYN / 拡張子 .pyn(q-02 で確定)"`
 - `git`: `true`
 - `id_policy`: `"ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)"`
 - `install_command`: `"pip install git+https://github.com/dataclock-jp/pyn.git"`
 - `language`: `ja`
-- `last_session`: `"2026-11-22(t-27 まで完了・v1.3.0。続きは backlog から)"`
+- `last_session`: `"2026-11-22(t-28 まで完了・v1.4.0。続きは backlog から)"`
 - `license`: `"MIT(LICENSE)"`
 - `project`: `"Synthesis from HTML and JSON"`
 - `prose_dialect_doc`: `"docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"`
@@ -37,8 +37,8 @@
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
 - `tag`: `v1.3.0`
 - `test_command`: `"python -m pytest tests -q"`
-- `tests_passing`: `927`
-- `version`: `"1.3.0(pyn.__version__ が唯一の源)"`
+- `tests_passing`: `972`
+- `version`: `"1.4.0(pyn.__version__ が唯一の源)"`
 
 **このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。
 
@@ -46,7 +46,7 @@
 
 なお `#` コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。
 
-このリポジトリの外でも、3 つのプロジェクトが pip で入れた pyn で `.pyn` を運用している(名前はここに書かない)。pyn の整形や書き出しを変えると、それらの文書に次に patch を当てたとき一度だけ差分が出る([出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)](#t-19) の空行、正準化による属性の並べ替え)。pyn を直して push したら、使う側では `pip install --user --upgrade --force-reinstall "git+https://github.com/dataclock-jp/pyn.git"` で入れ直す(バージョンが同じだと入れ替わらないことがある)。1.2.0 は 2026-11-15 に入れ替え済み。1.2.0 は正準形の整形を変えていないので、1.1.1 で一度 patch を当てた文書に新しい差分は出ない。1.3.0 も正準形の整形を変えていない(足したのは検索の拡張 [複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) だけ)。使う側での 1.3.0 への入れ替えはまだ。
+このリポジトリの外でも、3 つのプロジェクトが pip で入れた pyn で `.pyn` を運用している(名前はここに書かない)。pyn の整形や書き出しを変えると、それらの文書に次に patch を当てたとき一度だけ差分が出る([出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)](#t-19) の空行、正準化による属性の並べ替え)。pyn を直して push したら、使う側では `pip install --user --upgrade --force-reinstall "git+https://github.com/dataclock-jp/pyn.git"` で入れ直す(バージョンが同じだと入れ替わらないことがある)。1.2.0 は 2026-11-15 に入れ替え済み。1.2.0 は正準形の整形を変えていないので、1.1.1 で一度 patch を当てた文書に新しい差分は出ない。1.3.0 / 1.4.0 も正準形の整形を変えていない(足したのは検索の拡張 [複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) と SQLite への射影 [検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28) だけ)。使う側での入れ替えはまだ。
 
 ## <a id="goal"></a>JSONとHTMLの良いとこ取りをする、Python風の文書形式 PYN(.pyn)を設計・実装する
 
@@ -66,12 +66,12 @@
 <sub>`section` `readme-start`</sub>
 
 ```bash
-python -m pytest tests -q                    # 927 passed を確認
+python -m pytest tests -q                    # 972 passed を確認
 python -m pyn check Handover.pyn             # 往復・参照・schema の検証
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 ```
 
-**直近の終了点(2026-11-22)**: **v1.3.0**。複数の文書を横断して検索し、結果を一つの PYN 文書として返す `pyn.query` を足した([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。`main` とタグ `v1.3.0` は push 済みで作業ツリーはきれい、CI は全ジョブ成功。使う側での入れ替えはまだ。続きは [着手候補](#backlog) から選ぶ。検索の段階 2(SQLite への射影)は [検索の段階 2: 正準形を SQLite へ射影する](#backlog.query-sqlite)。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
+**直近の終了点(2026-11-22)**: **v1.4.0**。複数の文書を横断する検索 `pyn.query`([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))に続けて、正準形を SQLite へ射影する `pyn.db` を足した([検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28) / [SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05))。DB は生成物で、読むだけの SQL と全文索引で引ける。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。使う側での入れ替えはまだ。続きは [着手候補](#backlog) から選ぶ。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
 
 **AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。
 
@@ -79,7 +79,7 @@ python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 
 > `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。
 
-**予定していたタスクは全部終わっています(t-01〜t-27)。** 未解決の問いもありません。
+**予定していたタスクは全部終わっています(t-01〜t-28)。** 未解決の問いもありません。
 いま何をするかは [着手候補](#backlog) にまとめてあります。経緯を追いたいときは [これまでの経緯(セッション単位)](#history)、
 判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。
 
@@ -98,6 +98,7 @@ python -m pyn repair broken.pyn              # 破損診断(自動適用はし�
 python -m pyn patch doc.pyn --ops ops.json   # ID宛のパッチを当てて射影を再生成
 python -m pyn id    draft.pyn                # ID の無い宣言に採番(--dry-run 可)
 python -m pyn.query find 承認 --in . --for human -o r.html   # 複数文書の検索(既定は AI 向けの .pyn)
+python -m pyn.db build --in . -o pyn.sqlite          # SQLite への射影(sql / restore / verify)
 
 python -m tools.handover_to_pyn              # この引継ぎ文書の再生成(--check あり)
 python -m tools.build_schema --check         # schema が model に追従しているか
@@ -322,18 +323,19 @@ spec auth "認証システム仕様":       # Type id "title": → ノード宣�
 - 作業中、シェル経由の置換でバックスラッシュが減る事故が 2 回起きた(1 回は NUL 文字がソースに入った)。[次にやること](#actions) に書いてある注意は正しく、置換はファイルに書いたスクリプトで行うこと
 - **テスト 886 件。**
 
-### <a id="history.s8"></a>第8セッション — 複数文書の検索(t-27 / v1.3.0)
+### <a id="history.s8"></a>第8セッション — 複数文書の検索と SQLite への射影(t-27 / t-28 / v1.3.0 / v1.4.0)
 
 <sub>`session` `history.s8`</sub>
 
-オーナーから「検索語を引数にして、それを含む文が射影されるデータベース機能は作れるか。ノードと辺があるのだからリレーショナル DB にもできるのでは」という問いがあった。どちらも射影として足せると答え、段階 1(DB なしの検索)から実装した。
+オーナーから「検索語を引数にして、それを含む文が射影されるデータベース機能は作れるか。ノードと辺があるのだからリレーショナル DB にもできるのでは」という問いがあった。どちらも射影として足せると答え、段階 1(DB なしの検索)から実装し、続けて段階 2(SQLite への射影)まで進めた。
 
 - 検索結果を一つの PYN 文書として返す `pyn.query` を足した([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))。人は HTML、AI は `.pyn` で読む
 - 人からの検索と AI からの検索を `--for` で区別した。自己申告であって認証ではないので、変わるのは射影と保護の既定値だけ。エージェントに `--for human` を付けさせないことを `AGENTS.md` に書いた
 - 安全検査をファイル単位からノード単位に移した。この引継ぎ文書自身がファイル単位の検査では隔離される
-- 段階 2(SQLite への射影)は [検索の段階 2: 正準形を SQLite へ射影する](#backlog.query-sqlite) に残した
+- 段階 2 として、正準形を SQLite へ射影する `pyn.db` を足した([検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28) / [SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05))。DB は生成物で読み取り専用。往復テストで射影であることを保証し、段階 1 の検索も DB から同じ結果で引ける
 - バックスラッシュの事故がまた起きた。「スクリプトをファイルに書く」だけでは防げない(ファイルの中の文字列リテラルもエスケープ処理である)とわかったので、経路と防ぎ方を `AGENTS.md` に節として書いた
-- **テスト 927 件。**
+- v1.3.0(段階 1)を打ってから段階 2 に進み、**v1.4.0** にした
+- **テスト 972 件。**
 
 ## <a id="d-00"></a>HTML vs JSON はトレードオフではなくレイヤーの違い
 
@@ -672,6 +674,37 @@ AI が知識体系へ直接書き足す経路を作らない。新しい知識�
 - 結果を文単位の一覧(JSON の配列など)で返す: 元の位置へ戻れず、射影も検証も継承できない
 - `--for` を認証にする(人だけが `human` を使える): 仕組みがこの層の責任を超える。[承認記録の真正性を担保するか決める](#backlog.approval-auth) と同じ問題で、区別は既定値の違いにとどめ、`AGENTS.md` でエージェントに `--for human` を付けさせない
 - 最初から SQLite に索引を張る: 文書が数百本までなら毎回読んでも足りる。DB 化は段階 2([検索の段階 2: 正準形を SQLite へ射影する](#backlog.query-sqlite))に回した
+
+## <a id="d-05"></a>SQLite への射影も生成物にとどめ、往復で射影であることを保証する
+
+<sub>`decision` `d-05`</sub>
+
+関連: [HTML vs JSON はトレードオフではなくレイヤーの違い](#d-00) [メタ止揚: 3つの反はすべて同じ根から出ていた](#s-meta) [正準化の仕様と往復テストが必須](#cost-2) [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04) [検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28)
+
+### <a id="d-05.conclusion"></a>結論
+
+<sub>`conclusion` `d-05.conclusion`</sub>
+
+正準形を SQLite の表(ノード・属性・散文・辺)へ射影する `pyn.db` を足す。DB は生成物で、読むときは読み取り専用で開き、書き込む文は拒否する。文書を直すのは `pyn patch` で、そのあと作り直す。順序の列と値の型を持たせ、`restore(build(x)) == x` を往復テストで保証する。DB はコミットしない。
+
+### <a id="d-05.rationale"></a>根拠
+
+<sub>`rationale` `d-05.rationale`</sub>
+
+- DB に書けるようにした瞬間、正本が二つになる。[HTML vs JSON はトレードオフではなくレイヤーの違い](#d-00) で「HTML を手で編集しない」と決めたのと同じ理由
+- 往復が成り立てば、DB は索引ではなく `.pyn` や JSON と同じ射影になる([メタ止揚: 3つの反はすべて同じ根から出ていた](#s-meta) / [正準化の仕様と往復テストが必須](#cost-2))。成り立たない索引だと、どこまでが文書の内容かが曖昧になる
+- エージェントが SQL を組み立てて流すことを前提に、守りを重ねた。読み取り専用で開く・authorizer で読み取り以外を拒否する・文は 1 つ・時間と行数に上限・結果のセルを安全検査する([検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04) と同じく AI 向けでは伏せる)
+- SQLite のファイルはバイト列が安定しないので、ほかの生成物のように「コミットして追従をテストで見張る」ができない。代わりに正準形のダイジェストを記録し、`verify` で古さを確かめる
+- 標準ライブラリの `sqlite3` だけで、表・再帰 CTE・FTS5(trigram)の全文索引まで揃う
+
+### <a id="d-05.rejected"></a>見送った案
+
+<sub>`rejected` `d-05.rejected`</sub>
+
+- DB を正本にして `.pyn` を射影にする: [HTML vs JSON はトレードオフではなくレイヤーの違い](#d-00) の逆向き。patch の全か無か・参照切れの検出・往復テストといった資産を捨てることになる
+- 辺を正準形に持たせる: 辺は散文と属性から導ける派生値で、正準形の `refs` と同じ扱いにした。DB の `edges` 表も往復には使わない
+- 増分の更新: 今の規模では毎回作り直しても足りる。必要になったら `docs.digest` を使って足せる
+- 外部の拡張や ORM を使う: 本体は標準ライブラリのみという方針を崩さない
 
 ## <a id="cost"></a>止揚が要求する代償(受け入れ済み)
 
@@ -1225,6 +1258,33 @@ ChatGPT が v0.3 の最後に「次の段階で最も重要」と挙げたもの
 
 バージョンは 1.3.0。CI の install ジョブで、入れた環境から検索して結果が `pyn check` を通ることも確かめる。テスト 927 件(+41)。
 
+### <a id="t-28"></a>検索の段階 2: 正準形を SQLite へ射影する(pyn.db)
+
+<sub>`task` `t-28`</sub>
+
+- `depends`: `t-27`
+- `est`: `2h`
+- `status`: `done`
+
+[検索の段階 2: 正準形を SQLite へ射影する](#backlog.query-sqlite) を実装する。ノード・属性・散文・辺を表に落とし、SQL で JOIN や再帰 CTE を書けるようにする。FTS5 の trigram で全文索引を張り、段階 1 の検索([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27))も DB から引けるようにする。設計判断は [SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05)。
+
+#### <a id="t-28.result"></a>結果
+
+<sub>`result` `t-28.result`</sub>
+
+`pyn/db.py` に `build` / `sql` / `restore` / `verify` を実装した(`python -m pyn.db`)。仕様は `docs/db.md`(正本 `docs/db.pyn`)。
+
+- **表**: `docs` `nodes` `attrs` `prose` `edges` `node_text`(+ FTS5 の `node_fts`)`skipped` `meta`。パスは root からの相対
+- **辺**: 散文の参照(`ref`)、文書間参照(`xref`。root からの相対に直す)、値が同じ文書の ID と一致する属性(キー名が `kind`)、`pyn.knowledge` の relation ノード(relation の `kind`)
+- **往復**: 往復テストと同じ乱数木 60 本と、このリポジトリの文書すべてで `restore(build(x)) == x`。空の配列・真偽値と整数・1.0 と 1・64 ビットを超える整数も区別して戻す
+- **読むだけの SQL**: 読み取り専用で開き、authorizer で読み取り以外を拒否する。文は 1 つ、5 秒・1000 行まで。結果は PYN 文書(`sql` → `row`)で、AI 向けでは安全検査に当たったセルを伏せる。人向けは HTML の表
+- **検索**: `pyn.query find --db` は全文索引で候補を絞ってから段階 1 と同じ照合をかける。結果は文書から検索したときと同じ(テストで確認)。3 文字以上の語は trigram の索引で、2 文字以下は全件走査。FTS5 の無い SQLite でも同じ結果になる
+- **作り直しの安全**: 出力先が `pyn.db` の DB でなければ上書きしない(`--force`)。一時ファイルに書いてから置き換える
+
+FTS5 は MATCH のときに内部で `PRAGMA data_version` を読むので、authorizer でこれだけは通した(値を与える形は拒否)。仕様書の問い合わせの例は、テストがリポジトリの DB に流して確かめる。
+
+バージョンは 1.4.0。CI の install ジョブで、入れた環境から DB を作り、SQL を流し、`verify` することも確かめる。テスト 972 件(+45)。
+
 ## <a id="questions"></a>未解決の問い
 
 <sub>`questions` `questions`</sub>
@@ -1307,7 +1367,7 @@ s-02 で『純装飾は素通し』と決めたが、表・コードブロック
 <sub>`actions` `actions`</sub>
 
 - `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)
-- `python -m pytest tests -q` が 927 passed になることを確認する
+- `python -m pytest tests -q` が 972 passed になることを確認する
 - この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`
   (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)
 - ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)
@@ -1317,13 +1377,14 @@ s-02 で『純装飾は素通し』と決めたが、表・コードブロック
 - バックスラッシュを含む置換は、シェルにも置換スクリプトの文字列リテラルにも通さない。エディタの置換機能(Claude Code なら Edit ツール)で行う。事故の経路と防ぎ方は `AGENTS.md` の「置換でバックスラッシュを壊さない」
 - `pyn.intake` で管理している知識体系には直接書き足さない。提案を書いて `evaluate` し、承認(`approve`)は人に任せる([知識は記憶する前に審査し、承認されたものだけを反映する](#d-03))
 - `pyn.query` はエージェントからは既定(`--for ai`)のまま使う。`withheld` のノードを読むために `--for human` を付けない([検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))
-- 予定タスクは完了(t-01〜t-27)。次に何をするかは [着手候補](#backlog)
+- `pyn.db` の DB は生成物。書き込まず、文書を `pyn patch` で直してから作り直す。コミットしない([SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05))
+- 予定タスクは完了(t-01〜t-28)。次に何をするかは [着手候補](#backlog)
 
 ## <a id="backlog"></a>着手候補
 
 <sub>`backlog` `backlog`</sub>
 
-予定していた t-01〜t-27 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして [実装計画](#plan) に足すこと。
+予定していた t-01〜t-28 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして [実装計画](#plan) に足すこと。
 
 ### <a id="backlog.readme"></a>README.md を射影として足す
 
@@ -1449,11 +1510,13 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 <sub>`idea` `backlog.query-sqlite`</sub>
 
 - `priority`: `medium`
-- `status`: `candidate`
+- `status`: `done`
 
 [複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) の続き。ノード・属性・散文・辺(子・`@id`・`depends`・`cites`・relation・文書間参照)を表に落とし、SQL で JOIN や再帰 CTE を書けるようにする(「`status=todo` の task のうち d-03 を参照しているもの」「t-24 に推移的に依存しているもの全部」など)。標準ライブラリの `sqlite3` で足り、FTS5 の trigram で全文索引も張れる。
 
 守ること: DB は正本ではなく生成物(読み取り専用で開き、コミットしない)。書き込みは `pyn patch` を通す。順序の列を持たせて「DB → 正準形」で元に戻ることを往復テストで保証すれば、索引ではなく射影を名乗れる。trigram は 2 文字以下の語(「承認」など)を索引で引けないので、その場合は全件走査に落とす。FTS5 の有無は Python の SQLite しだいなので、無い環境でも段階 1 の検索は動くようにしておく。
+
+済み([検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28) / [SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05))。
 
 ## <a id="artifacts"></a>成果物
 
@@ -1469,14 +1532,14 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 - `README.md` — リポジトリの説明(正本 `docs/readme.pyn`)。`LICENSE` は MIT
 - `AGENTS.md` — エージェント向け操作ガイド(正本 `docs/agents.pyn`)。`CLAUDE.md` はその案内
 - `docs/prose-dialect.pyn` `.md` — 散文方言の仕様
-- `docs/query.pyn` `docs/knowledge-intake.pyn` `docs/knowledge-memory.pyn` `docs/cross-file-links.pyn` `docs/impact-security.pyn`(と `.md`)— 検索と知識管理の拡張の仕様([ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む](#t-24) / [知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する](#t-26) / [複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27))
-- `pyn/` — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli(本体)/ knowledge, xrefs, impact, guardrails, intake, query(拡張。`python -m pyn.<名前>`)
+- `docs/db.pyn` `docs/query.pyn` `docs/knowledge-intake.pyn` `docs/knowledge-memory.pyn` `docs/cross-file-links.pyn` `docs/impact-security.pyn`(と `.md`)— 検索と知識管理の拡張の仕様([ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む](#t-24) / [知識の取り込み審査(pyn.intake)— 記憶する前に評価し、承認されたものだけを反映する](#t-26) / [複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28))
+- `pyn/` — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli(本体)/ knowledge, xrefs, impact, guardrails, intake, query, db(拡張。`python -m pyn.<名前>`)
 - `tools/` — handover_to_pyn, build_schema, build_docs, check_ids(いずれも `--check` あり。出力は CLI と同じく UTF-8・LF)
 - `schema/canonical.schema.json` — `pyn/model.py` からの生成物
 - `editors/vscode/` — シンタックスハイライト
 - `samples/auth-spec.pyn` — 実物のサンプル。`samples/intake/` `samples/agent-memory.pyn` `samples/xrefs/` `samples/impact/` は拡張のサンプル
 - `retired-ids.txt` — 意図的に廃止した ID の記録
-- `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging / tools / knowledge / xrefs / impact / guardrails / intake / extensions_cli / render_html_links / query
+- `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging / tools / knowledge / xrefs / impact / guardrails / intake / extensions_cli / render_html_links / query / db
 - `pyproject.toml` — pip で入れるための定義([pip で入れられるようにする(pyproject.toml)](#t-20))
 - `.github/workflows/ci.yml` — テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ
 

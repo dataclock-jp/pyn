@@ -10,20 +10,20 @@
         "check_command": "python -m pyn check samples/auth-spec.pyn",
         "ci": ".github/workflows/ci.yml(pytest 3.11 / 3.14・生成物の追従・ID 消失検出・.pyn の check・install ジョブ = Ubuntu / Windows で pip install してリポジトリの外から動かす)",
         "cli_usage": "pyn {json|a|b|html|md|check|repair|patch|id} <file> [-o OUT](pip で入れた場合。このリポジトリの中では python -m pyn)",
-        "code_size": "pyn/ 5204行 + tools/ 350行 + tests/ 3982行(本体は標準ライブラリのみ)",
+        "code_size": "pyn/ 5856行 + tools/ 352行 + tests/ 4367行(本体は標準ライブラリのみ)",
         "comment_policy": "# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)",
         "console_note": "CLI と tools/ は標準出力・標準エラーも常に UTF-8・LF で書く(ファイル出力と同じ。t-19 / t-21 / t-22)。PYTHONIOENCODING の指定は不要",
         "created": "2026-08-26",
         "docs_command": "python -m tools.build_docs [--check]",
         "dogfooding_note": "Handover.pyn が正本。.md / .html / build/*.json は生成物であり手で編集しない(t-16 で JSON 正本から反転)",
         "editor_support": "editors/vscode(TextMate 文法。入れ方は editors/vscode/README.md)",
-        "extensions": "python -m pyn.{knowledge|xrefs|impact|guardrails|intake|query}(本体の構文・正準形は変えない拡張。仕様は docs/query.md・docs/knowledge-intake.md ほか)",
+        "extensions": "python -m pyn.{knowledge|xrefs|impact|guardrails|intake|query|db}(本体の構文・正準形は変えない拡張。仕様は docs/db.md・docs/query.md・docs/knowledge-intake.md ほか)",
         "format_name": "PYN / 拡張子 .pyn(q-02 で確定)",
         "git": true,
         "id_policy": "ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)",
         "install_command": "pip install git+https://github.com/dataclock-jp/pyn.git",
         "language": "ja",
-        "last_session": "2026-11-22(t-27 まで完了・v1.3.0。続きは backlog から)",
+        "last_session": "2026-11-22(t-28 まで完了・v1.4.0。続きは backlog から)",
         "license": "MIT(LICENSE)",
         "project": "Synthesis from HTML and JSON",
         "prose_dialect_doc": "docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)",
@@ -35,16 +35,17 @@
         "status": "all_planned_tasks_done__ready_to_hand_over",
         "tag": "v1.3.0",
         "test_command": "python -m pytest tests -q",
-        "tests_passing": 927,
-        "version": "1.3.0(pyn.__version__ が唯一の源)"
+        "tests_passing": 972,
+        "version": "1.4.0(pyn.__version__ が唯一の源)"
       },
       "prose": [
         "**このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。\n\n書き換えは `python -m pyn patch Handover.pyn --ops ops.json` が安全です(ID 宛なので行番号がずれても当たり、失敗時は文書が変更されません)。\n\nなお `#` コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。",
-        "このリポジトリの外でも、3 つのプロジェクトが pip で入れた pyn で `.pyn` を運用している(名前はここに書かない)。pyn の整形や書き出しを変えると、それらの文書に次に patch を当てたとき一度だけ差分が出る(@t-19 の空行、正準化による属性の並べ替え)。pyn を直して push したら、使う側では `pip install --user --upgrade --force-reinstall \"git+https://github.com/dataclock-jp/pyn.git\"` で入れ直す(バージョンが同じだと入れ替わらないことがある)。1.2.0 は 2026-11-15 に入れ替え済み。1.2.0 は正準形の整形を変えていないので、1.1.1 で一度 patch を当てた文書に新しい差分は出ない。1.3.0 も正準形の整形を変えていない(足したのは検索の拡張 @t-27 だけ)。使う側での 1.3.0 への入れ替えはまだ。"
+        "このリポジトリの外でも、3 つのプロジェクトが pip で入れた pyn で `.pyn` を運用している(名前はここに書かない)。pyn の整形や書き出しを変えると、それらの文書に次に patch を当てたとき一度だけ差分が出る(@t-19 の空行、正準化による属性の並べ替え)。pyn を直して push したら、使う側では `pip install --user --upgrade --force-reinstall \"git+https://github.com/dataclock-jp/pyn.git\"` で入れ直す(バージョンが同じだと入れ替わらないことがある)。1.2.0 は 2026-11-15 に入れ替え済み。1.2.0 は正準形の整形を変えていないので、1.1.1 で一度 patch を当てた文書に新しい差分は出ない。1.3.0 / 1.4.0 も正準形の整形を変えていない(足したのは検索の拡張 @t-27 と SQLite への射影 @t-28 だけ)。使う側での入れ替えはまだ。"
       ],
       "refs": [
         "t-19",
-        "t-27"
+        "t-27",
+        "t-28"
       ]
     },
     {
@@ -67,13 +68,14 @@
       "type": "section",
       "title": "30秒で再開するには",
       "prose": [
-        "```bash\npython -m pytest tests -q                    # 927 passed を確認\npython -m pyn check Handover.pyn             # 往復・参照・schema の検証\npython -m tools.handover_to_pyn              # Handover.md / .html を再生成\n```\n\n**直近の終了点(2026-11-22)**: **v1.3.0**。複数の文書を横断して検索し、結果を一つの PYN 文書として返す `pyn.query` を足した(@t-27 / @d-04)。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。`main` とタグ `v1.3.0` は push 済みで作業ツリーはきれい、CI は全ジョブ成功。使う側での入れ替えはまだ。続きは @backlog から選ぶ。検索の段階 2(SQLite への射影)は @backlog.query-sqlite。いちばん価値が高いのは引き続き @backlog.trial で、設計上の宿題は @backlog.approval-auth。\n\n**AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。\n\nそのままAIに投げるなら:\n\n> `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。\n\n**予定していたタスクは全部終わっています(t-01〜t-27)。** 未解決の問いもありません。\nいま何をするかは @backlog にまとめてあります。経緯を追いたいときは @history、\n判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。"
+        "```bash\npython -m pytest tests -q                    # 972 passed を確認\npython -m pyn check Handover.pyn             # 往復・参照・schema の検証\npython -m tools.handover_to_pyn              # Handover.md / .html を再生成\n```\n\n**直近の終了点(2026-11-22)**: **v1.4.0**。複数の文書を横断する検索 `pyn.query`(@t-27 / @d-04)に続けて、正準形を SQLite へ射影する `pyn.db` を足した(@t-28 / @d-05)。DB は生成物で、読むだけの SQL と全文索引で引ける。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。使う側での入れ替えはまだ。続きは @backlog から選ぶ。いちばん価値が高いのは引き続き @backlog.trial で、設計上の宿題は @backlog.approval-auth。\n\n**AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。\n\nそのままAIに投げるなら:\n\n> `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。\n\n**予定していたタスクは全部終わっています(t-01〜t-28)。** 未解決の問いもありません。\nいま何をするかは @backlog にまとめてあります。経緯を追いたいときは @history、\n判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。"
       ],
       "refs": [
         "t-27",
         "d-04",
+        "t-28",
+        "d-05",
         "backlog",
-        "backlog.query-sqlite",
         "backlog.trial",
         "backlog.approval-auth",
         "history"
@@ -84,7 +86,7 @@
       "type": "section",
       "title": "いま何が動くか",
       "prose": [
-        "```bash\npython -m pyn json  samples/auth-spec.pyn    # 正準形JSONへ\npython -m pyn a     samples/auth-spec.pyn    # 投影A(インデント形)へ\npython -m pyn b     samples/auth-spec.pyn    # 投影B(フラット形)へ\npython -m pyn html  samples/auth-spec.pyn -o out.html\npython -m pyn md    samples/auth-spec.pyn -o out.md\npython -m pyn check samples/auth-spec.pyn    # 往復 + 参照 + schema の検証\npython -m pyn repair broken.pyn              # 破損診断(自動適用はしない)\npython -m pyn patch doc.pyn --ops ops.json   # ID宛のパッチを当てて射影を再生成\npython -m pyn id    draft.pyn                # ID の無い宣言に採番(--dry-run 可)\npython -m pyn.query find 承認 --in . --for human -o r.html   # 複数文書の検索(既定は AI 向けの .pyn)\n\npython -m tools.handover_to_pyn              # この引継ぎ文書の再生成(--check あり)\npython -m tools.build_schema --check         # schema が model に追従しているか\npython -m tools.build_docs --check           # AGENTS.md / README.md / prose-dialect.md の追従\npython -m tools.check_ids                    # 一度振った ID が消えていないか\n```\n\npip で入れた環境では `python -m pyn` の代わりに `pyn` と打てる(`pip install git+https://github.com/dataclock-jp/pyn.git`。@t-20)。このリポジトリの中では、作業中のコードが使われるよう `python -m pyn` を使う。\n\n| ファイル | 役割 |\n|---|---|\n| `pyn/model.py` | **正準形の定義そのもの**。他はすべてこれの射影(t-01) |\n| `pyn/parser.py` `pyn/values.py` | `.pyn` → 正準形。投影A/B を自動判別(t-02) |\n| `pyn/formatter.py` | 正準形 → 投影A / 投影B(t-03) |\n| `pyn/refs.py` | `@id` を辺として抽出、リンク切れ検証(t-05) |\n| `pyn/render_html.py` `pyn/render_md.py` | 正準形 → HTML / Markdown(t-06 / t-13) |\n| `pyn/repair.py` | 破損検出と修復候補の提示(t-07) |\n| `pyn/patch.py` | ID宛のパッチ適用API(t-11) |\n| `pyn/schema.py` | JSON Schema の生成と適合検証(t-10) |\n| `pyn/autoid.py` | ID の自動採番(t-17) |\n| `tools/` | `handover_to_pyn` / `build_schema` / `build_docs` / `check_ids` |\n| `pyproject.toml` | pip で入れるための定義。`pyn` コマンド = `pyn.cli:main`(t-20) |\n| `editors/vscode/` | シンタックスハイライト(t-09) |\n| `docs/agents.pyn` `docs/prose-dialect.pyn` `docs/readme.pyn` | エージェント向け操作ガイド / 散文方言の仕様 / README |\n| `.github/workflows/ci.yml` | テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ |"
+        "```bash\npython -m pyn json  samples/auth-spec.pyn    # 正準形JSONへ\npython -m pyn a     samples/auth-spec.pyn    # 投影A(インデント形)へ\npython -m pyn b     samples/auth-spec.pyn    # 投影B(フラット形)へ\npython -m pyn html  samples/auth-spec.pyn -o out.html\npython -m pyn md    samples/auth-spec.pyn -o out.md\npython -m pyn check samples/auth-spec.pyn    # 往復 + 参照 + schema の検証\npython -m pyn repair broken.pyn              # 破損診断(自動適用はしない)\npython -m pyn patch doc.pyn --ops ops.json   # ID宛のパッチを当てて射影を再生成\npython -m pyn id    draft.pyn                # ID の無い宣言に採番(--dry-run 可)\npython -m pyn.query find 承認 --in . --for human -o r.html   # 複数文書の検索(既定は AI 向けの .pyn)\npython -m pyn.db build --in . -o pyn.sqlite          # SQLite への射影(sql / restore / verify)\n\npython -m tools.handover_to_pyn              # この引継ぎ文書の再生成(--check あり)\npython -m tools.build_schema --check         # schema が model に追従しているか\npython -m tools.build_docs --check           # AGENTS.md / README.md / prose-dialect.md の追従\npython -m tools.check_ids                    # 一度振った ID が消えていないか\n```\n\npip で入れた環境では `python -m pyn` の代わりに `pyn` と打てる(`pip install git+https://github.com/dataclock-jp/pyn.git`。@t-20)。このリポジトリの中では、作業中のコードが使われるよう `python -m pyn` を使う。\n\n| ファイル | 役割 |\n|---|---|\n| `pyn/model.py` | **正準形の定義そのもの**。他はすべてこれの射影(t-01) |\n| `pyn/parser.py` `pyn/values.py` | `.pyn` → 正準形。投影A/B を自動判別(t-02) |\n| `pyn/formatter.py` | 正準形 → 投影A / 投影B(t-03) |\n| `pyn/refs.py` | `@id` を辺として抽出、リンク切れ検証(t-05) |\n| `pyn/render_html.py` `pyn/render_md.py` | 正準形 → HTML / Markdown(t-06 / t-13) |\n| `pyn/repair.py` | 破損検出と修復候補の提示(t-07) |\n| `pyn/patch.py` | ID宛のパッチ適用API(t-11) |\n| `pyn/schema.py` | JSON Schema の生成と適合検証(t-10) |\n| `pyn/autoid.py` | ID の自動採番(t-17) |\n| `tools/` | `handover_to_pyn` / `build_schema` / `build_docs` / `check_ids` |\n| `pyproject.toml` | pip で入れるための定義。`pyn` コマンド = `pyn.cli:main`(t-20) |\n| `editors/vscode/` | シンタックスハイライト(t-09) |\n| `docs/agents.pyn` `docs/prose-dialect.pyn` `docs/readme.pyn` | エージェント向け操作ガイド / 散文方言の仕様 / README |\n| `.github/workflows/ci.yml` | テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ |"
       ],
       "refs": [
         "t-20"
@@ -290,14 +292,15 @@
         {
           "id": "history.s8",
           "type": "session",
-          "title": "第8セッション — 複数文書の検索(t-27 / v1.3.0)",
+          "title": "第8セッション — 複数文書の検索と SQLite への射影(t-27 / t-28 / v1.3.0 / v1.4.0)",
           "prose": [
-            "オーナーから「検索語を引数にして、それを含む文が射影されるデータベース機能は作れるか。ノードと辺があるのだからリレーショナル DB にもできるのでは」という問いがあった。どちらも射影として足せると答え、段階 1(DB なしの検索)から実装した。\n\n- 検索結果を一つの PYN 文書として返す `pyn.query` を足した(@t-27 / @d-04)。人は HTML、AI は `.pyn` で読む\n- 人からの検索と AI からの検索を `--for` で区別した。自己申告であって認証ではないので、変わるのは射影と保護の既定値だけ。エージェントに `--for human` を付けさせないことを `AGENTS.md` に書いた\n- 安全検査をファイル単位からノード単位に移した。この引継ぎ文書自身がファイル単位の検査では隔離される\n- 段階 2(SQLite への射影)は @backlog.query-sqlite に残した\n- バックスラッシュの事故がまた起きた。「スクリプトをファイルに書く」だけでは防げない(ファイルの中の文字列リテラルもエスケープ処理である)とわかったので、経路と防ぎ方を `AGENTS.md` に節として書いた\n- **テスト 927 件。**"
+            "オーナーから「検索語を引数にして、それを含む文が射影されるデータベース機能は作れるか。ノードと辺があるのだからリレーショナル DB にもできるのでは」という問いがあった。どちらも射影として足せると答え、段階 1(DB なしの検索)から実装し、続けて段階 2(SQLite への射影)まで進めた。\n\n- 検索結果を一つの PYN 文書として返す `pyn.query` を足した(@t-27 / @d-04)。人は HTML、AI は `.pyn` で読む\n- 人からの検索と AI からの検索を `--for` で区別した。自己申告であって認証ではないので、変わるのは射影と保護の既定値だけ。エージェントに `--for human` を付けさせないことを `AGENTS.md` に書いた\n- 安全検査をファイル単位からノード単位に移した。この引継ぎ文書自身がファイル単位の検査では隔離される\n- 段階 2 として、正準形を SQLite へ射影する `pyn.db` を足した(@t-28 / @d-05)。DB は生成物で読み取り専用。往復テストで射影であることを保証し、段階 1 の検索も DB から同じ結果で引ける\n- バックスラッシュの事故がまた起きた。「スクリプトをファイルに書く」だけでは防げない(ファイルの中の文字列リテラルもエスケープ処理である)とわかったので、経路と防ぎ方を `AGENTS.md` に節として書いた\n- v1.3.0(段階 1)を打ってから段階 2 に進み、**v1.4.0** にした\n- **テスト 972 件。**"
           ],
           "refs": [
             "t-27",
             "d-04",
-            "backlog.query-sqlite"
+            "t-28",
+            "d-05"
           ]
         }
       ]
@@ -772,6 +775,56 @@
           "refs": [
             "backlog.approval-auth",
             "backlog.query-sqlite"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d-05",
+      "type": "decision",
+      "title": "SQLite への射影も生成物にとどめ、往復で射影であることを保証する",
+      "prose": [
+        "関連: @d-00 @s-meta @cost-2 @d-04 @t-28"
+      ],
+      "refs": [
+        "d-00",
+        "s-meta",
+        "cost-2",
+        "d-04",
+        "t-28"
+      ],
+      "children": [
+        {
+          "id": "d-05.conclusion",
+          "type": "conclusion",
+          "title": "結論",
+          "prose": [
+            "正準形を SQLite の表(ノード・属性・散文・辺)へ射影する `pyn.db` を足す。DB は生成物で、読むときは読み取り専用で開き、書き込む文は拒否する。文書を直すのは `pyn patch` で、そのあと作り直す。順序の列と値の型を持たせ、`restore(build(x)) == x` を往復テストで保証する。DB はコミットしない。"
+          ]
+        },
+        {
+          "id": "d-05.rationale",
+          "type": "rationale",
+          "title": "根拠",
+          "prose": [
+            "- DB に書けるようにした瞬間、正本が二つになる。@d-00 で「HTML を手で編集しない」と決めたのと同じ理由\n- 往復が成り立てば、DB は索引ではなく `.pyn` や JSON と同じ射影になる(@s-meta / @cost-2)。成り立たない索引だと、どこまでが文書の内容かが曖昧になる\n- エージェントが SQL を組み立てて流すことを前提に、守りを重ねた。読み取り専用で開く・authorizer で読み取り以外を拒否する・文は 1 つ・時間と行数に上限・結果のセルを安全検査する(@d-04 と同じく AI 向けでは伏せる)\n- SQLite のファイルはバイト列が安定しないので、ほかの生成物のように「コミットして追従をテストで見張る」ができない。代わりに正準形のダイジェストを記録し、`verify` で古さを確かめる\n- 標準ライブラリの `sqlite3` だけで、表・再帰 CTE・FTS5(trigram)の全文索引まで揃う"
+          ],
+          "refs": [
+            "d-00",
+            "s-meta",
+            "cost-2",
+            "d-04"
+          ]
+        },
+        {
+          "id": "d-05.rejected",
+          "type": "rejected",
+          "title": "見送った案",
+          "prose": [
+            "- DB を正本にして `.pyn` を射影にする: @d-00 の逆向き。patch の全か無か・参照切れの検出・往復テストといった資産を捨てることになる\n- 辺を正準形に持たせる: 辺は散文と属性から導ける派生値で、正準形の `refs` と同じ扱いにした。DB の `edges` 表も往復には使わない\n- 増分の更新: 今の規模では毎回作り直しても足りる。必要になったら `docs.digest` を使って足せる\n- 外部の拡張や ORM を使う: 本体は標準ライブラリのみという方針を崩さない"
+          ],
+          "refs": [
+            "d-00"
           ]
         }
       ]
@@ -1598,6 +1651,36 @@
               ]
             }
           ]
+        },
+        {
+          "id": "t-28",
+          "type": "task",
+          "title": "検索の段階 2: 正準形を SQLite へ射影する(pyn.db)",
+          "attrs": {
+            "depends": [
+              "t-27"
+            ],
+            "est": "2h",
+            "status": "done"
+          },
+          "prose": [
+            "@backlog.query-sqlite を実装する。ノード・属性・散文・辺を表に落とし、SQL で JOIN や再帰 CTE を書けるようにする。FTS5 の trigram で全文索引を張り、段階 1 の検索(@t-27)も DB から引けるようにする。設計判断は @d-05。"
+          ],
+          "refs": [
+            "backlog.query-sqlite",
+            "t-27",
+            "d-05"
+          ],
+          "children": [
+            {
+              "id": "t-28.result",
+              "type": "result",
+              "title": "結果",
+              "prose": [
+                "`pyn/db.py` に `build` / `sql` / `restore` / `verify` を実装した(`python -m pyn.db`)。仕様は `docs/db.md`(正本 `docs/db.pyn`)。\n\n- **表**: `docs` `nodes` `attrs` `prose` `edges` `node_text`(+ FTS5 の `node_fts`)`skipped` `meta`。パスは root からの相対\n- **辺**: 散文の参照(`ref`)、文書間参照(`xref`。root からの相対に直す)、値が同じ文書の ID と一致する属性(キー名が `kind`)、`pyn.knowledge` の relation ノード(relation の `kind`)\n- **往復**: 往復テストと同じ乱数木 60 本と、このリポジトリの文書すべてで `restore(build(x)) == x`。空の配列・真偽値と整数・1.0 と 1・64 ビットを超える整数も区別して戻す\n- **読むだけの SQL**: 読み取り専用で開き、authorizer で読み取り以外を拒否する。文は 1 つ、5 秒・1000 行まで。結果は PYN 文書(`sql` → `row`)で、AI 向けでは安全検査に当たったセルを伏せる。人向けは HTML の表\n- **検索**: `pyn.query find --db` は全文索引で候補を絞ってから段階 1 と同じ照合をかける。結果は文書から検索したときと同じ(テストで確認)。3 文字以上の語は trigram の索引で、2 文字以下は全件走査。FTS5 の無い SQLite でも同じ結果になる\n- **作り直しの安全**: 出力先が `pyn.db` の DB でなければ上書きしない(`--force`)。一時ファイルに書いてから置き換える\n\nFTS5 は MATCH のときに内部で `PRAGMA data_version` を読むので、authorizer でこれだけは通した(値を与える形は拒否)。仕様書の問い合わせの例は、テストがリポジトリの DB に流して確かめる。\n\nバージョンは 1.4.0。CI の install ジョブで、入れた環境から DB を作り、SQL を流し、`verify` することも確かめる。テスト 972 件(+45)。"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -1716,11 +1799,12 @@
       "type": "actions",
       "title": "次にやること",
       "prose": [
-        "- `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)\n- `python -m pytest tests -q` が 927 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n  (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)\n- ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)\n- 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す\n- pyn を直して外部で使うときは、push してから `pip install --user --upgrade --force-reinstall \"git+https://github.com/dataclock-jp/pyn.git\"` で入れ直す\n- 修正前のコードでテストが落ちるかを確かめるとき、`git stash` は使わない(戻したあとに修正が消えたことがある。PROGRESS.md の t-19)。`git worktree add` で HEAD を別の場所に出して回す\n- バックスラッシュを含む置換は、シェルにも置換スクリプトの文字列リテラルにも通さない。エディタの置換機能(Claude Code なら Edit ツール)で行う。事故の経路と防ぎ方は `AGENTS.md` の「置換でバックスラッシュを壊さない」\n- `pyn.intake` で管理している知識体系には直接書き足さない。提案を書いて `evaluate` し、承認(`approve`)は人に任せる(@d-03)\n- `pyn.query` はエージェントからは既定(`--for ai`)のまま使う。`withheld` のノードを読むために `--for human` を付けない(@d-04)\n- 予定タスクは完了(t-01〜t-27)。次に何をするかは @backlog"
+        "- `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)\n- `python -m pytest tests -q` が 972 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n  (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)\n- ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)\n- 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す\n- pyn を直して外部で使うときは、push してから `pip install --user --upgrade --force-reinstall \"git+https://github.com/dataclock-jp/pyn.git\"` で入れ直す\n- 修正前のコードでテストが落ちるかを確かめるとき、`git stash` は使わない(戻したあとに修正が消えたことがある。PROGRESS.md の t-19)。`git worktree add` で HEAD を別の場所に出して回す\n- バックスラッシュを含む置換は、シェルにも置換スクリプトの文字列リテラルにも通さない。エディタの置換機能(Claude Code なら Edit ツール)で行う。事故の経路と防ぎ方は `AGENTS.md` の「置換でバックスラッシュを壊さない」\n- `pyn.intake` で管理している知識体系には直接書き足さない。提案を書いて `evaluate` し、承認(`approve`)は人に任せる(@d-03)\n- `pyn.query` はエージェントからは既定(`--for ai`)のまま使う。`withheld` のノードを読むために `--for human` を付けない(@d-04)\n- `pyn.db` の DB は生成物。書き込まず、文書を `pyn patch` で直してから作り直す。コミットしない(@d-05)\n- 予定タスクは完了(t-01〜t-28)。次に何をするかは @backlog"
       ],
       "refs": [
         "d-03",
         "d-04",
+        "d-05",
         "backlog"
       ]
     },
@@ -1729,7 +1813,7 @@
       "type": "backlog",
       "title": "着手候補",
       "prose": [
-        "予定していた t-01〜t-27 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして @plan に足すこと。"
+        "予定していた t-01〜t-28 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして @plan に足すこと。"
       ],
       "refs": [
         "plan"
@@ -1913,13 +1997,16 @@
           "title": "検索の段階 2: 正準形を SQLite へ射影する",
           "attrs": {
             "priority": "medium",
-            "status": "candidate"
+            "status": "done"
           },
           "prose": [
-            "@t-27 の続き。ノード・属性・散文・辺(子・`@id`・`depends`・`cites`・relation・文書間参照)を表に落とし、SQL で JOIN や再帰 CTE を書けるようにする(「`status=todo` の task のうち d-03 を参照しているもの」「t-24 に推移的に依存しているもの全部」など)。標準ライブラリの `sqlite3` で足り、FTS5 の trigram で全文索引も張れる。\n\n守ること: DB は正本ではなく生成物(読み取り専用で開き、コミットしない)。書き込みは `pyn patch` を通す。順序の列を持たせて「DB → 正準形」で元に戻ることを往復テストで保証すれば、索引ではなく射影を名乗れる。trigram は 2 文字以下の語(「承認」など)を索引で引けないので、その場合は全件走査に落とす。FTS5 の有無は Python の SQLite しだいなので、無い環境でも段階 1 の検索は動くようにしておく。"
+            "@t-27 の続き。ノード・属性・散文・辺(子・`@id`・`depends`・`cites`・relation・文書間参照)を表に落とし、SQL で JOIN や再帰 CTE を書けるようにする(「`status=todo` の task のうち d-03 を参照しているもの」「t-24 に推移的に依存しているもの全部」など)。標準ライブラリの `sqlite3` で足り、FTS5 の trigram で全文索引も張れる。\n\n守ること: DB は正本ではなく生成物(読み取り専用で開き、コミットしない)。書き込みは `pyn patch` を通す。順序の列を持たせて「DB → 正準形」で元に戻ることを往復テストで保証すれば、索引ではなく射影を名乗れる。trigram は 2 文字以下の語(「承認」など)を索引で引けないので、その場合は全件走査に落とす。FTS5 の有無は Python の SQLite しだいなので、無い環境でも段階 1 の検索は動くようにしておく。",
+            "済み(@t-28 / @d-05)。"
           ],
           "refs": [
-            "t-27"
+            "t-27",
+            "t-28",
+            "d-05"
           ]
         }
       ]
@@ -1934,13 +2021,14 @@
           "type": "group",
           "title": "既存",
           "prose": [
-            "- `Handover.pyn` — **正本**(このファイル)\n- `Handover.md` / `Handover.html` / `build/Handover.canonical.json` — その射影(手で編集しない)\n- `PROGRESS.md` — セッションごとの作業記録(手書き。経緯の要約は @history)\n- `README.md` — リポジトリの説明(正本 `docs/readme.pyn`)。`LICENSE` は MIT\n- `AGENTS.md` — エージェント向け操作ガイド(正本 `docs/agents.pyn`)。`CLAUDE.md` はその案内\n- `docs/prose-dialect.pyn` `.md` — 散文方言の仕様\n- `docs/query.pyn` `docs/knowledge-intake.pyn` `docs/knowledge-memory.pyn` `docs/cross-file-links.pyn` `docs/impact-security.pyn`(と `.md`)— 検索と知識管理の拡張の仕様(@t-24 / @t-26 / @t-27)\n- `pyn/` — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli(本体)/ knowledge, xrefs, impact, guardrails, intake, query(拡張。`python -m pyn.<名前>`)\n- `tools/` — handover_to_pyn, build_schema, build_docs, check_ids(いずれも `--check` あり。出力は CLI と同じく UTF-8・LF)\n- `schema/canonical.schema.json` — `pyn/model.py` からの生成物\n- `editors/vscode/` — シンタックスハイライト\n- `samples/auth-spec.pyn` — 実物のサンプル。`samples/intake/` `samples/agent-memory.pyn` `samples/xrefs/` `samples/impact/` は拡張のサンプル\n- `retired-ids.txt` — 意図的に廃止した ID の記録\n- `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging / tools / knowledge / xrefs / impact / guardrails / intake / extensions_cli / render_html_links / query\n- `pyproject.toml` — pip で入れるための定義(@t-20)\n- `.github/workflows/ci.yml` — テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ"
+            "- `Handover.pyn` — **正本**(このファイル)\n- `Handover.md` / `Handover.html` / `build/Handover.canonical.json` — その射影(手で編集しない)\n- `PROGRESS.md` — セッションごとの作業記録(手書き。経緯の要約は @history)\n- `README.md` — リポジトリの説明(正本 `docs/readme.pyn`)。`LICENSE` は MIT\n- `AGENTS.md` — エージェント向け操作ガイド(正本 `docs/agents.pyn`)。`CLAUDE.md` はその案内\n- `docs/prose-dialect.pyn` `.md` — 散文方言の仕様\n- `docs/db.pyn` `docs/query.pyn` `docs/knowledge-intake.pyn` `docs/knowledge-memory.pyn` `docs/cross-file-links.pyn` `docs/impact-security.pyn`(と `.md`)— 検索と知識管理の拡張の仕様(@t-24 / @t-26 / @t-27 / @t-28)\n- `pyn/` — model, parser, values, formatter, refs, repair, patch, schema, autoid, render_html, render_md, cli(本体)/ knowledge, xrefs, impact, guardrails, intake, query, db(拡張。`python -m pyn.<名前>`)\n- `tools/` — handover_to_pyn, build_schema, build_docs, check_ids(いずれも `--check` あり。出力は CLI と同じく UTF-8・LF)\n- `schema/canonical.schema.json` — `pyn/model.py` からの生成物\n- `editors/vscode/` — シンタックスハイライト\n- `samples/auth-spec.pyn` — 実物のサンプル。`samples/intake/` `samples/agent-memory.pyn` `samples/xrefs/` `samples/impact/` は拡張のサンプル\n- `retired-ids.txt` — 意図的に廃止した ID の記録\n- `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging / tools / knowledge / xrefs / impact / guardrails / intake / extensions_cli / render_html_links / query / db\n- `pyproject.toml` — pip で入れるための定義(@t-20)\n- `.github/workflows/ci.yml` — テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ"
           ],
           "refs": [
             "history",
             "t-24",
             "t-26",
             "t-27",
+            "t-28",
             "t-20"
           ]
         },

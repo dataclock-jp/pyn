@@ -38,6 +38,8 @@ DOCS = (
      "知識の取り込み審査(PYN 拡張・実験的)"),
     ("docs/query.pyn", "docs/query.md",
      "複数文書の検索(PYN 拡張・実験的)"),
+    ("docs/db.pyn", "docs/db.md",
+     "SQLite への射影(PYN 拡張・実験的)"),
 )
 
 

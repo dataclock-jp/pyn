@@ -322,11 +322,13 @@ def _check_terms(terms) -> list[str]:
 
 def find(sources, terms, *, audience: str = "ai", match: str = "all",
          unit: str = "sentence", types=None, limit: int | None = None,
-         max_excerpts: int | None = None, skipped=()) -> dict:
+         max_excerpts: int | None = None, skipped=(), candidates=None) -> dict:
     """検索して、結果を正準形の PYN 文書として返す。
 
     ``sources`` は :func:`load_sources` の戻り値の第 1 要素と同じ形。
     文書の順、文書の中では出現順に並べる(順位付けはしない。説明できる順序にする)。
+    ``candidates`` は ``{(path, id)}``。渡せばそれ以外のノードを照合しない(``pyn.db`` の
+    全文索引で先に絞るため)。照合そのものは同じなので、結果は変わらない。
     """
     from .guardrails import scan_text
 
@@ -357,6 +359,8 @@ def find(sources, terms, *, audience: str = "ai", match: str = "all",
         hit_nodes: list[dict] = []
         for node, trail in _walk(doc.get("root", [])):
             if types and node["type"] not in types:
+                continue
+            if candidates is not None and (rel, node["id"]) not in candidates:
                 continue
             haystack = _norm(_node_text(node))
             if not combine(k in haystack for k in keys):
@@ -652,8 +656,9 @@ def main(argv: list[str] | None = None) -> int:
         description="複数の .pyn を横断して検索し、結果を PYN 文書として射影する(実験的)")
     ap.add_argument("action", choices=("find",))
     ap.add_argument("terms", nargs="+", help="検索語(既定: すべてを含むノード)")
-    ap.add_argument("--in", dest="paths", nargs="+", default=["."], metavar="PATH",
+    ap.add_argument("--in", dest="paths", nargs="+", metavar="PATH",
                     help=".pyn ファイルかディレクトリ(既定: .)")
+    ap.add_argument("--db", help="文書の代わりに pyn.db の DB から検索する(全文索引で絞る)")
     ap.add_argument("--root", help="検索してよい範囲。結果のパスはここからの相対(既定: カレント)")
     ap.add_argument("--for", dest="audience", choices=AUDIENCES, default="ai",
                     help="使い手。ai(既定)= .pyn・検査に当たった本文は伏せる / human = HTML")
@@ -665,17 +670,39 @@ def main(argv: list[str] | None = None) -> int:
                     help="抜き出す単位。sentence(既定)/ block = 散文ブロックごと")
     ap.add_argument("--limit", type=int, help="結果に載せるノードの上限(既定: ai 50 / human 500)")
     ap.add_argument("--max-excerpts", type=int, help="1 ノードあたりの抜き出しの上限(既定: ai 5 / human 20)")
-    ap.add_argument("--max-files", type=int, default=MAX_FILES)
+    ap.add_argument("--max-files", type=int)
     ap.add_argument("-o", "--output", help="書き出し先(省略時は標準出力)")
     args = ap.parse_args(argv)
+    if args.db is not None:
+        # 効かないフラグを黙って無視しない(t-18)
+        given = [f for f, v in (("--in", args.paths), ("--root", args.root),
+                                ("--max-files", args.max_files)) if v is not None]
+        if given:
+            ap.error(f"--db と一緒には使えない: {' '.join(given)}")
 
     fmt = args.format or DEFAULTS[args.audience]["format"]
+    match = "any" if args.any else "all"
     try:
-        sources, skipped = load_sources(args.paths, root=args.root, max_files=args.max_files)
-        result = find(sources, args.terms, audience=args.audience,
-                      match="any" if args.any else "all", unit=args.unit,
-                      types=args.types, limit=args.limit,
-                      max_excerpts=args.max_excerpts, skipped=skipped)
+        candidates = None
+        if args.db is not None:
+            import sqlite3
+            from .db import DbError, connect_ro, fts_candidates, restore, skipped_of
+            try:
+                conn = connect_ro(args.db)
+                try:
+                    candidates = fts_candidates(conn, _check_terms(args.terms), match)
+                    sources, skipped = list(restore(conn).items()), skipped_of(conn)
+                finally:
+                    conn.close()
+            except (DbError, sqlite3.Error) as exc:
+                raise QueryError(str(exc)) from None
+        else:
+            sources, skipped = load_sources(args.paths or ["."], root=args.root,
+                                            max_files=args.max_files or MAX_FILES)
+        result = find(sources, args.terms, audience=args.audience, match=match,
+                      unit=args.unit, types=args.types, limit=args.limit,
+                      max_excerpts=args.max_excerpts, skipped=skipped,
+                      candidates=candidates)
         text = project(result, fmt, titles=_titles(sources))
     except (QueryError, OSError) as exc:
         print(f"query: {exc}", file=sys.stderr)
