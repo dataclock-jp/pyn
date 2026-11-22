@@ -139,3 +139,20 @@ proposal p-2026-11-15-01 "標高 3000m での沸点の観測":
   散文の意味が食い違っていても、構造に表れていなければ見つけられない
 - 安全検査は字面の検出であり、通ったことは安全の証明にならない(`docs/impact-security.md`)
 - 信頼性は出典ごとの 1 つの数値で、主張ごとの校正や裏づけの数による加点はしていない
+
+ホスト側の線引きの例(Claude Code)。知識体系を置いているプロジェクトの `.claude/settings.json`(自分だけなら `.claude/settings.local.json`)に、エージェントが承認を実行できないようにする拒否の規則を書く。
+
+```json
+{
+  "permissions": {
+    "deny": [
+      "Bash(*pyn.intake approve*)",
+      "Bash(*pyn.intake* --accept-review*)",
+      "PowerShell(*pyn.intake approve*)",
+      "PowerShell(*pyn.intake* --accept-review*)"
+    ]
+  }
+}
+```
+
+承認は、人がプロンプトの先頭に `!` を付けて自分で打つ(`! python -m pyn.intake approve report.json --by human:owner -o approval.json`)。これは約束(`AGENTS.md`)を設定による強制に変えるもので、証明ではない。シェルを使えるエージェントは、別の書き方で同じことを実行しうる。承認者が複数人になったときや、CI で `admit` を回すときは、署名を検討すること。
