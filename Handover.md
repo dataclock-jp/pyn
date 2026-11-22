@@ -1,6 +1,6 @@
 # 引継ぎ — Synthesis from HTML and JSON
 
-*Synthesis from HTML and JSON / 最終更新 2026-11-22(t-30 まで完了・v1.4.1。続きは backlog から)*
+*Synthesis from HTML and JSON / 最終更新 2026-11-22(t-31 まで完了・v1.5.0。続きは backlog から)*
 
 > このファイルは Handover.pyn から生成されています(手で編集しないこと)。 生成: `python -m tools.handover_to_pyn`
 
@@ -12,7 +12,7 @@
 - `check_command`: `"python -m pyn check samples/auth-spec.pyn"`
 - `ci`: `".github/workflows/ci.yml(pytest 3.11 / 3.14・生成物の追従・ID 消失検出・.pyn の check・install ジョブ = Ubuntu / Windows で pip install してリポジトリの外から動かす)"`
 - `cli_usage`: `"pyn {json|a|b|html|md|check|repair|patch|id} <file> [-o OUT](pip で入れた場合。このリポジトリの中では python -m pyn)"`
-- `code_size`: `"pyn/ 6081行 + tools/ 352行 + tests/ 4959行(本体は標準ライブラリのみ)"`
+- `code_size`: `"pyn/ 6203行 + tools/ 352行 + tests/ 5199行(本体は標準ライブラリのみ)"`
 - `comment_policy`: `"# コメントは作業メモ。正準形に保存されないため射影の再生成で消える(警告あり)。残したい理由は散文ブロックか note: 属性へ(d-02)"`
 - `console_note`: `"CLI と tools/ は標準出力・標準エラーも常に UTF-8・LF で書く(ファイル出力と同じ。t-19 / t-21 / t-22)。PYTHONIOENCODING の指定は不要"`
 - `created`: `2026-08-26`
@@ -25,7 +25,7 @@
 - `id_policy`: `"ID は python -m pyn id で採番し、一度振ったら変えない。消えると tools/check_ids が CI で落とす。廃止は retired-ids.txt に記録(t-17)"`
 - `install_command`: `"pip install git+https://github.com/dataclock-jp/pyn.git"`
 - `language`: `ja`
-- `last_session`: `"2026-11-22(t-30 まで完了・v1.4.1。続きは backlog から)"`
+- `last_session`: `"2026-11-22(t-31 まで完了・v1.5.0。続きは backlog から)"`
 - `license`: `"MIT(LICENSE)"`
 - `project`: `"Synthesis from HTML and JSON"`
 - `prose_dialect_doc`: `"docs/prose-dialect.pyn(正本)/ docs/prose-dialect.md(生成物)"`
@@ -37,8 +37,8 @@
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
 - `tag`: `v1.4.1`
 - `test_command`: `"python -m pytest tests -q"`
-- `tests_passing`: `1049`
-- `version`: `"1.4.1(pyn.__version__ が唯一の源)"`
+- `tests_passing`: `1094`
+- `version`: `"1.5.0(pyn.__version__ が唯一の源)"`
 
 **このファイルが正本(canonical)です。** `Handover.md` / `Handover.html` / `build/Handover.canonical.json` は `python -m tools.handover_to_pyn` の生成物で、手では編集しません。
 
@@ -47,6 +47,14 @@
 なお `#` コメントはパッチや整形で消えます。残したいことは、この散文のようにデータとして書いてください(d-02)。
 
 このリポジトリの外でも、3 つのプロジェクトが pip で入れた pyn で `.pyn` を運用している(名前はここに書かない)。pyn の整形や書き出しを変えると、それらの文書に次に patch を当てたとき一度だけ差分が出る([出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)](#t-19) の空行、正準化による属性の並べ替え)。pyn を直して push したら、使う側では `pip install --user --upgrade --force-reinstall "git+https://github.com/dataclock-jp/pyn.git"` で入れ直す(バージョンが同じだと入れ替わらないことがある)。1.2.0 は 2026-11-15 に入れ替え済み。1.2.0 は正準形の整形を変えていないので、1.1.1 で一度 patch を当てた文書に新しい差分は出ない。1.3.0 / 1.4.0 も正準形の整形を変えていない(足したのは検索の拡張 [複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) と SQLite への射影 [検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28) だけ)。1.4.1 は `pyn check` に知らせを足し([check が、次の patch で入る整形を先に知らせる](#t-29))、通読で見つけた欠陥とセキュリティの穴を直した([通読で見つけた欠陥とセキュリティの穴を直す](#t-30))。正しく書かれた文書の整形は変わらない。変わるのは、これまで壊れていた入力の扱いだけである(属性値の CR は `\r` と書く・桁の多い小数を丸めない・NaN と Infinity は断る)。使う側での入れ替えはまだ。
+
+**1.5.0 は、読み方を 3 つ変えた([仕様の判断が要るとして残した 4 件を直す(参照の終わり / 重複属性 / rename / 行またぎ)](#t-31))。** 使う側で入れ替える前に知っておくこと。
+
+- 同じ属性を 1 つのノードに 2 回書いた文書は、読めなくなる(以前は後勝ち)。`pyn check` が行番号を言うので、どちらかを消す
+- 参照は英数字か `_` で終わる。末尾が `.` か `-` の ID を参照していた文書は、リンク切れになる
+- URL の中の `@` は参照でなくなる。それを参照のつもりで書いていた文書は、`refs` からその辺が消える
+
+このマシンにある外の文書(このリポジトリのものと合わせて 45 本)では、どれにも当たらなかった。解析の結果・参照・安全検査の所見を、変更の前後で突き合わせて差が無いことを確かめてある。
 
 ## <a id="goal"></a>JSONとHTMLの良いとこ取りをする、Python風の文書形式 PYN(.pyn)を設計・実装する
 
@@ -66,12 +74,12 @@
 <sub>`section` `readme-start`</sub>
 
 ```bash
-python -m pytest tests -q                    # 1049 passed を確認
+python -m pytest tests -q                    # 1094 passed を確認
 python -m pyn check Handover.pyn             # 往復・参照・schema の検証
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 ```
 
-**直近の終了点(2026-11-22)**: **v1.4.1**。複数の文書を横断する検索 `pyn.query`([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))に続けて、正準形を SQLite へ射影する `pyn.db` を足した([検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28) / [SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05))。DB は生成物で、読むだけの SQL と全文索引で引ける。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。そのあと同じ日に、`pyn check` が「次の patch で整形が入る」ことを先に知らせるようにし([check が、次の patch で入る整形を先に知らせる](#t-29))、CI の action を Node.js 24 対応の版へ上げた([CI の action を Node.js 24 対応の版へ上げる](#backlog.ci-node20))。続けてリポジトリを通読し、見つけた欠陥とセキュリティの穴を直した([通読で見つけた欠陥とセキュリティの穴を直す](#t-30))。直さずに残したものは、仕様の判断が要るので [着手候補](#backlog) に候補として足してある。`main` とタグ `v1.4.1` は push 済みで作業ツリーはきれい、CI は全ジョブ成功(版を上げた action でも通り、Node.js の非推奨の警告は出ていない)。使う側での入れ替えはまだ。続きは [着手候補](#backlog) から選ぶ。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
+**直近の終了点(2026-11-22)**: **v1.5.0**。複数の文書を横断する検索 `pyn.query`([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))に続けて、正準形を SQLite へ射影する `pyn.db` を足した([検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28) / [SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05))。DB は生成物で、読むだけの SQL と全文索引で引ける。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。そのあと同じ日に、`pyn check` が「次の patch で整形が入る」ことを先に知らせるようにし([check が、次の patch で入る整形を先に知らせる](#t-29))、CI の action を Node.js 24 対応の版へ上げた([CI の action を Node.js 24 対応の版へ上げる](#backlog.ci-node20))。続けてリポジトリを通読し、見つけた欠陥とセキュリティの穴を直した([通読で見つけた欠陥とセキュリティの穴を直す](#t-30))。仕様の判断が要るので残した 4 件も、続けて直した([仕様の判断が要るとして残した 4 件を直す(参照の終わり / 重複属性 / rename / 行またぎ)](#t-31))。読み方が 3 つ変わったので **v1.5.0** にした(何が変わったかは、この文書の先頭のノードに書いてある)。タグ `v1.4.1` までは push 済みで、CI は全ジョブ成功(版を上げた action でも通り、Node.js の非推奨の警告は出ていない)。v1.5.0 は、この記述の時点ではまだコミットもタグもしていない。使う側での入れ替えはまだ。続きは [着手候補](#backlog) から選ぶ。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
 
 **AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。
 
@@ -79,7 +87,7 @@ python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 
 > `Handover.pyn` を読んで、`task` ノードで `status` が `todo` のものから続けてください。無ければ `backlog` の候補を見てください。
 
-**予定していたタスクは全部終わっています(t-01〜t-30)。** 未解決の問いもありません。
+**予定していたタスクは全部終わっています(t-01〜t-31)。** 未解決の問いもありません。
 いま何をするかは [着手候補](#backlog) にまとめてあります。経緯を追いたいときは [これまでの経緯(セッション単位)](#history)、
 判断の理由を知りたいときは各 `decision` / `synthesis` ノードを見てください。
 
@@ -337,7 +345,7 @@ spec auth "認証システム仕様":       # Type id "title": → ノード宣�
 - v1.3.0(段階 1)を打ってから段階 2 に進み、**v1.4.0** にした
 - **テスト 972 件。**
 
-### <a id="history.s9"></a>第9セッション — 整形の予告・CI の版上げ・通読による欠陥とセキュリティの修正(t-29 / t-30 / v1.4.1)
+### <a id="history.s9"></a>第9セッション — 整形の予告・CI の版上げ・通読による欠陥とセキュリティの修正(t-29〜t-31 / v1.4.1 / v1.5.0)
 
 <sub>`session` `history.s9`</sub>
 
@@ -348,7 +356,8 @@ spec auth "認証システム仕様":       # Type id "title": → ノード宣�
 - 残っている候補は、どれも実運用の結果かオーナーの判断を待つもの([実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) / [承認記録の真正性を担保するか決める](#backlog.approval-auth) / [PyPI に出すか決める](#backlog.pypi) / [エコシステムの穴を埋めるか決める](#backlog.ecosystem) / [保留: `##` を「直後のノードに結合する注記」にする案](#backlog.note-syntax))
 - オーナーの依頼でリポジトリを通読し、境界の入力で突いた([通読で見つけた欠陥とセキュリティの穴を直す](#t-30))。テストは通っていたが、書いたファイルを読めなくなる入力・値が黙って変わる入力・安全検査をすり抜ける経路が見つかり、直した。新しいテストは修正前のコードで 41 件落ちる
 - 直さなかったものは仕様の判断が要る([参照の終わりと、URL の中の `@` をどう扱うか決める](#backlog.ref-boundary) / [同じ属性を 2 回書いたとき、黙って後勝ちにしない](#backlog.dup-attr) / [rename で、属性の中の ID も張り替えるか決める](#backlog.rename-attrs) / [安全検査の規則が、行をまたぐ書き方に当たらない](#backlog.guard-linewrap))
-- **テスト 1049 件。**
+- v1.4.1 を打ったあと、オーナーの指示で、残した 4 件も直した([仕様の判断が要るとして残した 4 件を直す(参照の終わり / 重複属性 / rename / 行またぎ)](#t-31))。どれも直すと読み方が変わるので、先にこのマシンにある外の文書を読むだけで基準を取り、変更の前後で差が無いことを確かめてから進めた
+- **テスト 1094 件。**
 
 ## <a id="d-00"></a>HTML vs JSON はトレードオフではなくレイヤーの違い
 
@@ -1361,6 +1370,32 @@ FTS5 は MATCH のときに内部で `PRAGMA data_version` を読むので、aut
 
 テストは `tests/test_hardening.py`(65 件)。修正前のコードで 41 件が落ちることを、`git worktree` で HEAD を別の場所に出して確かめた。残りの 24 件は、もともと守れていたこと(HTML に動く内容が出ない、root の外は読まない)の見張りである。仕様は `docs/knowledge-intake.pyn` / `docs/query.pyn` / `docs/db.pyn` に書き足した。テスト 1049 件(+65)。
 
+### <a id="t-31"></a>仕様の判断が要るとして残した 4 件を直す(参照の終わり / 重複属性 / rename / 行またぎ)
+
+<sub>`task` `t-31`</sub>
+
+- `depends`: `t-30`
+- `est`: `2h`
+- `status`: `done`
+
+[通読で見つけた欠陥とセキュリティの穴を直す](#t-30) で、直すと仕様が変わるので [着手候補](#backlog) に残した 4 件。オーナーの指示で直した。判断の中身は、それぞれ次のとおり。
+
+#### <a id="t-31.result"></a>結果
+
+<sub>`result` `t-31.result`</sub>
+
+**参照の終わりと URL([参照の終わりと、URL の中の `@` をどう扱うか決める](#backlog.ref-boundary))** — 参照は英数字か `_` で終わるものにした。文末に参照を書いたときのピリオドは、もう ID に含まれない。リンクの行き先と裸の URL の中の `@` は参照にしない。裸の URL は ASCII の URL 文字だけを続きと見る(日本語の文は URL の直後に空白を置かないので、空白までを URL にすると後ろの文の参照まで巻き込む)。
+
+規則は `pyn/refs.py` の 1 か所にまとめ、抽出・HTML・Markdown・rename・検索が同じものを使う。レンダラは自前の正規表現を持っていたので、「辺として数えたもの」と「リンクとして描いたもの」が食い違いえた。エディタの文法も同じ形にし、テストが突き合わせる。
+
+**同じ属性の 2 回書き([同じ属性を 2 回書いたとき、黙って後勝ちにしない](#backlog.dup-attr))** — 断るようにした(行番号を言う)。どちらを残すつもりだったかは書き手にしかわからないので、読む側で決めない。[コメントの位置づけを実態に合わせ、消える前に警告する](#t-14) / [効かないフラグを黙って無視しない(patch --dry-run を実装する)](#t-18) と同じ考え方である。
+
+**rename と属性の ID([rename で、属性の中の ID も張り替えるか決める](#backlog.rename-attrs))** — 既定では張り替えず、頼まれたとき(`"attrs": true`)だけ張り替える。張り替えるのは、値が古い ID とちょうど一致する文字列(配列の要素を含む)。既定を「張り替える」にしなかったのは、`status: done` と `done` という ID のように、たまたま同じ綴りの値まで黙って変わるからである。代わりに、古い ID が属性に残っていれば CLI が知らせる(`--dry-run` でも出る)。黙って残すことも、黙って変えることもしない。
+
+**安全検査の行またぎ([安全検査の規則が、行をまたぐ書き方に当たらない](#backlog.guard-linewrap))** — 段落の中で折り返された行をつないだ形にも規則をかける。空行と散文の区切りは段落の終わりとしてつながない。位置は変えないので、行番号は元の文面のものが出る。`scan_text` を直したので、ファイル単位の検査・`pyn.intake`・`pyn.knowledge`・検索のどれにも効く。字面の検査が安全の証明でないことは変わらない。
+
+読み方が変わるので、バージョンは **1.5.0**。進める前に、このマシンにある外の文書とこのリポジトリの文書(合わせて 45 本)で、解析の結果・参照・安全検査の所見の基準を取り、変更のあとに突き合わせた。差は 0 件(重複属性なし・参照の変化なし・新しい誤検出なし)。テストは `tests/test_backlog_t31.py`(45 件)。仕様は `docs/prose-dialect.pyn` / `docs/agents.pyn` / `docs/impact-security.pyn` に書き足した。テスト 1094 件(+45)。
+
 ## <a id="questions"></a>未解決の問い
 
 <sub>`questions` `questions`</sub>
@@ -1443,7 +1478,7 @@ s-02 で『純装飾は素通し』と決めたが、表・コードブロック
 <sub>`actions` `actions`</sub>
 
 - `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)
-- `python -m pytest tests -q` が 1049 passed になることを確認する
+- `python -m pytest tests -q` が 1094 passed になることを確認する
 - この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`
   (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)
 - 手で書かれてきた `.pyn` に patch を当てる前に `pyn check` を見る。「正準形の書き方と N 行ちがいます」と出たら、整形だけを先に済ませて別のコミットにする([check が、次の patch で入る整形を先に知らせる](#t-29))
@@ -1455,13 +1490,13 @@ s-02 で『純装飾は素通し』と決めたが、表・コードブロック
 - `pyn.intake` で管理している知識体系には直接書き足さない。提案を書いて `evaluate` し、承認(`approve`)は人に任せる([知識は記憶する前に審査し、承認されたものだけを反映する](#d-03))
 - `pyn.query` はエージェントからは既定(`--for ai`)のまま使う。`withheld` のノードを読むために `--for human` を付けない([検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))
 - `pyn.db` の DB は生成物。書き込まず、文書を `pyn patch` で直してから作り直す。コミットしない([SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05))
-- 予定タスクは完了(t-01〜t-30)。次に何をするかは [着手候補](#backlog)
+- 予定タスクは完了(t-01〜t-31)。次に何をするかは [着手候補](#backlog)
 
 ## <a id="backlog"></a>着手候補
 
 <sub>`backlog` `backlog`</sub>
 
-予定していた t-01〜t-30 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして [実装計画](#plan) に足すこと。
+予定していた t-01〜t-31 は完了している。ここにあるのは **候補** であり、やると決まったものではない。着手するときは `task` ノードとして [実装計画](#plan) に足すこと。
 
 ### <a id="backlog.readme"></a>README.md を射影として足す
 
@@ -1604,7 +1639,7 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 <sub>`idea` `backlog.ref-boundary`</sub>
 
 - `priority`: `medium`
-- `status`: `candidate`
+- `status`: `done`
 
 [通読で見つけた欠陥とセキュリティの穴を直す](#t-30) で見つけたが、直すと参照の文法が変わるので残した。
 
@@ -1613,32 +1648,40 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 
 直すなら、参照は英数字か `_` で終わるものとし、リンクの行き先と裸の URL を参照の対象から外す。抽出・HTML・Markdown・rename・検索が同じ規則を使うので、一か所にまとめてから変える。
 
+済み([仕様の判断が要るとして残した 4 件を直す(参照の終わり / 重複属性 / rename / 行またぎ)](#t-31))。
+
 ### <a id="backlog.dup-attr"></a>同じ属性を 2 回書いたとき、黙って後勝ちにしない
 
 <sub>`idea` `backlog.dup-attr`</sub>
 
 - `priority`: `low`
-- `status`: `candidate`
+- `status`: `done`
 
 `.pyn` で同じキーを 2 回書くと、エラーにも警告にもならず後のほうが残る([通読で見つけた欠陥とセキュリティの穴を直す](#t-30) で確認)。[コメントの位置づけを実態に合わせ、消える前に警告する](#t-14) / [効かないフラグを黙って無視しない(patch --dry-run を実装する)](#t-18) の「黙って捨てない」に照らせば、エラーにするのが筋である。ただし、いま通っている文書が読めなくなりうるので、外で使っている文書を確かめてから決める。
+
+済み([仕様の判断が要るとして残した 4 件を直す(参照の終わり / 重複属性 / rename / 行またぎ)](#t-31))。
 
 ### <a id="backlog.rename-attrs"></a>rename で、属性の中の ID も張り替えるか決める
 
 <sub>`idea` `backlog.rename-attrs`</sub>
 
 - `priority`: `medium`
-- `status`: `candidate`
+- `status`: `done`
 
 `rename` が張り替えるのは散文の参照だけで、`depends: [t-01]` のように属性に書いた ID は古いまま残る([通読で見つけた欠陥とセキュリティの穴を直す](#t-30) で確認)。本体は属性の値を参照として扱っていないので検査にもかからないが、`pyn.db` と `pyn.knowledge` はそれを辺として読む。張り替えるなら「値が改名前の ID と一致する文字列」を対象にするしかなく、たまたま同じ文字列の値まで変えてしまう。張り替えずに、残っていることを知らせるだけにする手もある。
+
+済み([仕様の判断が要るとして残した 4 件を直す(参照の終わり / 重複属性 / rename / 行またぎ)](#t-31))。
 
 ### <a id="backlog.guard-linewrap"></a>安全検査の規則が、行をまたぐ書き方に当たらない
 
 <sub>`idea` `backlog.guard-linewrap`</sub>
 
 - `priority`: `medium`
-- `status`: `candidate`
+- `status`: `done`
 
 `pyn.guardrails` の規則の多くは 1 行の中だけを見る。手口を 2 行に折り返して書けば当たらない([通読で見つけた欠陥とセキュリティの穴を直す](#t-30) で確認)。検索の抜き出しは、つないだ形も検査するようにして塞いだが、ファイル単位の検査(`safe_read`)と `pyn.intake` は元の形しか見ていない。行をつないだ形でも検査すれば塞げるが、無関係な行どうしがつながって誤検出が増える。段落の単位でつなぐのが落としどころだと思われる。字面の検査は安全の証明ではない、という前提(`AGENTS.md`)は変わらない。
+
+済み([仕様の判断が要るとして残した 4 件を直す(参照の終わり / 重複属性 / rename / 行またぎ)](#t-31))。
 
 ## <a id="artifacts"></a>成果物
 
@@ -1661,7 +1704,7 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 - `editors/vscode/` — シンタックスハイライト
 - `samples/auth-spec.pyn` — 実物のサンプル。`samples/intake/` `samples/agent-memory.pyn` `samples/xrefs/` `samples/impact/` は拡張のサンプル
 - `retired-ids.txt` — 意図的に廃止した ID の記録
-- `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging / tools / knowledge / xrefs / impact / guardrails / intake / extensions_cli / render_html_links / query / db / check_format / hardening
+- `tests/` — roundtrip / repair / patch / render_md / schema / prose_dialect / comments / grammar / docs / handover / autoid / packaging / tools / knowledge / xrefs / impact / guardrails / intake / extensions_cli / render_html_links / query / db / check_format / hardening / backlog_t31
 - `pyproject.toml` — pip で入れるための定義([pip で入れられるようにする(pyproject.toml)](#t-20))
 - `.github/workflows/ci.yml` — テスト(3.11 / 3.14)+ 生成物の追従 + ID 消失検出 + install ジョブ
 

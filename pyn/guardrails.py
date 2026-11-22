@@ -92,6 +92,23 @@ def _line_lookup(text: str):
     return lambda pos: bisect.bisect_left(breaks, pos) + 1
 
 
+def _unwrap(text: str) -> str:
+    """Join the lines of each paragraph with a space (same length as ``text``).
+
+    A blank line, or a PYN prose delimiter, ends a paragraph: unrelated blocks
+    are not glued together, which would only add false positives.
+    """
+    lines = text.split("\n")
+    out: list[str] = []
+    for i, line in enumerate(lines[:-1]):
+        here, after = line.strip(), lines[i + 1].strip()
+        hard = not here or not after or here == '"""' or after == '"""'
+        out.append(line)
+        out.append("\n" if hard else " ")
+    out.append(lines[-1])
+    return "".join(out)
+
+
 def scan_text(text: str, *, inspect_encodings: bool = True) -> list[Finding]:
     """Deterministic high-signal checks; *not* a complete attack classifier."""
     if not isinstance(text, str):
@@ -117,9 +134,16 @@ def scan_text(text: str, *, inspect_encodings: bool = True) -> list[Finding]:
     norm_line = _line_lookup(normalized)
     # Treat normalized positions as approximate when compatibility normalization
     # expands a character. Line numbers remain correct unless newlines expand.
+    # Most rules look inside one line. Hard-wrapping a phrase over two lines used
+    # to defeat them, although a reader (or a tool that re-joins wrapped lines)
+    # sees one sentence. Screen the paragraph-joined form as well; offsets are
+    # unchanged, so line numbers still point at the original text.
+    unwrapped = _unwrap(normalized)
+    forms = (normalized,) if unwrapped == normalized else (normalized, unwrapped)
     for name, rule in _INJECTION_RULES:
-        for match in rule.finditer(normalized):
-            add(name, norm_line(match.start()))
+        for form in forms:
+            for match in rule.finditer(form):
+                add(name, norm_line(match.start()))
     for match in _UNSAFE_URI.finditer(normalized):
         add("dangerous_markdown_uri", norm_line(match.start()))
 

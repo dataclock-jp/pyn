@@ -16,7 +16,7 @@ import html
 import re
 
 from .model import canonicalize
-from .refs import index_by_id
+from .refs import index_by_id, sub_refs
 from .values import emit_value
 
 # --------------------------------------------------------------------------
@@ -27,7 +27,6 @@ CODE_SPAN = re.compile(r"`([^`\n]+)`")
 LINK = re.compile(r"\[([^\]\n]+)\]\(([^)\s]+)\)")
 BOLD = re.compile(r"\*\*([^*\n]+)\*\*")
 ITALIC = re.compile(r"(?<!\*)\*([^*\n]+)\*(?!\*)")
-REF = re.compile(r"(?<![A-Za-z0-9_])([@§])([A-Za-z0-9_][A-Za-z0-9_.-]*)")
 
 #: リンクにしてよい URL スキーム。スキームの無い相対 URL・`#id` も通す(t-25)。
 #: `javascript:` / `data:` / `vbscript:` / `file:` などはリンクにせず、文字だけ残す。
@@ -65,7 +64,7 @@ def _inline(text: str, index: dict) -> str:
     text = html.escape(text, quote=False)
 
     def _ref(m):
-        sigil, target = m.group(1), m.group(2)
+        sigil, target = m.group(0)[0], m.group(1)
         node = index.get(target)
         if node is None:
             return (f'<span class="ref ref--dangling" title="未定義のID">'
@@ -85,7 +84,7 @@ def _inline(text: str, index: dict) -> str:
         return _SENTINEL.format(len(stash) - 1)
 
     text = LINK.sub(_keep_link, text)
-    text = REF.sub(_ref, text)
+    text = sub_refs(text, _ref)  # 抽出と同じ規則(URL の中は参照にしない)
     text = _emphasis(text)
 
     # あとから退避したもの(リンク)が、先に退避したもの(コード)を含みうるので逆順に戻す

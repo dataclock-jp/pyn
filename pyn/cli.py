@@ -27,7 +27,7 @@ from .formatter import to_pyn_a, to_pyn_b
 from .model import canonicalize, dumps, loads
 from .autoid import assign_ids
 from .parser import comment_lines, detect_projection, parse
-from .patch import apply as apply_patch
+from .patch import apply as apply_patch, attr_mentions
 from .refs import iter_nodes, validate_refs
 from .render_html import render_html
 from .render_md import render_md
@@ -92,6 +92,30 @@ def warn_dropped_comments(path: Path, destination: Path | None) -> None:
         print(f"  line {line_no}: {raw.strip()}", file=sys.stderr)
     if len(found) > COMMENT_PREVIEW:
         print(f"  ... 他 {len(found) - COMMENT_PREVIEW} 行", file=sys.stderr)
+
+
+def warn_stale_attr_ids(doc: dict, ops) -> None:
+    """rename のあと、古い ID が属性の値に残っていれば知らせる(t-31)。
+
+    rename が張り替えるのは散文の参照だけで、`depends: [t-01]` のような属性は既定では
+    触らない(たまたま同じ綴りの値まで変えないため)。黙って残すと、属性を辺として読む
+    `pyn.db` / `pyn.knowledge` から見てリンク切れになる。張り替えるかどうかは書き手が決める。
+    """
+    ids = {n["id"] for n in iter_nodes(doc)}
+    for op in ops:
+        if not isinstance(op, dict) or op.get("op") != "rename" or op.get("attrs"):
+            continue
+        old = op.get("id")
+        if not isinstance(old, str) or old in ids:
+            continue  # 同じ ID が後の操作でまた使われているなら、残っていて正しい
+        left = attr_mentions(doc, old)
+        if not left:
+            continue
+        where = ", ".join(f"{node}.{key}" for node, key in left[:5])
+        more = f" ほか {len(left) - 5} 件" if len(left) > 5 else ""
+        print(f"注: 改名前の ID {old!r} が属性の値に残っています: {where}{more}", file=sys.stderr)
+        print('  これらも張り替えるなら、rename の操作に "attrs": true を足してください',
+              file=sys.stderr)
 
 
 def format_drift(path: Path, doc: dict) -> tuple[str, int] | None:
@@ -264,6 +288,7 @@ def _main(argv=None) -> int:
             # パッチ後にリンク切れが出ていないかを必ず見る(s-02)
             if not args.no_refs:
                 validate_refs(doc)
+            warn_stale_attr_ids(doc, ops)
             projection = args.as_projection or (
                 "json" if args.path.suffix == ".json" else
                 (detect_projection(args.path.read_text(encoding="utf-8"))

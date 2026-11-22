@@ -17,7 +17,18 @@ from .errors import PynRefError
 
 #: 散文中の参照記法。@id と §id の2種類のみを認める。
 #: コード中のメールアドレス等を拾わないよう、直前が英数字の場合は参照としない。
-REF_RE = re.compile(r"(?<![A-Za-z0-9_])[@§]([A-Za-z0-9_][A-Za-z0-9_.-]*)")
+#: 参照は英数字かアンダースコアで終わる。ID には `.` と `-` も使えるが、末尾に来るものは
+#: 参照に含めない。含めると、文末に参照を書いたときのピリオドまで ID になり、
+#: リンク切れとして落ちていた(t-31)。
+REF_RE = re.compile(
+    r"(?<![A-Za-z0-9_])[@§]([A-Za-z0-9_](?:[A-Za-z0-9_.-]*[A-Za-z0-9_])?)")
+
+#: リンクの行き先 `](...)` と、裸の URL。この中の `@` は参照ではない
+#: (`https://example.com/@name/post` の `name` が参照になり、正当な URL で検査が落ちていた)。
+#: 裸の URL は ASCII の URL 文字だけを続きと見なす。日本語の文では URL の直後に空白を
+#: 置かないので、空白までを URL にすると後ろの文の参照まで巻き込む。
+LINK_DEST_RE = re.compile(r"\]\([^)\s]*\)")
+URL_RE = re.compile(r"(?i)(?<![A-Za-z0-9])(?:https?|mailto):[A-Za-z0-9\-._~:/?#\[\]@!$&'()*+,;=%]+")
 
 #: Markdown のインラインコード。参照解決の対象外にする。
 CODE_SPAN_RE = re.compile(r"`[^`\n]*`")
@@ -43,8 +54,32 @@ def strip_uncheckable(text: str) -> str:
         if in_fence:
             out.append(" " * len(line))
             continue
-        out.append(CODE_SPAN_RE.sub(lambda m: " " * len(m.group(0)), line))
+        out.append(mask_urls(CODE_SPAN_RE.sub(lambda m: " " * len(m.group(0)), line)))
     return "\n".join(out)
+
+
+def mask_urls(text: str) -> str:
+    """リンクの行き先と裸の URL を、同じ長さの空白で潰す(位置は変えない)。"""
+    blank = lambda m: " " * len(m.group(0))  # noqa: E731
+    return URL_RE.sub(blank, LINK_DEST_RE.sub(blank, text))
+
+
+def sub_refs(text: str, repl) -> str:
+    """URL の外にある参照だけを ``repl(match)`` の結果に置き換える。
+
+    レンダラ用。コードスパンとフェンスは呼び出し側が先に退避しておく。抽出
+    (:func:`extract_refs`)と同じ規則で置き換えるので、「辺として数えたもの」と
+    「リンクとして描いたもの」が食い違わない。``match.group(0)[0]`` が記号、
+    ``match.group(1)`` が ID。
+    """
+    out: list[str] = []
+    last = 0
+    for m in REF_RE.finditer(mask_urls(text)):
+        out.append(text[last:m.start()])
+        out.append(repl(m))
+        last = m.end()
+    out.append(text[last:])
+    return "".join(out)
 
 
 def extract_refs(prose_blocks) -> list[str]:

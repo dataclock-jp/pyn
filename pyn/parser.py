@@ -227,8 +227,7 @@ def _parse_indented(lines) -> dict:
                 raise PynSyntaxError(
                     f"属性 {m.group('key')!r} がどのノードにも属していません",
                     line_no, raw)
-            owner.setdefault("attrs", {})[m.group("key")] = parse_value(
-                m.group("val"), line_no)
+            _set_attr(owner, m.group("key"), m.group("val"), line_no, raw)
             i += 1
             continue
 
@@ -267,6 +266,21 @@ def _read_prose(lines, start_index: int, indent: int) -> tuple[str, int]:
     raise PynSyntaxError(
         f"散文ブロックが {PROSE_DELIM} で閉じられていません",
         start_index + 1, lines[start_index])
+
+
+def _set_attr(owner: dict, key: str, value_text: str, line_no: int, raw: str) -> None:
+    """属性を 1 つ足す。同じキーの 2 回目は断る(t-31)。
+
+    以前は後に書いたほうが黙って残っていた。どちらを残すつもりだったかは書き手にしか
+    わからないので、読む側で決めない(コメントや効かないフラグと同じく、黙って捨てない)。
+    """
+    attrs = owner.setdefault("attrs", {})
+    if key in attrs:
+        raise PynSyntaxError(
+            f"属性 {key!r} が {owner['id']} に 2 回書かれています", line_no, raw,
+            hint="どちらか一方だけを残してください(複数の値は [a, b] と書けます)",
+        )
+    attrs[key] = parse_value(value_text, line_no)
 
 
 def _leading_spaces(raw: str) -> int:
@@ -334,8 +348,7 @@ def _parse_flat(lines) -> dict:
                 raise PynSyntaxError(
                     f"属性 {m.group('key')!r} がどのノードにも属していません",
                     line_no, raw)
-            current.setdefault("attrs", {})[m.group("key")] = parse_value(
-                m.group("val"), line_no)
+            _set_attr(current, m.group("key"), m.group("val"), line_no, raw)
             i += 1
             continue
 

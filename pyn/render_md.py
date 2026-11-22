@@ -26,11 +26,9 @@ from __future__ import annotations
 import re
 
 from .model import canonicalize
-from .refs import index_by_id
+from .refs import index_by_id, sub_refs
 from .values import emit_value
 
-#: 散文中の参照。render_html と同じ形。
-REF = re.compile(r"(?<![A-Za-z0-9_])([@§])([A-Za-z0-9_][A-Za-z0-9_.-]*)")
 
 CODE_SPAN = re.compile(r"`[^`\n]*`")
 FENCE = re.compile(r"^\s*(```|~~~)")
@@ -139,12 +137,12 @@ def _resolve_line(line: str, index: dict) -> str:
     masked = CODE_SPAN.sub(_keep, line)
 
     def _sub(m):
-        node = index.get(m.group(2))
+        node = index.get(m.group(1))
         if node is None:
             return m.group(0)  # 未定義参照は書き換えない(検出は validate_refs の仕事)
-        return f'[{node.get("title") or m.group(2)}](#{m.group(2)})'
+        return f'[{node.get("title") or m.group(1)}](#{m.group(1)})'
 
-    masked = REF.sub(_sub, masked)
+    masked = sub_refs(masked, _sub)  # 抽出と同じ規則(URL の中は参照にしない)
     for i, chunk in enumerate(stash):
         masked = masked.replace(f"\x00{i}\x00", chunk)
     return masked

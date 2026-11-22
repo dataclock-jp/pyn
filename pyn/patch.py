@@ -225,13 +225,36 @@ def move(doc: dict, node_id: str, parent: str | None,
 # ID の変更(辺の張り替えを伴う)
 # --------------------------------------------------------------------------
 
-def rename(doc: dict, old_id: str, new_id: str) -> dict:
+def attr_mentions(doc: dict, node_id: str) -> list[tuple[str, str]]:
+    """値が ``node_id`` と一致する属性を ``(ノード ID, キー)`` で返す。
+
+    ``depends: [t-01]`` のように、属性に ID を書く使い方がある。本体はこれを参照として
+    扱わないが、``pyn.db`` と ``pyn.knowledge`` は辺として読む。rename のあとに古い ID が
+    属性に残っていないかを確かめるのに使う。
+    """
+    found = []
+    for node in iter_nodes(doc):
+        for key, value in (node.get("attrs") or {}).items():
+            values = value if isinstance(value, list) else [value]
+            if any(isinstance(v, str) and v == node_id for v in values):
+                found.append((node["id"], key))
+    return found
+
+
+def rename(doc: dict, old_id: str, new_id: str, *, attrs: bool = False) -> dict:
     """ID を変更し、文書中の ``@old`` / ``§old`` 参照も張り替える。
 
     ID はグラフの頂点そのものなので、rename は「表記の変更」ではなく
     「辺の張り替え」である。散文中の参照を同時に更新しないと文書が壊れる。
     コードスパン・フェンス内は参照ではないので(s-02)書き換えない。
+
+    ``attrs=True`` なら、値が ``old_id`` と一致する属性(配列の要素を含む)も張り替える。
+    既定では触らない。属性の値はただの文字列で、たまたま同じ綴りの値(``status: done`` と
+    ``done`` という ID など)まで書き換えてしまうからである。残っているかどうかは
+    :func:`attr_mentions` で確かめられ、CLI は残っていれば知らせる。
     """
+    if not isinstance(attrs, bool):
+        raise PynValidationError("attrs は true / false である必要があります")
     doc = _prepared(doc)
     if not isinstance(new_id, str) or not ID_RE.fullmatch(new_id):
         raise PynValidationError(f"不正な id: {new_id!r}")
@@ -245,6 +268,10 @@ def rename(doc: dict, old_id: str, new_id: str) -> dict:
         if prose:
             n["prose"] = [_retarget(block, old_id, new_id) for block in prose]
             n.pop("refs", None)
+        if attrs and n.get("attrs"):
+            swap = lambda v: new_id if isinstance(v, str) and v == old_id else v  # noqa: E731
+            n["attrs"] = {key: [swap(v) for v in value] if isinstance(value, list) else swap(value)
+                          for key, value in n["attrs"].items()}
     return canonicalize(doc)
 
 
@@ -279,7 +306,8 @@ _DISPATCH = {
     "remove": lambda doc, op: remove(doc, op["id"],
                                      with_children=op.get("with_children", True)),
     "move": lambda doc, op: move(doc, op["id"], op.get("parent"), op.get("index")),
-    "rename": lambda doc, op: rename(doc, op["id"], op["to"]),
+    "rename": lambda doc, op: rename(doc, op["id"], op["to"],
+                                     attrs=op.get("attrs", False)),
 }
 
 

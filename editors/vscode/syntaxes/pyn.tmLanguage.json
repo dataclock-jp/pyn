@@ -50,7 +50,7 @@
 
     "reference": {
       "comment": "@id / §id。装飾ではなくグラフの辺なので、リンクとして見せる(s-02)。",
-      "match": "(?<![A-Za-z0-9_])([@§])([A-Za-z0-9_][A-Za-z0-9_.-]*)",
+      "match": "(?<![A-Za-z0-9_])([@§])([A-Za-z0-9_](?:[A-Za-z0-9_.-]*[A-Za-z0-9_])?)",
       "name": "markup.underline.link.pyn",
       "captures": {
         "1": { "name": "punctuation.definition.reference.pyn" },

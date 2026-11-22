@@ -1,9 +1,9 @@
 spec prose-dialect "散文ブロックの Markdown 方言":
-  status: normative
   applies_to: "canonical JSON の prose[]"
   decided_by: q-03
-  implemented_in: [pyn/model.py, pyn/refs.py, pyn/render_html.py, pyn/render_md.py]
   generated_doc: docs/prose-dialect.md
+  implemented_in: [pyn/model.py, pyn/refs.py, pyn/render_html.py, pyn/render_md.py]
+  status: normative
   """
   PYN の散文ブロック(投影A/投影B では三連引用符で囲む部分、正準形では `prose[]`)に
   何を書いてよいかを定める。q-03 の決定は実装済みだったが明文化されていなかった
@@ -67,6 +67,8 @@ spec prose-dialect "散文ブロックの Markdown 方言":
 
     - `@id` と `§id` の 2 つだけを認める。意味は同じで、書き手の語感で選んでよい
     - 直前が英数字・アンダースコアのときは参照と見なさない(メールアドレス対策)
+    - 参照は英数字かアンダースコアで終わる。ID には `.` と `-` も使えるが、末尾に来たものは参照に含めない(文末に参照を書いたときのピリオドを ID に巻き込まないため)
+    - リンクの行き先(`[表示](URL)` の URL)と、裸の URL(`https://...`)の中の `@` は参照ではない
     - インラインコードとコードフェンスの中は参照ではない
     - 抽出された参照は正準形の `refs[]` に出現順・重複除去で入る。派生値なので
       `.pyn` の表層には現れず、手で書くこともできない
