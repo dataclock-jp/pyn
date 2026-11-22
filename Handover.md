@@ -35,7 +35,7 @@
 - `resume_entry_point`: `"このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ"`
 - `schema_command`: `"python -m tools.build_schema [--check]"`
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
-- `tag`: `v1.4.0`
+- `tag`: `v1.4.1`
 - `test_command`: `"python -m pytest tests -q"`
 - `tests_passing`: `1049`
 - `version`: `"1.4.1(pyn.__version__ が唯一の源)"`
@@ -71,7 +71,7 @@ python -m pyn check Handover.pyn             # 往復・参照・schema の検�
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 ```
 
-**直近の終了点(2026-11-22)**: **v1.4.1**。複数の文書を横断する検索 `pyn.query`([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))に続けて、正準形を SQLite へ射影する `pyn.db` を足した([検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28) / [SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05))。DB は生成物で、読むだけの SQL と全文索引で引ける。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。そのあと同じ日に、`pyn check` が「次の patch で整形が入る」ことを先に知らせるようにし([check が、次の patch で入る整形を先に知らせる](#t-29))、CI の action を Node.js 24 対応の版へ上げた([CI の action を Node.js 24 対応の版へ上げる](#backlog.ci-node20))。続けてリポジトリを通読し、見つけた欠陥とセキュリティの穴を直した([通読で見つけた欠陥とセキュリティの穴を直す](#t-30))。直さずに残したものは、仕様の判断が要るので [着手候補](#backlog) に候補として足してある。タグ `v1.4.0` までは push 済みで、CI は全ジョブ成功。v1.4.1 にタグはまだ打っていない。CI の版上げは push して初めて確かめられるので、push したら CI の結果を見ること。使う側での入れ替えはまだ。続きは [着手候補](#backlog) から選ぶ。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
+**直近の終了点(2026-11-22)**: **v1.4.1**。複数の文書を横断する検索 `pyn.query`([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))に続けて、正準形を SQLite へ射影する `pyn.db` を足した([検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28) / [SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05))。DB は生成物で、読むだけの SQL と全文索引で引ける。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。そのあと同じ日に、`pyn check` が「次の patch で整形が入る」ことを先に知らせるようにし([check が、次の patch で入る整形を先に知らせる](#t-29))、CI の action を Node.js 24 対応の版へ上げた([CI の action を Node.js 24 対応の版へ上げる](#backlog.ci-node20))。続けてリポジトリを通読し、見つけた欠陥とセキュリティの穴を直した([通読で見つけた欠陥とセキュリティの穴を直す](#t-30))。直さずに残したものは、仕様の判断が要るので [着手候補](#backlog) に候補として足してある。`main` とタグ `v1.4.1` は push 済みで作業ツリーはきれい、CI は全ジョブ成功(版を上げた action でも通り、Node.js の非推奨の警告は出ていない)。使う側での入れ替えはまだ。続きは [着手候補](#backlog) から選ぶ。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
 
 **AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。
 
@@ -1584,7 +1584,7 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 
 `actions/checkout@v4` と `actions/setup-python@v5` が Node.js 20 向けで、CI のログに非推奨の警告が出ている(今は Node.js 24 で強制的に動かされている)。`ubuntu-latest` も Ubuntu 26 へ移行中。動かなくなる前に版を上げる。
 
-版を上げた(2026-11-22)。`actions/checkout@v7` と `actions/setup-python@v7` で、どちらも Node.js 24 で動く。版は各リポジトリの最新リリースと `action.yml` の `using:` を見て決めた。ワークフローは手元では動かせないので、確かめられるのは push のあとである。`ubuntu-latest` の指定はそのままにしてある。
+版を上げた(2026-11-22)。`actions/checkout@v7` と `actions/setup-python@v7` で、どちらも Node.js 24 で動く。版は各リポジトリの最新リリースと `action.yml` の `using:` を見て決めた。v1.4.1 の push で、テスト(3.11 / 3.14)と install(Ubuntu / Windows)の全ジョブが通ることを確かめた。`ubuntu-latest` の指定はそのままにしてある。
 
 ### <a id="backlog.query-sqlite"></a>検索の段階 2: 正準形を SQLite へ射影する
 
