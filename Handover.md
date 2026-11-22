@@ -35,7 +35,7 @@
 - `resume_entry_point`: `"このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ"`
 - `schema_command`: `"python -m tools.build_schema [--check]"`
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
-- `tag`: `v1.4.1`
+- `tag`: `v1.5.0`
 - `test_command`: `"python -m pytest tests -q"`
 - `tests_passing`: `1094`
 - `version`: `"1.5.0(pyn.__version__ が唯一の源)"`
@@ -79,7 +79,7 @@ python -m pyn check Handover.pyn             # 往復・参照・schema の検�
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 ```
 
-**直近の終了点(2026-11-22)**: **v1.5.0**。複数の文書を横断する検索 `pyn.query`([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))に続けて、正準形を SQLite へ射影する `pyn.db` を足した([検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28) / [SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05))。DB は生成物で、読むだけの SQL と全文索引で引ける。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。そのあと同じ日に、`pyn check` が「次の patch で整形が入る」ことを先に知らせるようにし([check が、次の patch で入る整形を先に知らせる](#t-29))、CI の action を Node.js 24 対応の版へ上げた([CI の action を Node.js 24 対応の版へ上げる](#backlog.ci-node20))。続けてリポジトリを通読し、見つけた欠陥とセキュリティの穴を直した([通読で見つけた欠陥とセキュリティの穴を直す](#t-30))。仕様の判断が要るので残した 4 件も、続けて直した([仕様の判断が要るとして残した 4 件を直す(参照の終わり / 重複属性 / rename / 行またぎ)](#t-31))。読み方が 3 つ変わったので **v1.5.0** にした(何が変わったかは、この文書の先頭のノードに書いてある)。タグ `v1.4.1` までは push 済みで、CI は全ジョブ成功(版を上げた action でも通り、Node.js の非推奨の警告は出ていない)。v1.5.0 は、この記述の時点ではまだコミットもタグもしていない。使う側での入れ替えはまだ。続きは [着手候補](#backlog) から選ぶ。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
+**直近の終了点(2026-11-22)**: **v1.5.0**。複数の文書を横断する検索 `pyn.query`([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))に続けて、正準形を SQLite へ射影する `pyn.db` を足した([検索の段階 2: 正準形を SQLite へ射影する(pyn.db)](#t-28) / [SQLite への射影も生成物にとどめ、往復で射影であることを保証する](#d-05))。DB は生成物で、読むだけの SQL と全文索引で引ける。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。そのあと同じ日に、`pyn check` が「次の patch で整形が入る」ことを先に知らせるようにし([check が、次の patch で入る整形を先に知らせる](#t-29))、CI の action を Node.js 24 対応の版へ上げた([CI の action を Node.js 24 対応の版へ上げる](#backlog.ci-node20))。続けてリポジトリを通読し、見つけた欠陥とセキュリティの穴を直した([通読で見つけた欠陥とセキュリティの穴を直す](#t-30))。仕様の判断が要るので残した 4 件も、続けて直した([仕様の判断が要るとして残した 4 件を直す(参照の終わり / 重複属性 / rename / 行またぎ)](#t-31))。読み方が 3 つ変わったので **v1.5.0** にした(何が変わったかは、この文書の先頭のノードに書いてある)。`main` とタグ `v1.5.0` は push 済みで作業ツリーはきれい、CI は全ジョブ成功。使う側での入れ替えはまだ。続きは [着手候補](#backlog) から選ぶ。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
 
 **AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。
 
@@ -1600,6 +1600,8 @@ GitHub のトップに説明が出ない。他の生成物と同じく `docs/rea
 - `status`: `candidate`
 
 いまは `pip install git+https://github.com/dataclock-jp/pyn.git` で入れる([pip で入れられるようにする(pyproject.toml)](#t-20))。PyPI の `pyn` という名前は、2026-10 時点で配布物が見つからなかった(名前が登録済みかどうかは未確認)。出すなら `README.md` の英語の説明を厚くし、タグからの自動公開を CI に足す。
+
+2026-11-22 に確かめたところ、PyPI の `pyn` という名前は別の配布物(0.0.1 が 1 つだけ)に取られていた。出すなら別の名前が要る(コマンド名とパッケージ名は `pyn` のままにできる)。
 
 ### <a id="backlog.approval-auth"></a>承認記録の真正性を担保するか決める
 
