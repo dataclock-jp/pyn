@@ -35,7 +35,7 @@
 - `resume_entry_point`: `"このファイルを読む → task ノードで status=todo を探す → 無ければ backlog の候補から選ぶ"`
 - `schema_command`: `"python -m tools.build_schema [--check]"`
 - `status`: `all_planned_tasks_done__ready_to_hand_over`
-- `tag`: `v1.2.0`
+- `tag`: `v1.3.0`
 - `test_command`: `"python -m pytest tests -q"`
 - `tests_passing`: `927`
 - `version`: `"1.3.0(pyn.__version__ が唯一の源)"`
@@ -71,7 +71,7 @@ python -m pyn check Handover.pyn             # 往復・参照・schema の検�
 python -m tools.handover_to_pyn              # Handover.md / .html を再生成
 ```
 
-**直近の終了点(2026-11-22)**: **v1.3.0**。複数の文書を横断して検索し、結果を一つの PYN 文書として返す `pyn.query` を足した([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。コミット・タグ・push と、使う側での入れ替えはまだ。続きは [着手候補](#backlog) から選ぶ。検索の段階 2(SQLite への射影)は [検索の段階 2: 正準形を SQLite へ射影する](#backlog.query-sqlite)。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
+**直近の終了点(2026-11-22)**: **v1.3.0**。複数の文書を横断して検索し、結果を一つの PYN 文書として返す `pyn.query` を足した([複数文書の検索(pyn.query)— 検索語を含む文を、一つの PYN 文書として射影する](#t-27) / [検索結果も PYN 文書として返し、人と AI で射影と保護の既定値を変える](#d-04))。人は `--for human` で HTML を、AI は既定のまま `.pyn` を読む。`main` とタグ `v1.3.0` は push 済みで作業ツリーはきれい、CI は全ジョブ成功。使う側での入れ替えはまだ。続きは [着手候補](#backlog) から選ぶ。検索の段階 2(SQLite への射影)は [検索の段階 2: 正準形を SQLite へ射影する](#backlog.query-sqlite)。いちばん価値が高いのは引き続き [実運用で3つの指標を測る(いちばん価値が高い)](#backlog.trial) で、設計上の宿題は [承認記録の真正性を担保するか決める](#backlog.approval-auth)。
 
 **AI に作業させるなら、まず `AGENTS.md` を読ませてください**(Claude Code / Codex CLI 共通の操作ガイド。正本は `docs/agents.pyn`)。
 
