@@ -300,6 +300,7 @@ history history "これまでの経緯(セッション単位)":
     - 人からの検索と AI からの検索を `--for` で区別した。自己申告であって認証ではないので、変わるのは射影と保護の既定値だけ。エージェントに `--for human` を付けさせないことを `AGENTS.md` に書いた
     - 安全検査をファイル単位からノード単位に移した。この引継ぎ文書自身がファイル単位の検査では隔離される
     - 段階 2(SQLite への射影)は @backlog.query-sqlite に残した
+    - バックスラッシュの事故がまた起きた。「スクリプトをファイルに書く」だけでは防げない(ファイルの中の文字列リテラルもエスケープ処理である)とわかったので、経路と防ぎ方を `AGENTS.md` に節として書いた
     - **テスト 927 件。**
     """
 
@@ -1139,7 +1140,7 @@ actions actions "次にやること":
   - 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す
   - pyn を直して外部で使うときは、push してから `pip install --user --upgrade --force-reinstall "git+https://github.com/dataclock-jp/pyn.git"` で入れ直す
   - 修正前のコードでテストが落ちるかを確かめるとき、`git stash` は使わない(戻したあとに修正が消えたことがある。PROGRESS.md の t-19)。`git worktree add` で HEAD を別の場所に出して回す
-  - バックスラッシュを含む書き換えはシェルを通さない(コマンドの中で `\\` と書くと `\` に減ってから渡ることがある。PROGRESS.md の t-21)。置換スクリプトも ops もファイルに書く
+  - バックスラッシュを含む置換は、シェルにも置換スクリプトの文字列リテラルにも通さない。エディタの置換機能(Claude Code なら Edit ツール)で行う。事故の経路と防ぎ方は `AGENTS.md` の「置換でバックスラッシュを壊さない」
   - `pyn.intake` で管理している知識体系には直接書き足さない。提案を書いて `evaluate` し、承認(`approve`)は人に任せる(@d-03)
   - `pyn.query` はエージェントからは既定(`--for ai`)のまま使う。`withheld` のノードを読むために `--for human` を付けない(@d-04)
   - 予定タスクは完了(t-01〜t-27)。次に何をするかは @backlog

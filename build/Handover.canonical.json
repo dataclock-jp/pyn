@@ -292,7 +292,7 @@
           "type": "session",
           "title": "第8セッション — 複数文書の検索(t-27 / v1.3.0)",
           "prose": [
-            "オーナーから「検索語を引数にして、それを含む文が射影されるデータベース機能は作れるか。ノードと辺があるのだからリレーショナル DB にもできるのでは」という問いがあった。どちらも射影として足せると答え、段階 1(DB なしの検索)から実装した。\n\n- 検索結果を一つの PYN 文書として返す `pyn.query` を足した(@t-27 / @d-04)。人は HTML、AI は `.pyn` で読む\n- 人からの検索と AI からの検索を `--for` で区別した。自己申告であって認証ではないので、変わるのは射影と保護の既定値だけ。エージェントに `--for human` を付けさせないことを `AGENTS.md` に書いた\n- 安全検査をファイル単位からノード単位に移した。この引継ぎ文書自身がファイル単位の検査では隔離される\n- 段階 2(SQLite への射影)は @backlog.query-sqlite に残した\n- **テスト 927 件。**"
+            "オーナーから「検索語を引数にして、それを含む文が射影されるデータベース機能は作れるか。ノードと辺があるのだからリレーショナル DB にもできるのでは」という問いがあった。どちらも射影として足せると答え、段階 1(DB なしの検索)から実装した。\n\n- 検索結果を一つの PYN 文書として返す `pyn.query` を足した(@t-27 / @d-04)。人は HTML、AI は `.pyn` で読む\n- 人からの検索と AI からの検索を `--for` で区別した。自己申告であって認証ではないので、変わるのは射影と保護の既定値だけ。エージェントに `--for human` を付けさせないことを `AGENTS.md` に書いた\n- 安全検査をファイル単位からノード単位に移した。この引継ぎ文書自身がファイル単位の検査では隔離される\n- 段階 2(SQLite への射影)は @backlog.query-sqlite に残した\n- バックスラッシュの事故がまた起きた。「スクリプトをファイルに書く」だけでは防げない(ファイルの中の文字列リテラルもエスケープ処理である)とわかったので、経路と防ぎ方を `AGENTS.md` に節として書いた\n- **テスト 927 件。**"
           ],
           "refs": [
             "t-27",
@@ -1716,7 +1716,7 @@
       "type": "actions",
       "title": "次にやること",
       "prose": [
-        "- `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)\n- `python -m pytest tests -q` が 927 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n  (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)\n- ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)\n- 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す\n- pyn を直して外部で使うときは、push してから `pip install --user --upgrade --force-reinstall \"git+https://github.com/dataclock-jp/pyn.git\"` で入れ直す\n- 修正前のコードでテストが落ちるかを確かめるとき、`git stash` は使わない(戻したあとに修正が消えたことがある。PROGRESS.md の t-19)。`git worktree add` で HEAD を別の場所に出して回す\n- バックスラッシュを含む書き換えはシェルを通さない(コマンドの中で `\\\\` と書くと `\\` に減ってから渡ることがある。PROGRESS.md の t-21)。置換スクリプトも ops もファイルに書く\n- `pyn.intake` で管理している知識体系には直接書き足さない。提案を書いて `evaluate` し、承認(`approve`)は人に任せる(@d-03)\n- `pyn.query` はエージェントからは既定(`--for ai`)のまま使う。`withheld` のノードを読むために `--for human` を付けない(@d-04)\n- 予定タスクは完了(t-01〜t-27)。次に何をするかは @backlog"
+        "- `AGENTS.md` を読む(エージェントの入口。正本は `docs/agents.pyn`)\n- `python -m pytest tests -q` が 927 passed になることを確認する\n- この文書を書き換えるときは `python -m pyn patch Handover.pyn --ops ops.json`\n  (ops はシェルの文字列ではなく **ファイル** で渡すこと。バッククォートが展開されて本文が壊れる)\n- ID を書かずに下書きしてよい。`python -m pyn id` が採番する(ただし一度振った ID は変えない)\n- 正本を直したら `python -m tools.handover_to_pyn` / `build_schema` / `build_docs` で生成物を作り直す\n- pyn を直して外部で使うときは、push してから `pip install --user --upgrade --force-reinstall \"git+https://github.com/dataclock-jp/pyn.git\"` で入れ直す\n- 修正前のコードでテストが落ちるかを確かめるとき、`git stash` は使わない(戻したあとに修正が消えたことがある。PROGRESS.md の t-19)。`git worktree add` で HEAD を別の場所に出して回す\n- バックスラッシュを含む置換は、シェルにも置換スクリプトの文字列リテラルにも通さない。エディタの置換機能(Claude Code なら Edit ツール)で行う。事故の経路と防ぎ方は `AGENTS.md` の「置換でバックスラッシュを壊さない」\n- `pyn.intake` で管理している知識体系には直接書き足さない。提案を書いて `evaluate` し、承認(`approve`)は人に任せる(@d-03)\n- `pyn.query` はエージェントからは既定(`--for ai`)のまま使う。`withheld` のノードを読むために `--for human` を付けない(@d-04)\n- 予定タスクは完了(t-01〜t-27)。次に何をするかは @backlog"
       ],
       "refs": [
         "d-03",
