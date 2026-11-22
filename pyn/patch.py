@@ -233,7 +233,7 @@ def rename(doc: dict, old_id: str, new_id: str) -> dict:
     コードスパン・フェンス内は参照ではないので(s-02)書き換えない。
     """
     doc = _prepared(doc)
-    if not ID_RE.match(new_id):
+    if not isinstance(new_id, str) or not ID_RE.fullmatch(new_id):
         raise PynValidationError(f"不正な id: {new_id!r}")
     node = _find(doc, old_id)
     if new_id != old_id and new_id in index_by_id(doc):

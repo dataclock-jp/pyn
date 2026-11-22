@@ -9,7 +9,9 @@
 
 from __future__ import annotations
 
+import math
 import re
+from decimal import Decimal
 
 from .errors import PynSyntaxError
 
@@ -112,6 +114,8 @@ def _unescape(body: str, line_no: int | None, ctx: str) -> str:
                 out.append("\n")
             elif nxt == "t":
                 out.append("\t")
+            elif nxt == "r":
+                out.append("\r")
             elif nxt in ('"', "\\"):
                 out.append(nxt)
             else:
@@ -144,6 +148,9 @@ def quote(s: str) -> str:
         s.replace("\\", "\\\\")
         .replace('"', '\\"')
         .replace("\n", "\\n")
+        # CR を生で書くと、読むときに行の区切りとして扱われて行が割れる。
+        # patch や JSON から入った値で、書いたファイルが読めなくなっていた。
+        .replace("\r", "\\r")
         .replace("\t", "\\t")
     )
     return f'"{body}"'
@@ -159,12 +166,17 @@ def emit_scalar(value) -> str:
     if isinstance(value, int):
         return str(value)
     if isinstance(value, float):
+        if not math.isfinite(value):
+            # nan / inf と書くと、読み戻したときに文字列になる(canonicalize が先に断る)
+            raise TypeError("有限でない数値は書けません")
         text = repr(value)
-        # 正準形では指数表記を使わない(FLOAT_RE で読み戻せる形に限る)
+        # 正準形では指数表記を使わない(FLOAT_RE で読み戻せる形に限る)。
+        # repr は「読み戻すと同じ値になる最短の表記」なので、それを桁を落とさずに
+        # 小数へ展開する(桁数を決め打ちにすると 1e-11 が 0.0 になっていた)。
         if not FLOAT_RE.match(text):
-            text = f"{value:.10f}".rstrip("0")
-            if text.endswith("."):
-                text += "0"
+            text = format(Decimal(text), "f")
+            if "." not in text:
+                text += ".0"
         return text
     if isinstance(value, str):
         return value if is_bare_safe(value) else quote(value)

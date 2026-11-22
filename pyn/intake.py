@@ -131,6 +131,14 @@ def _add_ops(candidates: list[dict], into: str | None, *, mark: str | None = Non
         node = canonicalize({"root": [node]})["root"][0]
         if mark is not None:
             node.setdefault("attrs", {})["admitted_via"] = mark
+            # 反映するとき、新しい出典の自己申告(reliability / status)は台帳に写さない。
+            # 写すと、次の提案がその出典を引いたときに自己申告の値がそのまま信頼性になる。
+            # 未確認(unverified)として載せ、信頼性は人が台帳に書く。
+            for new in iter_nodes({"root": [node]}):
+                if new.get("type") == "source":
+                    new_attrs = new.setdefault("attrs", {})
+                    new_attrs.pop("reliability", None)
+                    new_attrs["status"] = "unverified"
         op = {"op": "add", "node": node}
         if into is not None:
             op["parent"] = into
@@ -282,17 +290,30 @@ def evaluate(kb: dict, proposal: dict) -> dict:
     for item in summary:
         item["reliability"] = None
     by_summary = {item["id"]: item for item in summary}
+    # 入れ子のノードは、自分に cites が無ければ、提案の中のいちばん近い祖先の cites に従う。
+    # 以前は最上位の候補しか見ていなかったので、出典を求めない型(source / relation)の
+    # 下に置いた主張が、出典なしで通っていた。信頼性と確信度の検査も素通りしていた。
+    inherited: dict[str, list] = {}
+
+    def spread(nodes, cites_above):
+        for n in nodes:
+            own = _as_list(n.get("attrs", {}).get("cites"))
+            inherited[n["id"]] = own or cites_above
+            spread(n.get("children", []), own or cites_above)
+
+    spread(candidates, [])
+
     for node in new_nodes:
         ident = node["id"]
         attrs = node.get("attrs", {})
         if node.get("type") == "source":
             # 提案者は自分の出典の信頼性を自己申告できない。台帳に載せるかは人が決める
             findings.append(_finding("new_source", REVIEW, node=ident))
-            if "reliability" in attrs:
+            if "reliability" in attrs or attrs.get("status") not in (None, "unverified"):
                 findings.append(_finding("self_assessed_reliability_ignored", INFO, node=ident))
-        cites = _as_list(attrs.get("cites"))
+        cites = inherited[ident]
         if not cites:
-            if ident in top_ids and node.get("type") not in NO_CITES_TYPES:
+            if node.get("type") not in NO_CITES_TYPES:
                 findings.append(_finding("missing_source", REJECT, node=ident))
             continue
         scores = []

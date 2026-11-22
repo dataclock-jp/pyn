@@ -17,6 +17,7 @@ s-meta:
 from __future__ import annotations
 
 import json
+import math
 import re
 
 from .errors import PynValidationError
@@ -56,7 +57,10 @@ def canonicalize(doc: dict) -> dict:
     if not isinstance(doc, dict):
         raise PynValidationError("document は dict である必要があります")
 
-    root = [_canon_node(n, path="root") for n in doc.get("root", [])]
+    nodes = doc.get("root", [])
+    if not isinstance(nodes, list):
+        raise PynValidationError("root はノードの配列である必要があります")
+    root = [_canon_node(n, path="root") for n in nodes]
     out = {"pyn": CANONICAL_VERSION, "root": root}
     _check_duplicate_ids(out)
     return out
@@ -68,9 +72,11 @@ def _canon_node(node: dict, path: str) -> dict:
 
     node_id = node.get("id")
     node_type = node.get("type")
-    if not isinstance(node_id, str) or not ID_RE.match(node_id):
+    # fullmatch で見る。match だと `$` が末尾の改行の手前にも合うので、改行で終わる
+    # ID や型が通り、書き出した .pyn の宣言行が割れて読めなくなっていた。
+    if not isinstance(node_id, str) or not ID_RE.fullmatch(node_id):
         raise PynValidationError(f"{path}: 不正な id: {node_id!r}")
-    if not isinstance(node_type, str) or not TYPE_RE.match(node_type):
+    if not isinstance(node_type, str) or not TYPE_RE.fullmatch(node_type):
         raise PynValidationError(f"{path}: 不正な type: {node_type!r}")
 
     here = f"{path}/{node_id}"
@@ -89,10 +95,11 @@ def _canon_node(node: dict, path: str) -> dict:
     if attrs:
         if not isinstance(attrs, dict):
             raise PynValidationError(f"{here}: attrs は dict である必要があります")
+        for key in attrs:
+            if not isinstance(key, str) or not TYPE_RE.fullmatch(key):
+                raise PynValidationError(f"{here}: 不正な属性キー: {key!r}")
         canon_attrs = {}
         for key in sorted(attrs):
-            if not TYPE_RE.match(key):
-                raise PynValidationError(f"{here}: 不正な属性キー: {key!r}")
             canon_attrs[key] = _canon_value(attrs[key], here, key)
         out["attrs"] = canon_attrs
 
@@ -100,6 +107,8 @@ def _canon_node(node: dict, path: str) -> dict:
     if prose:
         if isinstance(prose, str):
             prose = [prose]
+        if not isinstance(prose, list):
+            raise PynValidationError(f"{here}: prose は文字列の配列である必要があります")
         blocks = [_canon_prose(p, here) for p in prose]
         blocks = [b for b in blocks if b != ""]
         if blocks:
@@ -111,6 +120,8 @@ def _canon_node(node: dict, path: str) -> dict:
 
     children = node.get("children") or []
     if children:
+        if not isinstance(children, list):
+            raise PynValidationError(f"{here}: children はノードの配列である必要があります")
         out["children"] = [_canon_node(c, here) for c in children]
 
     return out
@@ -123,6 +134,12 @@ def _canon_value(value, here: str, key: str):
 
 
 def _canon_scalar(value, here: str, key: str):
+    if isinstance(value, float) and not math.isfinite(value):
+        # .pyn にも JSON にも書けない。nan / inf と書くと読み戻したとき文字列になり、
+        # 往復で値の型が黙って変わる(JSON としても不正)。
+        raise PynValidationError(
+            f"{here}: 属性 {key!r} の値が有限の数ではありません(NaN / Infinity は書けません)"
+        )
     if value is None or isinstance(value, (str, bool, int, float)):
         return value
     raise PynValidationError(
@@ -134,7 +151,10 @@ def _canon_scalar(value, here: str, key: str):
 def _canon_prose(block, here: str) -> str:
     if not isinstance(block, str):
         raise PynValidationError(f"{here}: 散文ブロックは文字列である必要があります")
-    lines = [line.rstrip() for line in block.replace("\r\n", "\n").split("\n")]
+    # 単独の CR も改行にそろえる。パーサは CR を行の区切りとして読むので、残すと
+    # 書き出した散文が読み戻したときに別の行に割れる(往復が一致しない)。
+    block = block.replace("\r\n", "\n").replace("\r", "\n")
+    lines = [line.rstrip() for line in block.split("\n")]
     while lines and lines[0] == "":
         lines.pop(0)
     while lines and lines[-1] == "":

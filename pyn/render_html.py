@@ -37,13 +37,13 @@ _SCHEME = re.compile(r"([A-Za-z][A-Za-z0-9+.\-]*):")
 _URL_IGNORED = re.compile(r"[\x00-\x20\x7f]")
 
 
-def _link(m) -> str:
+def _link(m, label: str | None = None) -> str:
     """散文の `[label](url)` を HTML にする。危険なスキームはリンクにしない。
 
     本文は先に html.escape 済みなので、URL をいったん元に戻してから判定し、
     href に入れるときに一度だけエスケープする(以前は & が二重にエスケープされていた)。
     """
-    label = m.group(1)
+    label = m.group(1) if label is None else label
     url = html.unescape(m.group(2))
     scheme = _SCHEME.match(_URL_IGNORED.sub("", url))
     if scheme and scheme.group(1).lower() not in SAFE_SCHEMES:
@@ -74,13 +74,23 @@ def _inline(text: str, index: dict) -> str:
         return (f'<a class="ref" href="#{target}">'
                 f"{html.escape(label)}</a>")
 
-    text = REF.sub(_ref, text)
-    text = LINK.sub(_link, text)
-    text = BOLD.sub(lambda m: f"<strong>{m.group(1)}</strong>", text)
-    text = ITALIC.sub(lambda m: f"<em>{m.group(1)}</em>", text)
+    def _emphasis(s: str) -> str:
+        s = BOLD.sub(lambda m: f"<strong>{m.group(1)}</strong>", s)
+        return ITALIC.sub(lambda m: f"<em>{m.group(1)}</em>", s)
 
-    for i, chunk in enumerate(stash):
-        text = text.replace(_SENTINEL.format(i), chunk)
+    def _keep_link(m):
+        # リンクは組み立てた時点で退避する。本文に戻してから残りの置換をかけると、
+        # href の中まで書き換わる(URL の `*a*` が <em> に、`/@id` が参照のリンクになっていた)。
+        stash.append(_link(m, _emphasis(m.group(1))))
+        return _SENTINEL.format(len(stash) - 1)
+
+    text = LINK.sub(_keep_link, text)
+    text = REF.sub(_ref, text)
+    text = _emphasis(text)
+
+    # あとから退避したもの(リンク)が、先に退避したもの(コード)を含みうるので逆順に戻す
+    for i in range(len(stash) - 1, -1, -1):
+        text = text.replace(_SENTINEL.format(i), stash[i])
     return text
 
 

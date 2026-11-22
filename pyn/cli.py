@@ -17,13 +17,14 @@
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 import sys
 from pathlib import Path
 
 from .errors import PynError
 from .formatter import to_pyn_a, to_pyn_b
-from .model import canonicalize, dumps
+from .model import canonicalize, dumps, loads
 from .autoid import assign_ids
 from .parser import comment_lines, detect_projection, parse
 from .patch import apply as apply_patch
@@ -93,6 +94,47 @@ def warn_dropped_comments(path: Path, destination: Path | None) -> None:
         print(f"  ... 他 {len(found) - COMMENT_PREVIEW} 行", file=sys.stderr)
 
 
+def format_drift(path: Path, doc: dict) -> tuple[str, int] | None:
+    """入力が「patch が書き戻す形」と違うなら (射影, 変わる行数) を返す。同じなら None。
+
+    手で書かれてきた文書に初めて patch を当てると、属性がキー順に並び、子ノードの前に
+    空行が入り、コメントが消える。中身の変更 2 行に対して差分が 100 行を超えたことがある。
+    仕様どおりの整形だが、patch の前に知っていれば整形だけのコミットを先に切れる。
+    """
+    text = path.read_text(encoding="utf-8")
+    if path.suffix == ".json":
+        projection = "json"
+    else:
+        projection = (detect_projection(text) or "A").lower()
+    expected = {"json": dumps, "a": to_pyn_a, "b": to_pyn_b}[projection](doc)
+    if text == expected:
+        return None
+    before, after = text.splitlines(), expected.splitlines()
+    changed = 0
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(
+            None, before, after, autojunk=False).get_opcodes():
+        if tag != "equal":
+            changed += max(i2 - i1, j2 - j1)
+    # 行の中身が同じで違うのは、末尾の改行か BOM だけ
+    return projection, max(changed, 1)
+
+
+def note_format_drift(path: Path, doc: dict) -> None:
+    """check が通ったあとに、次の patch で整形が入ることを知らせる(検証結果は変えない)。"""
+    drift = format_drift(path, doc)
+    if drift is None:
+        return
+    projection, changed = drift
+    print(f"注: 正準形の書き方と {changed} 行ちがいます。検証は通っていますが、"
+          f"次の patch でこの分も書き換わります", file=sys.stderr)
+    if path.suffix != ".json" and comment_lines(path.read_text(encoding="utf-8")):
+        print("  # コメントはそのとき消えます(d-02)。残したいものは先に散文へ移してください",
+              file=sys.stderr)
+    shown = f'"{path}"' if any(ch.isspace() for ch in str(path)) else str(path)
+    print(f"  整形だけを先に済ませるなら: pyn {projection} {shown} -o {shown}",
+          file=sys.stderr)
+
+
 #: 各アクションが実際に読むフラグ。ここに無いフラグを渡されたら黙って無視せず断る。
 #:
 #: 無視は t-14 と同じ罪である。特に patch は既定で入力を上書きするので、効かない
@@ -130,6 +172,23 @@ def unusable_flags(args) -> list[str]:
 
 def main(argv=None) -> int:
     use_utf8_stdio()
+    try:
+        return _main(argv)
+    except OSError as exc:
+        # 無いファイル・読めないファイル。トレースバックではなく 1 行で言う
+        print(f"読み書きできません: {exc.filename or ''}({exc.strerror or exc})",
+              file=sys.stderr)
+        return 1
+    except UnicodeDecodeError:
+        print("UTF-8 として読めません(.pyn / .json は UTF-8 で保存してください)",
+              file=sys.stderr)
+        return 1
+    except json.JSONDecodeError as exc:
+        print(f"JSON として読めません: {exc}", file=sys.stderr)
+        return 1
+
+
+def _main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="pyn", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("action",
@@ -197,6 +256,10 @@ def main(argv=None) -> int:
             raw = sys.stdin.read() if str(args.ops) == "-" \
                 else args.ops.read_text(encoding="utf-8")
             ops = json.loads(raw)
+            if not isinstance(ops, list):
+                print("--ops は操作の配列(JSON の [ ... ])である必要があります",
+                      file=sys.stderr)
+                return 2
             doc = apply_patch(doc, ops)
             # パッチ後にリンク切れが出ていないかを必ず見る(s-02)
             if not args.no_refs:
@@ -209,6 +272,21 @@ def main(argv=None) -> int:
             out = {"json": dumps, "a": to_pyn_a, "b": to_pyn_b}[projection](doc)
             if args.out is None:
                 args.out = args.path  # パッチは既定で上書き(射影は再生成物なので)
+            # 拡張子と中身が食い違うファイルは書かない。`doc.json --as a` を -o なしで
+            # 当てると、.json に .pyn の文面が入り、次から読めなくなる。
+            expects_json = {".json": True, ".pyn": False}.get(args.out.suffix)
+            if expects_json is not None and expects_json != (projection == "json"):
+                print(f"{args.out.name} に投影 {projection} は書きません"
+                      f"(拡張子と中身が食い違います)。--as か -o を見直してください",
+                      file=sys.stderr)
+                return 2
+            # 書き戻す文面が、読み直して同じ文書に戻ることを確かめてから書く。
+            # 戻らないなら原本には触らない(整形の不具合で原本を壊さないための最後の砦)。
+            reread = loads(out) if projection == "json" else parse(out)
+            if reread != doc:
+                print("内部エラー: 書き戻す文面を読み直すと別の文書になります。"
+                      f"{args.out} は書き換えていません", file=sys.stderr)
+                return 1
             if args.dry_run:
                 # 当ててみて、参照まで通ることを確かめて、何も書かずに終わる。
                 # 結果を見たいだけなら -o で別ファイルへ出せばよい(原本は触らない)ので、
@@ -237,6 +315,7 @@ def main(argv=None) -> int:
             src = detect_projection(args.path.read_text(encoding="utf-8")) \
                 if args.path.suffix != ".json" else "-"
             print(f"OK  nodes={n}  source_projection={src}  往復A/B一致  参照解決OK  schema適合")
+            note_format_drift(args.path, doc)
             return 0
 
         if args.action in ("json", "a", "b"):

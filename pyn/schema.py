@@ -247,7 +247,12 @@ def _validate(value, schema: dict, root: dict, path: str) -> None:
         _fail(path, f"{schema['enum']!r} のいずれかである必要があります: {value!r}")
 
     if "pattern" in schema:
-        if not isinstance(value, str) or not re.search(schema["pattern"], value):
+        # JSON Schema の正規表現(ECMA 262)では `$` は文字列の終わりにしか合わない。
+        # Python の `$` は末尾の改行の手前にも合うので、`\Z` に読み替えて同じ意味にする。
+        pattern = schema["pattern"]
+        if pattern.endswith("$") and not pattern.endswith("\\$"):
+            pattern = pattern[:-1] + "\\Z"
+        if not isinstance(value, str) or not re.search(pattern, value):
             _fail(path, f"パターン {schema['pattern']!r} に一致しません: {value!r}")
 
     if isinstance(value, dict):

@@ -23,6 +23,7 @@ import argparse
 import hashlib
 import html
 import json
+import math
 import os
 import posixpath
 import re
@@ -40,6 +41,9 @@ SCHEMA_VERSION = "1"
 MARKER = "pyn.db"
 MAX_ROWS = 1000
 TIME_BUDGET = 5.0
+#: 読むだけの SQL が作れる 1 つの値の上限と、結果ぜんたいの上限(文書 1 本は 2 MB まで)
+MAX_VALUE_BYTES = 8_000_000
+MAX_RESULT_BYTES = 32_000_000
 _INT64 = 2 ** 63 - 1
 
 SCHEMA = """
@@ -236,6 +240,9 @@ def connect_ro(path: str | Path, *, check: bool = True) -> sqlite3.Connection:
     uri = path.resolve().as_uri() + "?mode=ro"
     conn = sqlite3.connect(uri, uri=True)
     conn.execute("PRAGMA query_only = ON")
+    # DB のファイルは外から渡されうる。スキーマに仕込まれたビューやトリガーから、
+    # 副作用のありうる関数や仮想表を呼ばせない。
+    conn.execute("PRAGMA trusted_schema = OFF")
     if check:
         try:
             meta = dict(conn.execute("SELECT key, value FROM meta").fetchall())
@@ -342,7 +349,15 @@ def verify(conn: sqlite3.Connection, root: str | Path) -> dict:
     root = Path(os.path.abspath(root))
     changed, missing = [], []
     for path, digest in conn.execute("SELECT path, digest FROM docs ORDER BY rowid"):
-        file = root.joinpath(*path.split("/"))
+        parts = str(path).split("/")
+        if (not str(path).endswith(".pyn")
+                or any(part in ("", ".", "..") for part in parts)
+                or (os.name == "nt" and ("\\" in path or ":" in path))):
+            # DB に書かれたパスは信用しない。root の外を指すものは、あるかどうかも調べない
+            # (調べると、任意のパスにファイルがあるかを DB 越しに確かめられてしまう)。
+            missing.append(path)
+            continue
+        file = root.joinpath(*parts)
         if not file.is_file():
             missing.append(path)
             continue
@@ -389,14 +404,26 @@ def run_sql(conn: sqlite3.Connection, sql: str, *, max_rows: int = MAX_ROWS,
     deadline = time.monotonic() + time_budget
     conn.set_authorizer(authorizer)
     conn.set_progress_handler(lambda: 1 if time.monotonic() > deadline else 0, 10_000)
+    # 1 つの値の大きさと、結果ぜんたいの大きさにも上限を置く。時間の上限だけだと
+    # `zeroblob(1000000000)` のように一瞬で巨大な値を作る式を止められず、メモリを使い切る。
+    old_length = conn.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, MAX_VALUE_BYTES)
     try:
         cur = conn.execute(sql)
         columns = [d[0] for d in cur.description or []]
-        rows = cur.fetchmany(max_rows + 1)
+        rows, size = [], 0
+        for row in cur:
+            size += sum(len(v) for v in row if isinstance(v, (str, bytes)))
+            if size > MAX_RESULT_BYTES:
+                raise DbError(f"結果が大きすぎる({MAX_RESULT_BYTES // 1_000_000} MB まで)")
+            rows.append(row)
+            if len(rows) > max_rows:
+                break
     except sqlite3.DatabaseError as exc:
         message = str(exc)
         if "interrupted" in message:
             raise DbError(f"時間切れ({time_budget:g} 秒)") from None
+        if "too big" in message:
+            raise DbError(f"値が大きすぎる({MAX_VALUE_BYTES // 1_000_000} MB まで)") from None
         if "not authorized" in message or "prohibited" in message:
             raise DbError("読み取り以外の操作は許可していない") from None
         if "one statement" in message:
@@ -405,6 +432,7 @@ def run_sql(conn: sqlite3.Connection, sql: str, *, max_rows: int = MAX_ROWS,
     finally:
         conn.set_authorizer(None)
         conn.set_progress_handler(None, 0)
+        conn.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, old_length)
     truncated = len(rows) > max_rows
     return columns, [list(r) for r in rows[:max_rows]], truncated
 
@@ -454,6 +482,8 @@ def sql_result(columns, rows, truncated, *, sql: str, audience: str = "ai") -> d
             value = _cell(value)
             if isinstance(value, int) and not isinstance(value, bool) and abs(value) > _INT64:
                 value = str(value)
+            if isinstance(value, float) and not math.isfinite(value):
+                value = str(value)  # 1e999 など。正準形は有限の数しか持てない
             found = scan_text(value) if isinstance(value, str) else []
             if found:
                 codes.update(f.code for f in found)

@@ -353,6 +353,21 @@ def find(sources, terms, *, audience: str = "ai", match: str = "all",
         normalized = _norm(text)
         return any(k in normalized for k in keys)
 
+    # パスも文書の外から来る文字列である。ファイル名に書かれた命令文が、読めなかった
+    # 文書の一覧や DB に記録されたパスを通って AI に届いていた。AI 向けでは、安全検査に
+    # 当たるパス(と理由)は伏せ、その文書の中身も載せない。
+    def unsafe(text: str) -> bool:
+        return audience == "ai" and bool(scan_text(str(text), inspect_encodings=False))
+
+    skipped = [(rel, reason) for rel, reason in skipped]
+    kept = []
+    for rel, doc in sources:
+        if unsafe(rel):
+            skipped.append((rel, "security:unsafe_path_component"))
+        else:
+            kept.append((rel, doc))
+    sources = kept
+
     file_nodes: list[dict] = []
     total = shown = withheld = 0
     for rel, doc in sources:
@@ -371,7 +386,11 @@ def find(sources, terms, *, audience: str = "ai", match: str = "all",
             shown += 1
             hit = _hit(node, trail, rel, hits_in, unit, max_excerpts)
             hit["id"] = f"f{len(file_nodes) + 1}.h{len(hit_nodes) + 1}"
-            codes = sorted({f.code for f in scan_text(_node_text(node))})
+            # 元のノードに加えて、載せる抜き出しそのものも検査する。抜き出しは折り返しを
+            # つないだ別の文字列なので、行をまたいで書かれた手口は元の形では当たらず、
+            # つないだ形で初めて当たる。AI に渡すのはつないだ形のほうである。
+            emitted = [_node_text(node), *hit.get("prose", [])]
+            codes = sorted({f.code for text in emitted for f in scan_text(text)})
             if codes:
                 hit["attrs"]["findings"] = codes
                 if audience == "ai":
@@ -388,11 +407,17 @@ def find(sources, terms, *, audience: str = "ai", match: str = "all",
                 "children": hit_nodes,
             })
 
-    skipped_nodes = [
-        {"id": f"x{i}", "type": "skipped", "title": rel,
-         "attrs": {"path": rel, "reason": reason}}
-        for i, (rel, reason) in enumerate(skipped, 1)
-    ]
+    skipped_nodes = []
+    for i, (rel, reason) in enumerate(skipped, 1):
+        if unsafe(rel):
+            # パスそのものが検査に当たる。名前は出さず、当たったことだけを残す
+            skipped_nodes.append({"id": f"x{i}", "type": "skipped", "attrs": {
+                "reason": "security:unsafe_path_component", "withheld": True}})
+            continue
+        if unsafe(reason):
+            reason = "withheld"
+        skipped_nodes.append({"id": f"x{i}", "type": "skipped", "title": rel,
+                              "attrs": {"path": rel, "reason": reason}})
     attrs = {
         "audience": audience, "terms": terms, "match": match, "unit": unit,
         "files": len(sources), "hits": shown, "hits_total": total,

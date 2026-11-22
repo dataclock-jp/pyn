@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import base64
 import binascii
+import bisect
 import os
 import re
 import stat
@@ -80,8 +81,15 @@ _UNSAFE_URI = re.compile(r"\]\(\s*(?:javascript|data|vbscript|file)\s*:", re.I)
 READ_ONLY_OPERATIONS = frozenset(("inspect", "context", "snapshot", "review_plan", "render_preview"))
 
 
-def _line(text: str, pos: int) -> int:
-    return text.count("\n", 0, pos) + 1
+def _line_lookup(text: str):
+    """Return ``pos -> 1-based line number`` for ``text``.
+
+    Newline offsets are indexed once. Counting newlines again for every finding
+    made screening quadratic: a file packed with control characters could stall
+    the screener that every other module calls before reading a document.
+    """
+    breaks = [i for i, ch in enumerate(text) if ch == "\n"]
+    return lambda pos: bisect.bisect_left(breaks, pos) + 1
 
 
 def scan_text(text: str, *, inspect_encodings: bool = True) -> list[Finding]:
@@ -97,40 +105,43 @@ def scan_text(text: str, *, inspect_encodings: bool = True) -> list[Finding]:
             found.add(key)
             findings.append(Finding(code, lineno))
 
+    raw_line = _line_lookup(text)
+
     for i, ch in enumerate(text):
         if ch == "\ufeff" and i == 0:
             continue
         cat = unicodedata.category(ch)
         if ch == "\x00" or (cat in ("Cc", "Cf", "Cs") and ch not in "\n\r\t"):
-            add("hidden_or_control_character", _line(text, i))
+            add("hidden_or_control_character", raw_line(i))
     normalized = unicodedata.normalize("NFKC", text).casefold()
+    norm_line = _line_lookup(normalized)
     # Treat normalized positions as approximate when compatibility normalization
     # expands a character. Line numbers remain correct unless newlines expand.
     for name, rule in _INJECTION_RULES:
         for match in rule.finditer(normalized):
-            add(name, _line(normalized, match.start()))
+            add(name, norm_line(match.start()))
     for match in _UNSAFE_URI.finditer(normalized):
-        add("dangerous_markdown_uri", _line(normalized, match.start()))
+        add("dangerous_markdown_uri", norm_line(match.start()))
 
     if inspect_encodings:
         # Inspect bounded base64 content; never execute, deserialize or load it.
         for match in _BASE64.finditer(unicodedata.normalize("NFKC", text)):
             token = match.group()
             if len(token) > 65536:
-                add("oversized_encoded_payload", _line(normalized, match.start()))
+                add("oversized_encoded_payload", norm_line(match.start()))
                 continue
             try:
                 decoded = base64.b64decode(token, validate=True)
             except (ValueError, binascii.Error):
                 continue
             if any(decoded.startswith(m) for m, _ in _MAGIC):
-                add("embedded_binary_payload", _line(normalized, match.start()))
+                add("embedded_binary_payload", norm_line(match.start()))
             try:
                 inner = decoded.decode("utf-8", errors="strict")
             except UnicodeError:
                 continue
             for issue in scan_text(inner, inspect_encodings=False):
-                add("encoded_" + issue.code, _line(normalized, match.start()))
+                add("encoded_" + issue.code, norm_line(match.start()))
     return sorted(findings, key=lambda f: (f.line, f.code))
 
 
@@ -163,9 +174,21 @@ def safe_read(path: str | Path, *, root: str | Path | None = None,
               screen: bool = True) -> str:
     """Bounded, fail-closed PYN ingestion. No network, shell or decoders."""
     file = Path(path).absolute()
-    boundary = Path(root).resolve(strict=True) if root is not None else file.parent.resolve(strict=True)
+    anchor = Path(root).absolute() if root is not None else file.parent
+    try:
+        boundary = anchor.resolve(strict=True)
+    except OSError as exc:
+        raise SecurityError("file_access_denied") from exc
     if file.suffix != ".pyn":
         raise SecurityError("only_pyn_extension_allowed")
+    # A workspace reached through a symlink or junction (macOS /tmp, a mapped
+    # project folder) has an unresolved spelling that differs from ``boundary``.
+    # Re-anchor the file under the resolved boundary so such workspaces are not
+    # quarantined wholesale. Links *inside* the workspace are still refused below.
+    try:
+        file = boundary.joinpath(*file.relative_to(anchor).parts)
+    except ValueError:
+        pass
     try:
         rel = file.relative_to(boundary)
     except ValueError as exc:
