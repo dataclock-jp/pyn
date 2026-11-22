@@ -33,7 +33,7 @@ from .render_md import render_md
 from .schema import PynSchemaError, build_schema, load_schema, validate_schema
 from .repair import Candidate, Finding, diagnose, report
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 
 __all__ = [
     "CANONICAL_VERSION",

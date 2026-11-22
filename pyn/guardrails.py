@@ -134,8 +134,13 @@ def scan_text(text: str, *, inspect_encodings: bool = True) -> list[Finding]:
     return sorted(findings, key=lambda f: (f.line, f.code))
 
 
-def inspect_bytes(data: bytes) -> str:
-    """Return validated text, or refuse before giving bytes to a parser/AI."""
+def inspect_bytes(data: bytes, *, screen: bool = True) -> str:
+    """Return validated text, or refuse before giving bytes to a parser/AI.
+
+    ``screen=False`` keeps the size, binary-signature and UTF-8 checks but skips
+    the whole-file content screening. Only for callers that screen every piece
+    they pass on themselves (``pyn.query`` screens each hit node, t-27).
+    """
     if len(data) > MAX_BYTES:
         raise SecurityError("oversized_file")
     for magic, reason in _MAGIC:
@@ -145,6 +150,8 @@ def inspect_bytes(data: bytes) -> str:
         text = data.decode("utf-8-sig", errors="strict")
     except UnicodeError as exc:
         raise SecurityError("invalid_utf8") from exc
+    if not screen:
+        return text
     findings = scan_text(text)
     if findings:
         first = findings[0]
@@ -152,7 +159,8 @@ def inspect_bytes(data: bytes) -> str:
     return text
 
 
-def safe_read(path: str | Path, *, root: str | Path | None = None) -> str:
+def safe_read(path: str | Path, *, root: str | Path | None = None,
+              screen: bool = True) -> str:
     """Bounded, fail-closed PYN ingestion. No network, shell or decoders."""
     file = Path(path).absolute()
     boundary = Path(root).resolve(strict=True) if root is not None else file.parent.resolve(strict=True)
@@ -195,7 +203,7 @@ def safe_read(path: str | Path, *, root: str | Path | None = None) -> str:
                 os.close(fd)
     except OSError as exc:
         raise SecurityError("file_access_denied") from exc
-    return inspect_bytes(data)
+    return inspect_bytes(data, screen=screen)
 
 
 def require_read_only(action: str) -> None:

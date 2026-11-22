@@ -36,6 +36,8 @@ DOCS = (
      "変更の影響分析と取り込み前の安全検査(PYN 拡張・実験的)"),
     ("docs/knowledge-intake.pyn", "docs/knowledge-intake.md",
      "知識の取り込み審査(PYN 拡張・実験的)"),
+    ("docs/query.pyn", "docs/query.md",
+     "複数文書の検索(PYN 拡張・実験的)"),
 )
 
 
