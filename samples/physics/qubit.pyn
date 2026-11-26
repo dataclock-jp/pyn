@@ -1,0 +1,156 @@
+system qubit "量子ビット:合成の順序と複素数の値":
+  ppyn: 0.2
+  """
+  1個の量子ビット。3つの要素射影は互いに可換でないので、積の順序で値が変わる。
+
+  値は、ある純粋状態と3つの射影から計算した(`tools/physics_samples.py`)。この文書に入っているのは射影どうしの関係だけで、状態ベクトルは入っていない。
+  """
+
+  projector e "Z 方向で上向き":
+
+  projector f "X 方向で上向き":
+
+  projector g "Y 方向で上向き":
+
+  description whole "全体の記述(純粋なので、流れを定義できない)":
+    frequency: none
+
+  term t-001 "ω(e)":
+    factors: [e]
+    value: 0.853553390593
+
+  term t-002 "ω(f)":
+    factors: [f]
+    value: 0.676776695297
+
+  term t-003 "ω(g)":
+    factors: [g]
+    value: 0.806186217848
+
+  term t-004 "ω(e·f)":
+    factors: [e, f]
+    value: [0.515165042945, 0.153093108924]
+
+  term t-005 "ω(e·g)":
+    factors: [e, g]
+    value: [0.579869804221, -0.0883883476483]
+
+  term t-006 "ω(f·g)":
+    factors: [f, g]
+    value: [0.491481456572, 0.176776695297]
+
+  term t-007 "ω(e·f·e)":
+    factors: [e, f, e]
+    value: 0.426776695297
+
+  term t-008 "ω(e·f·g)":
+    factors: [e, f, g]
+    value: [0.334129075934, 0.245740728286]
+
+  term t-009 "ω(e·g·e)":
+    factors: [e, g, e]
+    value: 0.426776695297
+
+  term t-010 "ω(e·g·f)":
+    factors: [e, g, f]
+    value: [0.334129075934, -0.181035967011]
+
+  term t-011 "ω(f·e·f)":
+    factors: [f, e, f]
+    value: 0.338388347648
+
+  term t-012 "ω(f·e·g)":
+    factors: [f, e, g]
+    value: [0.334129075934, -0.157352380638]
+
+  term t-013 "ω(f·g·f)":
+    factors: [f, g, f]
+    value: 0.338388347648
+
+  term t-014 "ω(g·e·g)":
+    factors: [g, e, g]
+    value: 0.403093108924
+
+  term t-015 "ω(g·f·g)":
+    factors: [g, f, g]
+    value: 0.403093108924
+
+  term t-016 "ω(e·f·e·f)":
+    factors: [e, f, e, f]
+    value: [0.257582521472, 0.076546554462]
+
+  term t-017 "ω(e·f·e·g)":
+    factors: [e, f, e, g]
+    value: [0.28993490211, -0.0441941738242]
+
+  term t-018 "ω(e·f·g·e)":
+    factors: [e, f, g, e]
+    value: [0.213388347648, 0.213388347648]
+
+  term t-019 "ω(e·f·g·f)":
+    factors: [e, f, g, f]
+    value: [0.257582521472, 0.076546554462]
+
+  term t-020 "ω(e·g·e·f)":
+    factors: [e, g, e, f]
+    value: [0.257582521472, 0.076546554462]
+
+  term t-021 "ω(e·g·e·g)":
+    factors: [e, g, e, g]
+    value: [0.28993490211, -0.0441941738242]
+
+  term t-022 "ω(e·g·f·g)":
+    factors: [e, g, f, g]
+    value: [0.28993490211, -0.0441941738242]
+
+  term t-023 "ω(f·e·f·g)":
+    factors: [f, e, f, g]
+    value: [0.245740728286, 0.0883883476483]
+
+  term t-024 "ω(f·e·g·f)":
+    factors: [f, e, g, f]
+    value: [0.169194173824, -0.169194173824]
+
+  term t-025 "ω(f·g·e·g)":
+    factors: [f, g, e, g]
+    value: [0.245740728286, 0.0883883476483]
+
+  term t-026 "ω(f·g·f·g)":
+    factors: [f, g, f, g]
+    value: [0.245740728286, 0.0883883476483]
+
+  term t-027 "ω(g·e·f·g)":
+    factors: [g, e, f, g]
+    value: [0.201546554462, 0.201546554462]
+
+  quantity q-ef "e のあと f":
+    expect: [0.515165042945, 0.153093108924]
+    expr: "e*f"
+    tol: 0.000001
+
+  quantity q-fe "f のあと e(順序を逆にすると複素共役になる)":
+    expect: [0.515165042945, -0.153093108924]
+    expr: "f*e"
+    tol: 0.000001
+
+  quantity q-comm "交換子(順序を入れ替えたときの差。純虚数になる)":
+    expect: [0, 0.306186217848]
+    expr: "comm(e, f)"
+    tol: 0.000001
+
+  quantity q-efg "3つの射影の積":
+    expect: [0.334129075934, 0.245740728286]
+    expr: "e*f*g"
+    tol: 0.000001
+
+  history h-ef "e を先に、f を後に":
+    expect: 0.426776695297
+    results: [yes, yes]
+    steps: [e, f]
+    tol: 0.000001
+
+  history h-fe "f を先に、e を後に(確率が変わる)":
+    expect: 0.338388347648
+    results: [yes, yes]
+    steps: [f, e]
+    tol: 0.000001

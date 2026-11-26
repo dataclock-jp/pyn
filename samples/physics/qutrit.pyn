@@ -1,0 +1,131 @@
+system qutrit "3準位系:3つの結果を持つ測定":
+  ppyn: 0.2
+  """
+  3つの状態を持つ系。`measurement` は3つの要素射影を結ぶ関係で、互いに直交し、足すと 1 になることを表す。
+
+  各測定の最後の結果(p3 と q3)は、ほかの結果から決まるので、関係表には現れない。式の中では使える。
+  """
+
+  projector p1 "測定 P の結果1":
+
+  projector p2 "測定 P の結果2":
+
+  projector p3 "測定 P の結果3":
+
+  projector q1 "測定 Q の結果1":
+
+  projector q2 "測定 Q の結果2":
+
+  projector q3 "測定 Q の結果3":
+
+  measurement mP "測定 P(3つの結果)":
+    outcomes: [p1, p2, p3]
+
+  measurement mQ "測定 Q(3つの結果)":
+    outcomes: [q1, q2, q3]
+
+  term t-001 "ω(p1)":
+    factors: [p1]
+    value: 0.473684210526
+
+  term t-002 "ω(p2)":
+    factors: [p2]
+    value: 0.263157894737
+
+  term t-003 "ω(q1)":
+    factors: [q1]
+    value: 0.649122807018
+
+  term t-004 "ω(q2)":
+    factors: [q2]
+    value: 0.296986021584
+
+  term t-005 "ω(p1·q1)":
+    factors: [p1, q1]
+    value: [0.315789473684, -0.0526315789474]
+
+  term t-006 "ω(p1·q2)":
+    factors: [p1, q2]
+    value: [0.21568822165, -0.019264494936]
+
+  term t-007 "ω(p2·q1)":
+    factors: [p2, q1]
+    value: [0.19298245614, -0.140350877193]
+
+  term t-008 "ω(p2·q2)":
+    factors: [p2, q2]
+    value: [0.00470086302511, 0.161336007416]
+
+  term t-009 "ω(p1·q1·p1)":
+    factors: [p1, q1, p1]
+    value: 0.157894736842
+
+  term t-010 "ω(p1·q1·p2)":
+    factors: [p1, q1, p2]
+    value: [0.105263157895, 0.0526315789474]
+
+  term t-011 "ω(p1·q2·p1)":
+    factors: [p1, q2, p1]
+    value: 0.157894736842
+
+  term t-012 "ω(p1·q2·p2)":
+    factors: [p1, q2, p2]
+    value: [-0.00705129453766, -0.117476358293]
+
+  term t-013 "ω(p2·q1·p2)":
+    factors: [p2, q1, p2]
+    value: 0.0877192982456
+
+  term t-014 "ω(p2·q2·p2)":
+    factors: [p2, q2, p2]
+    value: 0.0877192982456
+
+  term t-015 "ω(q1·p1·q1)":
+    factors: [q1, p1, q1]
+    value: 0.216374269006
+
+  term t-016 "ω(q1·p1·q2)":
+    factors: [q1, p1, q2]
+    value: [0.145932647204, 0.0111223613371]
+
+  term t-017 "ω(q1·p2·q1)":
+    factors: [q1, p2, q1]
+    value: 0.216374269006
+
+  term t-018 "ω(q1·p2·q2)":
+    factors: [q1, p2, q2]
+    value: [-0.0825985710701, 0.120820199052]
+
+  term t-019 "ω(q2·p1·q2)":
+    factors: [q2, p1, q2]
+    value: 0.0989953405279
+
+  term t-020 "ω(q2·p2·q2)":
+    factors: [q2, p2, q2]
+    value: 0.0989953405279
+
+  quantity q-sum "測定 P の結果の確率の和":
+    expect: 1
+    expr: "p1 + p2 + p3"
+    tol: 0.000001
+
+  quantity q-p3 "最後の結果 p3 の確率(1 からほかを引いて決まる)":
+    expect: 0.263157894737
+    expr: p3
+    tol: 0.000001
+
+  quantity q-orth "同じ測定の別の結果の積は 0":
+    expect: 0
+    expr: "p1*p2"
+    tol: 0.000001
+
+  quantity q-p3q3 "消去された射影どうしの積":
+    expect: [0.0462100806354, -0.0509109436605]
+    expr: "p3*q3"
+    tol: 0.000001
+
+  history h-pq "P で結果3、続けて Q で結果3":
+    expect: 0.0877192982456
+    results: [yes, yes]
+    steps: [p3, q3]
+    tol: 0.000001

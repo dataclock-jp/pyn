@@ -1,0 +1,213 @@
+system pair "部分的にもつれた対:部分の記述にだけ時間が流れる":
+  ppyn: 0.2
+  """
+  部分的にもつれた2個の量子ビット(重みは 0.75 と 0.25)。全体は純粋な状態なので、全体の記述には時間の流れが無い。
+
+  アリスの側だけ、ボブの側だけの記述には流れがあり、振動数は log(0.75 / 0.25) = 1.0986 になる。流れの速さは、相手とのもつれ方で決まる。
+  """
+
+  projector eA0 "アリスの Z 方向で上向き":
+    party: A
+
+  projector eA1 "アリスの X 方向で上向き":
+    party: A
+
+  projector eB0 "ボブの Z 方向で上向き":
+    party: B
+
+  projector eB1 "ボブの X 方向で上向き":
+    party: B
+
+  description whole "全体の記述(純粋なので、流れを定義できない)":
+    frequency: none
+
+  description dA "アリスの側だけの記述":
+    frequency: 1.09861228867
+    parties: [A]
+
+  description dB "ボブの側だけの記述":
+    frequency: 1.09861228867
+    parties: [B]
+
+  term t-001 "ω(eA0)":
+    factors: [eA0]
+    value: 0.75
+
+  term t-002 "ω(eA1)":
+    factors: [eA1]
+    value: 0.5
+
+  term t-003 "ω(eB0)":
+    factors: [eB0]
+    value: 0.25
+
+  term t-004 "ω(eB1)":
+    factors: [eB1]
+    value: 0.5
+
+  term t-005 "ω(eA0·eA1)":
+    factors: [eA0, eA1]
+    value: 0.375
+
+  term t-006 "ω(eA0·eB0)":
+    factors: [eA0, eB0]
+    value: 0
+
+  term t-007 "ω(eA0·eB1)":
+    factors: [eA0, eB1]
+    value: 0.375
+
+  term t-008 "ω(eA1·eB0)":
+    factors: [eA1, eB0]
+    value: 0.125
+
+  term t-009 "ω(eA1·eB1)":
+    factors: [eA1, eB1]
+    value: 0.0334936490539
+
+  term t-010 "ω(eB0·eB1)":
+    factors: [eB0, eB1]
+    value: 0.125
+
+  term t-011 "ω(eA0·eA1·eA0)":
+    factors: [eA0, eA1, eA0]
+    value: 0.375
+
+  term t-012 "ω(eA0·eA1·eB0)":
+    factors: [eA0, eA1, eB0]
+    value: 0
+
+  term t-013 "ω(eA0·eA1·eB1)":
+    factors: [eA0, eA1, eB1]
+    value: 0.0792468245269
+
+  term t-014 "ω(eA0·eB0·eB1)":
+    factors: [eA0, eB0, eB1]
+    value: 0
+
+  term t-015 "ω(eA1·eA0·eA1)":
+    factors: [eA1, eA0, eA1]
+    value: 0.25
+
+  term t-016 "ω(eA1·eB0·eB1)":
+    factors: [eA1, eB0, eB1]
+    value: -0.0457531754731
+
+  term t-017 "ω(eB0·eB1·eB0)":
+    factors: [eB0, eB1, eB0]
+    value: 0.125
+
+  term t-018 "ω(eB1·eB0·eB1)":
+    factors: [eB1, eB0, eB1]
+    value: 0.25
+
+  term t-019 "ω(eA0·eA1·eA0·eA1)":
+    factors: [eA0, eA1, eA0, eA1]
+    value: 0.1875
+
+  term t-020 "ω(eA0·eA1·eA0·eB0)":
+    factors: [eA0, eA1, eA0, eB0]
+    value: 0
+
+  term t-021 "ω(eA0·eA1·eA0·eB1)":
+    factors: [eA0, eA1, eA0, eB1]
+    value: 0.1875
+
+  term t-022 "ω(eA0·eA1·eB0·eB1)":
+    factors: [eA0, eA1, eB0, eB1]
+    value: 0
+
+  term t-023 "ω(eA0·eA1·eB1·eB0)":
+    factors: [eA0, eA1, eB1, eB0]
+    value: -0.108253175473
+
+  term t-024 "ω(eA0·eB0·eB1·eB0)":
+    factors: [eA0, eB0, eB1, eB0]
+    value: 0
+
+  term t-025 "ω(eA0·eB1·eB0·eB1)":
+    factors: [eA0, eB1, eB0, eB1]
+    value: 0.1875
+
+  term t-026 "ω(eA1·eA0·eA1·eB0)":
+    factors: [eA1, eA0, eA1, eB0]
+    value: 0.0625
+
+  term t-027 "ω(eA1·eA0·eA1·eB1)":
+    factors: [eA1, eA0, eA1, eB1]
+    value: 0.0167468245269
+
+  term t-028 "ω(eA1·eB0·eB1·eB0)":
+    factors: [eA1, eB0, eB1, eB0]
+    value: 0.0625
+
+  term t-029 "ω(eA1·eB1·eB0·eB1)":
+    factors: [eA1, eB1, eB0, eB1]
+    value: 0.0167468245269
+
+  term t-030 "ω(eB0·eB1·eB0·eB1)":
+    factors: [eB0, eB1, eB0, eB1]
+    value: 0.0625
+
+  term t-031 "ω(eA0·eA1·eA0·eA1·eA0)":
+    factors: [eA0, eA1, eA0, eA1, eA0]
+    value: 0.1875
+
+  term t-032 "ω(eA0·eA1·eA0·eA1·eB0)":
+    factors: [eA0, eA1, eA0, eA1, eB0]
+    value: 0
+
+  term t-033 "ω(eA0·eA1·eA0·eA1·eB1)":
+    factors: [eA0, eA1, eA0, eA1, eB1]
+    value: 0.0396234122635
+
+  term t-034 "ω(eA0·eA1·eA0·eB0·eB1)":
+    factors: [eA0, eA1, eA0, eB0, eB1]
+    value: 0
+
+  term t-035 "ω(eA0·eA1·eB0·eB1·eB0)":
+    factors: [eA0, eA1, eB0, eB1, eB0]
+    value: 0
+
+  term t-036 "ω(eA0·eA1·eB1·eB0·eB1)":
+    factors: [eA0, eA1, eB1, eB0, eB1]
+    value: 0.0396234122635
+
+  term t-037 "ω(eA0·eB0·eB1·eB0·eB1)":
+    factors: [eA0, eB0, eB1, eB0, eB1]
+    value: 0
+
+  term t-038 "ω(eA1·eA0·eA1·eA0·eA1)":
+    factors: [eA1, eA0, eA1, eA0, eA1]
+    value: 0.125
+
+  term t-039 "ω(eA1·eA0·eA1·eB0·eB1)":
+    factors: [eA1, eA0, eA1, eB0, eB1]
+    value: -0.0228765877365
+
+  term t-040 "ω(eA1·eB0·eB1·eB0·eB1)":
+    factors: [eA1, eB0, eB1, eB0, eB1]
+    value: -0.0228765877365
+
+  term t-041 "ω(eB0·eB1·eB0·eB1·eB0)":
+    factors: [eB0, eB1, eB0, eB1, eB0]
+    value: 0.0625
+
+  term t-042 "ω(eB1·eB0·eB1·eB0·eB1)":
+    factors: [eB1, eB0, eB1, eB0, eB1]
+    value: 0.125
+
+  quantity q-two-time "アリスの時間で 0.5 だけ離れた、同じ射影どうしの相関":
+    expect: [0.463221746577, -0.0652619467735]
+    expr: "eA1 * flow(dA, eA1, 0.5)"
+    tol: 0.000001
+
+  quantity q-still "流れのもとで ω は変わらない":
+    expect: 0
+    expr: "flow(dA, eA1, 0.7) - eA1"
+    tol: 0.000001
+
+  quantity q-fixed "生成子と可換な射影は、流れで動かない":
+    expect: 0
+    expr: "eA1 * (flow(dA, eA0, 0.7) - eA0)"
+    tol: 0.000001

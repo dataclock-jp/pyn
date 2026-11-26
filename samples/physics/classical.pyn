@@ -1,0 +1,104 @@
+system classical "共通の値を持つモデル:CHSH 値は 2 で止まる":
+  ppyn: 0.2
+  """
+  共通の実体(円周上の角度)があり、4つの射影すべてが同時に値を持つモデル。同時に値を持つので、4つの射影はすべて可換である。それを `party` を1つずつ分けて表している。
+
+  関係表は、4つの射影の同時確率そのものになる。4つを結ぶ項まで含めて 15 項。CHSH の式の絶対値は 2 で、ベルの不等式の上限に一致する。すべてが可換な表は対称なので、時間は流れない。
+  """
+
+  projector a0 "アリスの設定0で上向き":
+    party: A0
+
+  projector a1 "アリスの設定1で上向き":
+    party: A1
+
+  projector b0 "ボブの設定0で上向き":
+    party: B0
+
+  projector b1 "ボブの設定1で上向き":
+    party: B1
+
+  define A0:
+    expr: "2*a0 - 1"
+
+  define A1:
+    expr: "2*a1 - 1"
+
+  define B0:
+    expr: "2*b0 - 1"
+
+  define B1:
+    expr: "2*b1 - 1"
+
+  description whole "全体の記述(すべて可換なので、流れは止まる)":
+    frequency: 0
+
+  term t-001 "ω(a0)":
+    factors: [a0]
+    value: 0.5
+
+  term t-002 "ω(a1)":
+    factors: [a1]
+    value: 0.5
+
+  term t-003 "ω(b0)":
+    factors: [b0]
+    value: 0.5
+
+  term t-004 "ω(b1)":
+    factors: [b1]
+    value: 0.5
+
+  term t-005 "ω(a0·a1)":
+    factors: [a0, a1]
+    value: 0.25
+
+  term t-006 "ω(a0·b0)":
+    factors: [a0, b0]
+    value: 0.125
+
+  term t-007 "ω(a0·b1)":
+    factors: [a0, b1]
+    value: 0.375
+
+  term t-008 "ω(a1·b0)":
+    factors: [a1, b0]
+    value: 0.125
+
+  term t-009 "ω(a1·b1)":
+    factors: [a1, b1]
+    value: 0.125
+
+  term t-010 "ω(b0·b1)":
+    factors: [b0, b1]
+    value: 0.25
+
+  term t-011 "ω(a0·a1·b0)":
+    factors: [a0, a1, b0]
+    value: 0
+
+  term t-012 "ω(a0·a1·b1)":
+    factors: [a0, a1, b1]
+    value: 0.125
+
+  term t-013 "ω(a0·b0·b1)":
+    factors: [a0, b0, b1]
+    value: 0.125
+
+  term t-014 "ω(a1·b0·b1)":
+    factors: [a1, b0, b1]
+    value: 0
+
+  term t-015 "ω(a0·a1·b0·b1)":
+    factors: [a0, a1, b0, b1]
+    value: 0
+
+  quantity q-S "CHSH の式(絶対値が 2)":
+    expect: -2
+    expr: "A0*B0 - A0*B1 + A1*B0 + A1*B1"
+    tol: 0.000001
+
+  quantity q-four "a0・a1・b1 が上向きで b0 が下向きになる確率(4つを結ぶ項を使う)":
+    expect: 0.125
+    expr: "a0*a1*(1 - b0)*b1"
+    tol: 0.000001

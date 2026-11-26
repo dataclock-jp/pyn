@@ -1,0 +1,61 @@
+system thermal "熱平衡:関係表から流れの生成子を読む":
+  ppyn: 0.2
+  """
+  熱平衡にある1個の量子ビット。状態は e^{-K} に比例し、K = 2·(1 − e) である。
+
+  `python -m pyn.physics flow` は、関係表だけから振動数 2 と、生成子 K = 2 − 2·e を読み出す。分かるのは K(温度の逆数とエネルギーの積)までで、時間の絶対的な単位は決まらない。
+  """
+
+  projector e "エネルギーの低い側":
+
+  projector f "X 方向で上向き":
+
+  description d "全体の記述(混ざった状態なので、流れがある)":
+    frequency: 2
+
+  term t-001 "ω(e)":
+    factors: [e]
+    value: 0.880797077978
+
+  term t-002 "ω(f)":
+    factors: [f]
+    value: 0.5
+
+  term t-003 "ω(e·f)":
+    factors: [e, f]
+    value: 0.440398538989
+
+  term t-004 "ω(e·f·e)":
+    factors: [e, f, e]
+    value: 0.440398538989
+
+  term t-005 "ω(f·e·f)":
+    factors: [f, e, f]
+    value: 0.25
+
+  term t-006 "ω(e·f·e·f)":
+    factors: [e, f, e, f]
+    value: 0.220199269494
+
+  term t-007 "ω(e·f·e·f·e)":
+    factors: [e, f, e, f, e]
+    value: 0.220199269494
+
+  term t-008 "ω(f·e·f·e·f)":
+    factors: [f, e, f, e, f]
+    value: 0.125
+
+  quantity q-two-time "時間 0.5 だけ離れた、同じ射影どうしの相関":
+    expect: [0.385075576467, -0.160214846109]
+    expr: "f * flow(d, f, 0.5)"
+    tol: 0.000001
+
+  quantity q-still "流れのもとで ω は変わらない":
+    expect: 0
+    expr: "flow(d, f, 0.9) - f"
+    tol: 0.000001
+
+  quantity q-fixed "生成子と可換な射影は、流れで動かない":
+    expect: 0
+    expr: "f * (flow(d, e, 0.9) - e)"
+    tol: 0.000001

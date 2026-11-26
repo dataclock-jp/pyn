@@ -40,6 +40,8 @@ DOCS = (
      "複数文書の検索(PYN 拡張・実験的)"),
     ("docs/db.pyn", "docs/db.md",
      "SQLite への射影(PYN 拡張・実験的)"),
+    ("docs/physics.pyn", "docs/physics.md",
+     "物理の層 PPYN(PYN 拡張・実験的)"),
 )
 
 
