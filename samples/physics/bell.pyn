@@ -1,0 +1,241 @@
+system bell "ベル状態:CHSH 値 2√2":
+  ppyn: 0.2
+  """
+  最大にもつれた2個の量子ビット。アリスとボブの要素射影は `party` が違うので可換になる。
+
+  CHSH 値は 2√2 で、量子論の上限に一致する。関係表は長さ5までの語を含むので、合成を1段入れた整合条件を確かめられ、4次元のヒルベルト空間を復元できる。
+  """
+
+  projector eA0 "アリスの設定0で上向き":
+    party: A
+
+  projector eA1 "アリスの設定1で上向き":
+    party: A
+
+  projector eB0 "ボブの設定0で上向き":
+    party: B
+
+  projector eB1 "ボブの設定1で上向き":
+    party: B
+
+  define A0 "アリスの設定0の結果(±1)":
+    expr: "2*eA0 - 1"
+
+  define A1 "アリスの設定1の結果(±1)":
+    expr: "2*eA1 - 1"
+
+  define B0 "ボブの設定0の結果(±1)":
+    expr: "2*eB0 - 1"
+
+  define B1 "ボブの設定1の結果(±1)":
+    expr: "2*eB1 - 1"
+
+  define S "CHSH の式":
+    expr: "A0*B0 - A0*B1 + A1*B0 + A1*B1"
+
+  description whole "全体の記述(純粋なので、流れを定義できない)":
+    frequency: none
+
+  description dA "アリスの側だけの記述(最大にもつれているので、流れは止まる)":
+    frequency: 0
+    parties: [A]
+
+  term t-001 "ω(eA0)":
+    factors: [eA0]
+    value: 0.5
+
+  term t-002 "ω(eA1)":
+    factors: [eA1]
+    value: 0.5
+
+  term t-003 "ω(eB0)":
+    factors: [eB0]
+    value: 0.5
+
+  term t-004 "ω(eB1)":
+    factors: [eB1]
+    value: 0.5
+
+  term t-005 "ω(eA0·eA1)":
+    factors: [eA0, eA1]
+    value: 0.25
+
+  term t-006 "ω(eA0·eB0)":
+    factors: [eA0, eB0]
+    value: 0.426776695297
+
+  term t-007 "ω(eA0·eB1)":
+    factors: [eA0, eB1]
+    value: 0.0732233047034
+
+  term t-008 "ω(eA1·eB0)":
+    factors: [eA1, eB0]
+    value: 0.426776695297
+
+  term t-009 "ω(eA1·eB1)":
+    factors: [eA1, eB1]
+    value: 0.426776695297
+
+  term t-010 "ω(eB0·eB1)":
+    factors: [eB0, eB1]
+    value: 0.25
+
+  term t-011 "ω(eA0·eA1·eA0)":
+    factors: [eA0, eA1, eA0]
+    value: 0.25
+
+  term t-012 "ω(eA0·eA1·eB0)":
+    factors: [eA0, eA1, eB0]
+    value: 0.301776695297
+
+  term t-013 "ω(eA0·eA1·eB1)":
+    factors: [eA0, eA1, eB1]
+    value: 0.125
+
+  term t-014 "ω(eA0·eB0·eB1)":
+    factors: [eA0, eB0, eB1]
+    value: 0.125
+
+  term t-015 "ω(eA1·eA0·eA1)":
+    factors: [eA1, eA0, eA1]
+    value: 0.25
+
+  term t-016 "ω(eA1·eB0·eB1)":
+    factors: [eA1, eB0, eB1]
+    value: 0.301776695297
+
+  term t-017 "ω(eB0·eB1·eB0)":
+    factors: [eB0, eB1, eB0]
+    value: 0.25
+
+  term t-018 "ω(eB1·eB0·eB1)":
+    factors: [eB1, eB0, eB1]
+    value: 0.25
+
+  term t-019 "ω(eA0·eA1·eA0·eA1)":
+    factors: [eA0, eA1, eA0, eA1]
+    value: 0.125
+
+  term t-020 "ω(eA0·eA1·eA0·eB0)":
+    factors: [eA0, eA1, eA0, eB0]
+    value: 0.213388347648
+
+  term t-021 "ω(eA0·eA1·eA0·eB1)":
+    factors: [eA0, eA1, eA0, eB1]
+    value: 0.0366116523517
+
+  term t-022 "ω(eA0·eA1·eB0·eB1)":
+    factors: [eA0, eA1, eB0, eB1]
+    value: 0.213388347648
+
+  term t-023 "ω(eA0·eA1·eB1·eB0)":
+    factors: [eA0, eA1, eB1, eB0]
+    value: 0.0883883476483
+
+  term t-024 "ω(eA0·eB0·eB1·eB0)":
+    factors: [eA0, eB0, eB1, eB0]
+    value: 0.213388347648
+
+  term t-025 "ω(eA0·eB1·eB0·eB1)":
+    factors: [eA0, eB1, eB0, eB1]
+    value: 0.0366116523517
+
+  term t-026 "ω(eA1·eA0·eA1·eB0)":
+    factors: [eA1, eA0, eA1, eB0]
+    value: 0.213388347648
+
+  term t-027 "ω(eA1·eA0·eA1·eB1)":
+    factors: [eA1, eA0, eA1, eB1]
+    value: 0.213388347648
+
+  term t-028 "ω(eA1·eB0·eB1·eB0)":
+    factors: [eA1, eB0, eB1, eB0]
+    value: 0.213388347648
+
+  term t-029 "ω(eA1·eB1·eB0·eB1)":
+    factors: [eA1, eB1, eB0, eB1]
+    value: 0.213388347648
+
+  term t-030 "ω(eB0·eB1·eB0·eB1)":
+    factors: [eB0, eB1, eB0, eB1]
+    value: 0.125
+
+  term t-031 "ω(eA0·eA1·eA0·eA1·eA0)":
+    factors: [eA0, eA1, eA0, eA1, eA0]
+    value: 0.125
+
+  term t-032 "ω(eA0·eA1·eA0·eA1·eB0)":
+    factors: [eA0, eA1, eA0, eA1, eB0]
+    value: 0.150888347648
+
+  term t-033 "ω(eA0·eA1·eA0·eA1·eB1)":
+    factors: [eA0, eA1, eA0, eA1, eB1]
+    value: 0.0625
+
+  term t-034 "ω(eA0·eA1·eA0·eB0·eB1)":
+    factors: [eA0, eA1, eA0, eB0, eB1]
+    value: 0.0625
+
+  term t-035 "ω(eA0·eA1·eB0·eB1·eB0)":
+    factors: [eA0, eA1, eB0, eB1, eB0]
+    value: 0.150888347648
+
+  term t-036 "ω(eA0·eA1·eB1·eB0·eB1)":
+    factors: [eA0, eA1, eB1, eB0, eB1]
+    value: 0.0625
+
+  term t-037 "ω(eA0·eB0·eB1·eB0·eB1)":
+    factors: [eA0, eB0, eB1, eB0, eB1]
+    value: 0.0625
+
+  term t-038 "ω(eA1·eA0·eA1·eA0·eA1)":
+    factors: [eA1, eA0, eA1, eA0, eA1]
+    value: 0.125
+
+  term t-039 "ω(eA1·eA0·eA1·eB0·eB1)":
+    factors: [eA1, eA0, eA1, eB0, eB1]
+    value: 0.150888347648
+
+  term t-040 "ω(eA1·eB0·eB1·eB0·eB1)":
+    factors: [eA1, eB0, eB1, eB0, eB1]
+    value: 0.150888347648
+
+  term t-041 "ω(eB0·eB1·eB0·eB1·eB0)":
+    factors: [eB0, eB1, eB0, eB1, eB0]
+    value: 0.125
+
+  term t-042 "ω(eB1·eB0·eB1·eB0·eB1)":
+    factors: [eB1, eB0, eB1, eB0, eB1]
+    value: 0.125
+
+  quantity q-S "CHSH 値":
+    expect: 2.82842712475
+    expr: S
+    tol: 0.000001
+
+  quantity q-gap "上限 2√2 との差":
+    expect: 0
+    expr: "S - 2*sqrt(2)"
+    tol: 0.000001
+
+  quantity q-A0 "アリスの設定0の平均":
+    expect: 0
+    expr: A0
+    tol: 0.000001
+
+  quantity q-commAB "アリスとボブの射影は可換":
+    expect: 0
+    expr: "comm(eA0, eB1)"
+    tol: 0.000001
+
+  history h-ab "アリスが設定0で上、ボブが設定0で上":
+    expect: 0.426776695297
+    results: [yes, yes]
+    steps: [eA0, eB0]
+    tol: 0.000001
+
+  history h-aa "アリスが設定0で上、続けて設定1で上":
+    expect: 0.25
+    results: [yes, yes]
+    steps: [eA0, eA1]
+    tol: 0.000001

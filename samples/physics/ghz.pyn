@@ -1,0 +1,256 @@
+system ghz "GHZ 状態:3者を結ぶ項が必要な例":
+  ppyn: 0.2
+  """
+  もつれた3個の量子ビット。単独の平均も2体の相関もすべて 0 で、3者を結ぶ項にだけ情報がある。
+
+  2項の関係だけでは、この状態と完全なノイズを区別できない。
+  """
+
+  projector xA "A の X 方向で上向き":
+    party: A
+
+  projector yA "A の Y 方向で上向き":
+    party: A
+
+  define XA "A の X の結果(±1)":
+    expr: "2*xA - 1"
+
+  define YA "A の Y の結果(±1)":
+    expr: "2*yA - 1"
+
+  projector xB "B の X 方向で上向き":
+    party: B
+
+  projector yB "B の Y 方向で上向き":
+    party: B
+
+  define XB "B の X の結果(±1)":
+    expr: "2*xB - 1"
+
+  define YB "B の Y の結果(±1)":
+    expr: "2*yB - 1"
+
+  projector xC "C の X 方向で上向き":
+    party: C
+
+  projector yC "C の Y 方向で上向き":
+    party: C
+
+  define XC "C の X の結果(±1)":
+    expr: "2*xC - 1"
+
+  define YC "C の Y の結果(±1)":
+    expr: "2*yC - 1"
+
+  term t-001 "ω(xA)":
+    factors: [xA]
+    value: 0.5
+
+  term t-002 "ω(xB)":
+    factors: [xB]
+    value: 0.5
+
+  term t-003 "ω(xC)":
+    factors: [xC]
+    value: 0.5
+
+  term t-004 "ω(yA)":
+    factors: [yA]
+    value: 0.5
+
+  term t-005 "ω(yB)":
+    factors: [yB]
+    value: 0.5
+
+  term t-006 "ω(yC)":
+    factors: [yC]
+    value: 0.5
+
+  term t-007 "ω(xA·xB)":
+    factors: [xA, xB]
+    value: 0.25
+
+  term t-008 "ω(xA·xC)":
+    factors: [xA, xC]
+    value: 0.25
+
+  term t-009 "ω(xA·yA)":
+    factors: [xA, yA]
+    value: 0.25
+
+  term t-010 "ω(xA·yB)":
+    factors: [xA, yB]
+    value: 0.25
+
+  term t-011 "ω(xA·yC)":
+    factors: [xA, yC]
+    value: 0.25
+
+  term t-012 "ω(xB·xC)":
+    factors: [xB, xC]
+    value: 0.25
+
+  term t-013 "ω(xB·yB)":
+    factors: [xB, yB]
+    value: 0.25
+
+  term t-014 "ω(xB·yC)":
+    factors: [xB, yC]
+    value: 0.25
+
+  term t-015 "ω(xC·yC)":
+    factors: [xC, yC]
+    value: 0.25
+
+  term t-016 "ω(yA·xB)":
+    factors: [yA, xB]
+    value: 0.25
+
+  term t-017 "ω(yA·xC)":
+    factors: [yA, xC]
+    value: 0.25
+
+  term t-018 "ω(yA·yB)":
+    factors: [yA, yB]
+    value: 0.25
+
+  term t-019 "ω(yA·yC)":
+    factors: [yA, yC]
+    value: 0.25
+
+  term t-020 "ω(yB·xC)":
+    factors: [yB, xC]
+    value: 0.25
+
+  term t-021 "ω(yB·yC)":
+    factors: [yB, yC]
+    value: 0.25
+
+  term t-022 "ω(xA·xB·xC)":
+    factors: [xA, xB, xC]
+    value: 0.25
+
+  term t-023 "ω(xA·xB·yB)":
+    factors: [xA, xB, yB]
+    value: 0.125
+
+  term t-024 "ω(xA·xB·yC)":
+    factors: [xA, xB, yC]
+    value: 0.125
+
+  term t-025 "ω(xA·xC·yC)":
+    factors: [xA, xC, yC]
+    value: 0.125
+
+  term t-026 "ω(xA·yA·xA)":
+    factors: [xA, yA, xA]
+    value: 0.25
+
+  term t-027 "ω(xA·yA·xB)":
+    factors: [xA, yA, xB]
+    value: 0.125
+
+  term t-028 "ω(xA·yA·xC)":
+    factors: [xA, yA, xC]
+    value: 0.125
+
+  term t-029 "ω(xA·yA·yB)":
+    factors: [xA, yA, yB]
+    value: 0.125
+
+  term t-030 "ω(xA·yA·yC)":
+    factors: [xA, yA, yC]
+    value: 0.125
+
+  term t-031 "ω(xA·yB·xC)":
+    factors: [xA, yB, xC]
+    value: 0.125
+
+  term t-032 "ω(xA·yB·yC)":
+    factors: [xA, yB, yC]
+    value: 0
+
+  term t-033 "ω(xB·xC·yC)":
+    factors: [xB, xC, yC]
+    value: 0.125
+
+  term t-034 "ω(xB·yB·xB)":
+    factors: [xB, yB, xB]
+    value: 0.25
+
+  term t-035 "ω(xB·yB·xC)":
+    factors: [xB, yB, xC]
+    value: 0.125
+
+  term t-036 "ω(xB·yB·yC)":
+    factors: [xB, yB, yC]
+    value: 0.125
+
+  term t-037 "ω(xC·yC·xC)":
+    factors: [xC, yC, xC]
+    value: 0.25
+
+  term t-038 "ω(yA·xA·yA)":
+    factors: [yA, xA, yA]
+    value: 0.25
+
+  term t-039 "ω(yA·xB·xC)":
+    factors: [yA, xB, xC]
+    value: 0.125
+
+  term t-040 "ω(yA·xB·yB)":
+    factors: [yA, xB, yB]
+    value: 0.125
+
+  term t-041 "ω(yA·xB·yC)":
+    factors: [yA, xB, yC]
+    value: 0
+
+  term t-042 "ω(yA·xC·yC)":
+    factors: [yA, xC, yC]
+    value: 0.125
+
+  term t-043 "ω(yA·yB·xC)":
+    factors: [yA, yB, xC]
+    value: 0
+
+  term t-044 "ω(yA·yB·yC)":
+    factors: [yA, yB, yC]
+    value: 0.125
+
+  term t-045 "ω(yB·xB·yB)":
+    factors: [yB, xB, yB]
+    value: 0.25
+
+  term t-046 "ω(yB·xC·yC)":
+    factors: [yB, xC, yC]
+    value: 0.125
+
+  term t-047 "ω(yC·xC·yC)":
+    factors: [yC, xC, yC]
+    value: 0.25
+
+  quantity q-mermin "Mermin の式(古典の上限は 2)":
+    expect: 4
+    expr: "XA*XB*XC - XA*YB*YC - YA*XB*YC - YA*YB*XC"
+    tol: 0.000001
+
+  quantity q-single "単独の平均は 0":
+    expect: 0
+    expr: XA
+    tol: 0.000001
+
+  quantity q-pair "2体の相関は 0":
+    expect: 0
+    expr: "XA*XB"
+    tol: 0.000001
+
+  quantity q-pair2 "別の2体の相関も 0":
+    expect: 0
+    expr: "YB*XC"
+    tol: 0.000001
+
+  quantity q-triple "3体の相関は 1":
+    expect: 1
+    expr: "XA*XB*XC"
+    tol: 0.000001

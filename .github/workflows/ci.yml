@@ -66,8 +66,11 @@ jobs:
           python -m pyn check docs/knowledge-intake.pyn
           python -m pyn check docs/query.pyn
           python -m pyn check docs/db.pyn
+          python -m pyn check docs/physics.pyn
           python -m pyn.knowledge check samples/intake/knowledge.pyn
           python -m pyn.guardrails scan-tree samples
+          python -m pyn.physics check samples/physics/bell.pyn
+          python -m tools.physics_samples --check
         env:
           PYTHONIOENCODING: utf-8
 
@@ -108,6 +111,9 @@ jobs:
           python -m pyn.db sql pyn.sqlite "SELECT count(*) AS n FROM nodes" -o rows.pyn
           pyn check rows.pyn
           python -m pyn.db verify pyn.sqlite --root "${{ github.workspace }}"
+          # t-32: 物理の層。関係表の検証と、関係表から作る時間の流れ(終了コード 0 = 問題なし)
+          python -m pyn.physics check "${{ github.workspace }}/samples/physics/pair.pyn"
+          python -m pyn.physics flow "${{ github.workspace }}/samples/physics/pair.pyn" -d dA
           # t-21: 書き出しは OS によらず LF(Windows の既定のままだと CRLF になる)
           pyn a "${{ github.workspace }}/samples/auth-spec.pyn" -o out.pyn
           python -c "import sys; sys.exit(b'\r' in open('out.pyn', 'rb').read())"

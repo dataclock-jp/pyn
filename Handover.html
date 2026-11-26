@@ -1466,6 +1466,30 @@ task auth-02 &quot;トークン交換&quot;          ^auth
 <div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#backlog.ref-boundary">参照の終わりと、URL の中の `@` をどう扱うか決める</a><a class="chip" href="#backlog.dup-attr">同じ属性を 2 回書いたとき、黙って後勝ちにしない</a><a class="chip" href="#t-14">コメントの位置づけを実態に合わせ、消える前に警告する</a><a class="chip" href="#t-18">効かないフラグを黙って無視しない(patch --dry-run を実装する)</a><a class="chip" href="#backlog.rename-attrs">rename で、属性の中の ID も張り替えるか決める</a><a class="chip" href="#backlog.guard-linewrap">安全検査の規則が、行をまたぐ書き方に当たらない</a></div>
 </section>
 </section>
+<section class="node node--task depth-1" id="t-32">
+<header class="node__head">
+<span class="badge">task</span>
+<h2 class="node__title">物理の層 PPYN(pyn.physics)を取り込む — 関係表・整合・復元・時間の流れ</h2>
+<a class="node__id" href="#t-32">t-32</a>
+</header>
+<div class="table-wrap"><table class="attrs"><tbody><tr><th>depends</th><td><code>[t-31]</code></td></tr><tr><th>est</th><td><code>3h</code></td></tr><tr><th>status</th><td><code>done</code></td></tr></tbody></table></div>
+<div class="prose"><p>オーナーが物理の枠組み(射影等価原理、PEP)を検討する中で、Claude と作った試作を、このリポジトリに取り込める形に整えた。3つ以上を結ぶ関係、複素数の値、順序つきの合成、関係表から作る時間の流れを扱う。試作は当初 <code>.ppyn</code> という別の拡張子の形式だった。</p></div>
+<div class="prose"><p><a class="ref" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a> と同じく、本体(パーサ・正準形・patch・<code>pyn check</code>)には手を入れない追加で、構文も正準形も変えない。PPYN の文書は、根のノードの <code>ppyn</code> 属性で見分ける。拡張子を分けなかったのは、<code>pyn.guardrails</code>・<code>pyn.knowledge</code>・<code>pyn.impact</code> が <code>.pyn</code> を前提にしていて、分けるとそれらが使えなくなるからである。<a class="ref" href="#s-03">止揚3: 新しい『形式』ではなく新しい『射影』として定義する</a> の「射影として足す」とも矛盾しない。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#t-24">ChatGPT の実験版 v0.3(知識関係・文書間リンク・影響分析・安全検査)を取り込む</a><a class="chip" href="#s-03">止揚3: 新しい『形式』ではなく新しい『射影』として定義する</a></div>
+<section class="node node--result depth-2" id="t-32.result">
+<header class="node__head">
+<span class="badge">result</span>
+<h2 class="node__title">結果</h2>
+<a class="node__id" href="#t-32.result">t-32.result</a>
+</header>
+<div class="prose"><p><code>pyn/physics.py</code>、仕様 <code>docs/physics.pyn</code>(<code>tools/build_docs</code> の対象に追加)、サンプル 8 本(<code>samples/physics/</code>)、サンプルを作る <code>tools/physics_samples.py</code>、テスト <code>tests/test_physics.py</code>(149 件)を足した。既存のコードの変更は無い。<code>AGENTS.md</code> の拡張モジュールの節と README の文書の表に行を足し、CI に検査を足した。</p></div>
+<div class="prose"><p>取り込みにあたって、試作から変えたのは次のとおり。</p>
+<ul><li><strong>読み込み</strong>: <code>pyn.knowledge</code> と同じく、<code>pyn.guardrails</code> の安全検査を通してから読む。題名や式を標準出力に出すためである</li><li><strong>CLI</strong>: <code>use_utf8_stdio()</code> を呼ぶ(<a class="ref" href="#t-19">出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)</a>)。そのアクションが読まないフラグは止める(<a class="ref" href="#t-18">効かないフラグを黙って無視しない(patch --dry-run を実装する)</a>)。エラーは <code>physics: …</code> の形で標準エラーに出す</li><li><strong>サンプルは生成物にした</strong>(<a class="ref" href="#d-00">HTML vs JSON はトレードオフではなくレイヤーの違い</a>): 状態と射影の行列から計算して書き出す。値を小数で書くので、追従はバイト単位ではなく、数が 1e-9 以内で一致することで確かめる。浮動小数点の末尾の桁は環境で変わりうるためである</li><li><strong>標準ライブラリだけ</strong>(<a class="ref" href="#s-03">止揚3: 新しい『形式』ではなく新しい『射影』として定義する</a>): 固有値分解も自前(複素ヤコビ法)。語が数十個を超える表には向かない</li></ul></div>
+<div class="prose"><p>期待値は、状態と射影の行列から直接計算した値と突き合わせた。実装をわざと壊して(流れの向き・履歴の順序・係数の複素共役・party の可換・整合のしきい値)、対応するテストが落ちることも確かめた。</p></div>
+<div class="prose"><p>ここで行うのは数値の検証と計算で、その関係表が現実の系を表しているかは判定しない。流れを物理的な時間とみなすのは仮説である。バージョンは上げていない(ブランチ <code>physics-layer</code>。main への取り込みとリリースはオーナーが決める)。テスト 1247 件(+153)。</p></div>
+<div class="edges"><span class="edges__label">→ 参照</span><a class="chip" href="#t-19">出力の文字コードと空行で事故らない(cp932 の stdout / patch の空行)</a><a class="chip" href="#t-18">効かないフラグを黙って無視しない(patch --dry-run を実装する)</a><a class="chip" href="#d-00">HTML vs JSON はトレードオフではなくレイヤーの違い</a><a class="chip" href="#s-03">止揚3: 新しい『形式』ではなく新しい『射影』として定義する</a></div>
+</section>
+</section>
 </section>
 <section class="node node--questions depth-0" id="questions">
 <header class="node__head">

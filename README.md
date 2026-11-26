@@ -112,6 +112,7 @@ pyn patch doc.pyn --ops ops.json             # 適用(既定で上書き)
 | `docs/knowledge-intake.md` | 知識の取り込み審査。記憶する前に出典・信頼性・矛盾を評価し、承認されたものだけを反映する(実験的) |
 | `docs/query.md` | 複数文書の検索。検索語を含む文を一つの PYN 文書として返し、人は HTML、AI は `.pyn` で読む(実験的) |
 | `docs/db.md` | SQLite への射影。ノード・属性・散文・辺を表に落とし、読むだけの SQL と全文索引で引く(実験的) |
+| `docs/physics.md` | 物理の層 PPYN。射影どうしの関係(順序つきの積に与えた複素数の値)を記録し、整合の検証、ヒルベルト空間での表現の復元、時間の流れの計算を行う(実験的) |
 | `docs/knowledge-memory.md` `docs/cross-file-links.md` `docs/impact-security.md` | 型付きの知識関係・文書間リンク・変更の影響分析と安全検査(実験的) |
 | `Handover.md` | 設計に至った経緯と、受け入れた代償。判断の理由はすべてここにある |
 | `samples/auth-spec.pyn` | 実物のサンプル |

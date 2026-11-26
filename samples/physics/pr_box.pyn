@@ -1,0 +1,67 @@
+system pr_box "PR 箱:整合しない関係表":
+  ppyn: 0.2
+  """
+  超光速通信はできないが、量子論では実現しない相関(CHSH の式が 4)。`python -m pyn.physics check` は、整合の条件(行列の半正定値性)を満たさないとして NG を返す。
+
+  同じ側の2つの射影の積(eA0·eA1 と eB0·eB1)は測定できないので、ここでは独立な場合の 0.25 を入れてある。この2つをどう選んでも整合しない。整合する表では、CHSH の式は 2√2 を超えないからである。
+  """
+
+  projector eA0 "アリスの設定0で上向き":
+    party: A
+
+  projector eA1 "アリスの設定1で上向き":
+    party: A
+
+  projector eB0 "ボブの設定0で上向き":
+    party: B
+
+  projector eB1 "ボブの設定1で上向き":
+    party: B
+
+  define S "CHSH の式":
+    expr: "(2*eA0-1)*(2*eB0-1) - (2*eA0-1)*(2*eB1-1) + (2*eA1-1)*(2*eB0-1) + (2*eA1-1)*(2*eB1-1)"
+
+  term t-001 "ω(eA0)":
+    factors: [eA0]
+    value: 0.5
+
+  term t-002 "ω(eA1)":
+    factors: [eA1]
+    value: 0.5
+
+  term t-003 "ω(eB0)":
+    factors: [eB0]
+    value: 0.5
+
+  term t-004 "ω(eB1)":
+    factors: [eB1]
+    value: 0.5
+
+  term t-005 "ω(eA0·eB0)":
+    factors: [eA0, eB0]
+    value: 0.5
+
+  term t-006 "ω(eA0·eB1)":
+    factors: [eA0, eB1]
+    value: 0
+
+  term t-007 "ω(eA1·eB0)":
+    factors: [eA1, eB0]
+    value: 0.5
+
+  term t-008 "ω(eA1·eB1)":
+    factors: [eA1, eB1]
+    value: 0.5
+
+  term t-009 "ω(eA0·eA1)":
+    factors: [eA0, eA1]
+    value: 0.25
+
+  term t-010 "ω(eB0·eB1)":
+    factors: [eB0, eB1]
+    value: 0.25
+
+  quantity q-S "CHSH の式":
+    expect: 4
+    expr: S
+    tol: 0.000001
