@@ -12,6 +12,9 @@ PYN の構文も正準形も変えない。根のノードに `ppyn` 属性(版)
     history      射影を順に行ったときの確率を計算する(実現規則)
     description  記述。要素射影の一部分だけを見る。記述ごとに時間の流れが決まる
 
+projector の party は、その射影が関わる場所の名前。1つでも、[A, B] のように複数でもよい。
+party が重ならない射影どうしは可換で、重なる射影どうしは積の順序を区別する。
+
 式の中の演算:  +  -  *(順序つきの合成)  /(数で割る)  dag(x)  comm(x, y)  sqrt(数)
                flow(記述, x, t)  記述の時間の流れに沿って x を t だけ進める
 虚数は 0.5i のように数の直後に i を付ける。式は自前の構文解析で読み、実行はしない。
@@ -258,6 +261,22 @@ def load(path) -> dict:
     return doc
 
 
+def party_names(node) -> frozenset:
+    """projector の party 属性を、party の名前の集まりにする。1つでも、リストでもよい。"""
+    ident = node["id"]
+    raw = (node.get("attrs") or {}).get("party", DEFAULT_PARTY)
+    names = []
+    for name in raw if isinstance(raw, list) else [raw]:
+        if isinstance(name, bool) or not isinstance(name, (str, int)) or name == "":
+            raise PhysicsError(f"{ident}: party の名前は、空でない文字列か整数にします({name!r})")
+        if str(name) in names:
+            raise PhysicsError(f"{ident}: party に同じ名前 {str(name)!r} が2回あります")
+        names.append(str(name))
+    if not names:
+        raise PhysicsError(f"{ident}: party が空です。名前を1つ以上書きます")
+    return frozenset(names)
+
+
 def ppyn_version(doc: dict):
     """根のノードの ppyn 属性。無ければ None(PPYN の文書ではない)。"""
     for node in doc.get("root", []):
@@ -274,7 +293,8 @@ class System:
         self.version = ppyn_version(doc)
         if self.version is None:
             raise NotPhysicsDocument("PPYN の文書ではありません(根のノードに ppyn 属性がありません)")
-        self.party: dict[str, str] = {}
+        self.party: dict[str, str] = {}          # 表示用の名前。複数の party は "A+B"
+        self.support: dict[str, frozenset] = {}  # その射影が関わる party の集まり
         self.titles: dict[str, str] = {}
         self.meas_of: dict[str, str] = {}
         self.eliminated: dict[str, list[str]] = {}
@@ -297,10 +317,15 @@ class System:
             ident = node["id"]
             if not _NAME_RE.fullmatch(ident):
                 raise PhysicsError(f"{ident}: 要素射影の ID は英数字とアンダースコアだけにします(式の中で使うため)")
-            self.party[ident] = str((node.get("attrs") or {}).get("party", DEFAULT_PARTY))
+            self.support[ident] = party_names(node)
+            self.party[ident] = "+".join(sorted(self.support[ident]))
             self.titles[ident] = node.get("title") or ident
         if not self.party:
             raise PhysicsError("projector ノードが一つもありません")
+        self.parties = sorted(set().union(*self.support.values()))
+        bit = {p: 1 << k for k, p in enumerate(self.parties)}
+        self._mask = {e: sum(bit[p] for p in names) for e, names in self.support.items()}
+        self._rank = {e: tuple(sorted(names)) for e, names in self.support.items()}
 
         for node in by_type.get("measurement", []):
             outcomes = (node.get("attrs") or {}).get("outcomes")
@@ -312,13 +337,12 @@ class System:
                 if e in self.meas_of:
                     raise PhysicsError(f"{e}: 一つの要素射影は一つの measurement にしか入れられません")
                 self.meas_of[e] = node["id"]
-            if len({self.party[e] for e in outcomes}) != 1:
+            if len({self.support[e] for e in outcomes}) != 1:
                 raise PhysicsError(f"{node['id']}: 一つの測定の結果は、同じ party に属する必要があります")
             # 最後の結果は「1 - ほかの結果の和」として消去する。関係表には書かない。
             self.eliminated[outcomes[-1]] = list(outcomes[:-1])
 
         self.generators = [e for e in self.party if e not in self.eliminated]
-        self.parties = sorted({self.party[e] for e in self.party})
 
         for node in by_type.get("define", []):
             ident = node["id"]
@@ -376,7 +400,7 @@ class System:
             unknown = wanted - set(self.parties)
             if unknown:
                 raise PhysicsError(f"{ident}: parties の {sorted(unknown)} という party はありません")
-            gens = [e for e in self.generators if self.party[e] in wanted]
+            gens = [e for e in self.generators if self.support[e] <= wanted]
         if "projectors" in attrs:
             listed = attrs["projectors"] if isinstance(attrs["projectors"], list) else [attrs["projectors"]]
             for e in listed:
@@ -400,20 +424,39 @@ class System:
         }
 
     # ------------------------------------------------------------------ 語の演算
+    def commutes(self, a, b) -> bool:
+        """2つの要素射影が可換か。party が重ならなければ可換。"""
+        return not self._mask[a] & self._mask[b]
+
     def reduce(self, seq):
         """順序つきの積を標準形にする。0 になるときは None。
-        規則: 別の party は可換 / 同じ射影が続けば1つにまとめる / 同じ測定の別の結果が続けば 0。"""
-        groups: dict[str, list[str]] = {p: [] for p in self.parties}
+        規則: party が重ならない射影は可換 / 同じ射影が続けば1つにまとめる / 同じ測定の別の結果が続けば 0。
+        「続く」は、可換な射影を並べ替えれば隣り合うことを指す。"""
+        mask, kept = self._mask, []
         for g in seq:
-            sub = groups[self.party[g]]
-            if sub:
-                if sub[-1] == g:
+            # g と可換でない最後の射影を探す。そこまでは g を左へ動かせる
+            k = len(kept) - 1
+            while k >= 0 and not mask[kept[k]] & mask[g]:
+                k -= 1
+            if k >= 0:
+                if kept[k] == g:
                     continue
                 m = self.meas_of.get(g)
-                if m is not None and self.meas_of.get(sub[-1]) == m:
+                if m is not None and self.meas_of.get(kept[k]) == m:
                     return None
-            sub.append(g)
-        return tuple(itertools.chain.from_iterable(groups[p] for p in self.parties))
+            kept.append(g)
+        # 可換な射影の並べ方を1つに決める。先頭に出せる(それより前のすべてと可換な)射影のうち、
+        # party の名前が最も小さいものを順に取る。先頭に出せる射影どうしは party が重ならないので、
+        # 取るものは1つに決まる。party が1つずつなら、party の名前の順にまとめた形になる
+        rank, word = self._rank, []
+        while kept:
+            seen, pick = 0, -1
+            for i, g in enumerate(kept):
+                if not seen & mask[g] and (pick < 0 or rank[g] < rank[kept[pick]]):
+                    pick = i
+                seen |= mask[g]
+            word.append(kept.pop(pick))
+        return tuple(word)
 
     def word_dagger(self, w):
         return self.reduce(tuple(reversed(w)))
@@ -571,13 +614,18 @@ class System:
         return [[self._lookup(self.reduce(v + tuple(reversed(u)))) for v in words] for u in words]
 
     def joint_probabilities(self):
-        """別々の party から射影を1つずつ選んだ組について、はい/いいえの同時確率を出す。
-        (組, 最小の確率, 和) のリスト。必要な項が無い組は飛ばす。"""
-        by_party = {p: [e for e in self.party if self.party[e] == p] for p in self.parties}
+        """互いに可換な(party が重ならない)射影の組について、はい/いいえの同時確率を出す。
+        party の集まりが同じ射影からは1つだけ選ぶ。(組, 最小の確率, 和) のリスト。必要な項が無い組は飛ばす。"""
+        by_place: dict[tuple, list[str]] = {}
+        for e in self.party:
+            by_place.setdefault(self._rank[e], []).append(e)
+        places = sorted(by_place)
         results, skipped = [], 0
-        for r in range(1, len(self.parties) + 1):
-            for combo in itertools.combinations(self.parties, r):
-                for choice in itertools.product(*[by_party[p] for p in combo]):
+        for r in range(1, len(places) + 1):
+            for combo in itertools.combinations(places, r):
+                if any(set(p) & set(q) for p, q in itertools.combinations(combo, 2)):
+                    continue
+                for choice in itertools.product(*[by_place[p] for p in combo]):
                     try:
                         probs = [self.history_probability(choice, pattern)
                                  for pattern in itertools.product(("yes", "no"), repeat=r)]
@@ -841,7 +889,7 @@ class Representation:
             out["hermitian"] = max(out["hermitian"], max_abs_diff(self.ops[e], dagger(self.ops[e])))
             out["idempotent"] = max(out["idempotent"], max_abs_diff(matmul(self.ops[e], self.ops[e]), self.ops[e]))
         for a, b in itertools.combinations(self.gens, 2):
-            if system.party[a] != system.party[b]:
+            if system.commutes(a, b):
                 out["commute"] = max(out["commute"], max_abs_diff(matmul(self.ops[a], self.ops[b]),
                                                                   matmul(self.ops[b], self.ops[a])))
             elif system.meas_of.get(a) is not None and system.meas_of.get(a) == system.meas_of.get(b):
@@ -1064,7 +1112,7 @@ def cmd_gns(system: System, ident, show_matrices: bool) -> int:
     print(f"使った語: 長さ {report['level']} までの {report['words']} 個   Γ の最小固有値 {report['min_eigenvalue']:.3e}")
     print(f"復元された空間の次元: {report['dimension']}")
     print(f"射影の行列の検査:  E† = E のずれ {report['hermitian']:.1e}   EE = E のずれ {report['idempotent']:.1e}"
-          f"   別の party どうしの交換子 {report['commute']:.1e}   同じ測定の結果の積 {report['orthogonal']:.1e}")
+          f"   party が重ならない射影どうしの交換子 {report['commute']:.1e}   同じ測定の結果の積 {report['orthogonal']:.1e}")
     print(f"関係表の再現: {report['checked_words']} 個の語で最大のずれ {report['reproduce']:.1e}")
     if not report["closed"]:
         print("注: 使った語が張る空間が射影の作用で閉じていません。より長い語の項が必要です。")

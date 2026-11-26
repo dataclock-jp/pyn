@@ -3,7 +3,7 @@
 本体の構文も正準形も変えない意味の層なので、ここで見るのは次のことである。
 
 - PPYN の文書を、根の `ppyn` 属性で見分けること
-- 語の標準形(party の可換・べき等・直交・測定の最後の結果の消去)
+- 語の標準形(party の可換・べき等・直交・測定の最後の結果の消去)。複数の party にまたがる射影も含む
 - 関係表の約束(逆順の語は複素共役)と、式(順序つきの積・dag・comm・flow)
 - 整合(半正定値)の検査、同時確率、順に行ったときの確率
 - 関係表からの復元(GNS)と、関係表から作る時間の流れ
@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import functools
+import itertools
 import json
 import math
 import os
@@ -36,7 +37,7 @@ from tools import physics_samples as ps
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLES = ROOT / "samples" / "physics"
 HEAD = 'system s "検証用":\n  ppyn: 0.2\n\n'
-OK_SAMPLES = ("qubit", "qutrit", "bell", "pair", "thermal", "ghz", "classical")
+OK_SAMPLES = ("qubit", "qutrit", "bell", "pair", "thermal", "ghz", "classical", "mediator", "chain")
 
 
 def system_from(body: str) -> System:
@@ -62,6 +63,17 @@ BELL = (
 QUTRIT = (
     "  projector p1:\n\n  projector p2:\n\n  projector p3:\n\n  projector q1:\n\n"
     "  measurement mP:\n    outcomes: [p1, p2, p3]\n\n"
+)
+#: 鎖。s1 と s3 は両端、b12 と b23 は隣どうしをつなぐ(場所 P2 を共有する)
+CHAIN = (
+    "  projector s1:\n    party: P1\n\n  projector b12:\n    party: [P1, P2]\n\n"
+    "  projector b23:\n    party: [P2, P3]\n\n  projector s3:\n    party: P3\n\n"
+)
+#: A と B にまたがる3つの結果の測定と、A だけ、C だけの射影
+SPREAD = (
+    "  projector m1:\n    party: [A, B]\n\n  projector m2:\n    party: [A, B]\n\n"
+    "  projector m3:\n    party: [A, B]\n\n  projector a:\n    party: A\n\n  projector c:\n    party: C\n\n"
+    "  measurement M:\n    outcomes: [m1, m2, m3]\n\n"
 )
 
 
@@ -96,6 +108,14 @@ def test_other_node_types_are_ignored():
      "  measurement m1:\n    outcomes: [a, b]\n\n  measurement m2:\n    outcomes: [b, c]\n", "一つの measurement"),
     ("  projector a:\n    party: A\n\n  projector b:\n    party: B\n\n"
      "  measurement m:\n    outcomes: [a, b]\n", "同じ party"),
+    ("  projector a:\n    party: A\n\n  projector b:\n    party: [A, B]\n\n"
+     "  measurement m:\n    outcomes: [a, b]\n", "同じ party"),
+    ("  projector e:\n    party: []\n", "party が空"),
+    ("  projector e:\n    party: [A, A]\n", "2回"),
+    ("  projector e:\n    party: true\n", "文字列か整数"),
+    ("  projector e:\n    party: [A, 1.5]\n", "文字列か整数"),
+    ("  projector e:\n    party: \"\"\n", "空でない"),
+    (CHAIN + "  description d:\n    parties: [P2]\n", "入る要素射影がありません"),
     ("  projector e:\n\n  term t1:\n    factors: [e, zz]\n    value: 0.5\n", "zz"),
     (QUTRIT + "  term t1:\n    factors: [p3]\n    value: 0.2\n", "最後の結果"),
     ("  projector e:\n\n  term t1:\n    factors: [e]\n", "value"),
@@ -153,6 +173,7 @@ def test_dagger_reverses_the_order():
 @pytest.mark.parametrize("name,level,count", [
     ("qubit", 0, 1), ("qubit", 1, 4), ("qubit", 2, 10), ("bell", 2, 13),
     ("classical", 4, 16), ("classical", 6, 16), ("qutrit", 2, 13),
+    ("mediator", 2, 9), ("mediator", 5, 51), ("chain", 2, 14), ("chain", 7, 572),
 ])
 def test_number_of_words(name, level, count):
     assert len(sample(name).words_upto(level)) == count
@@ -162,6 +183,176 @@ def test_words_can_be_restricted_to_a_description():
     system = sample("pair")
     words = system.words_upto(2, system.description_generators("dA"))
     assert words == [(), ("eA0",), ("eA1",), ("eA0", "eA1"), ("eA1", "eA0")]
+
+
+# ---------------------------------------------------------------- 複数の party にまたがる射影
+def test_a_projector_may_belong_to_several_parties():
+    system = system_from(CHAIN)
+    assert system.support["s1"] == {"P1"} and system.support["b12"] == {"P1", "P2"}
+    assert system.parties == ["P1", "P2", "P3"]
+    assert system.party["b12"] == "P1+P2"                    # 表示用の名前
+    one = system_from("  projector e:\n    party: [A]\n\n  projector f:\n    party: A\n\n  projector g:\n")
+    assert one.support["e"] == one.support["f"] == {"A"}     # 1つだけ並べたリストは、1つ書いたのと同じ
+    assert one.support["g"] == {physics.DEFAULT_PARTY}
+    assert system_from("  projector e:\n    party: [1, 2]\n").support["e"] == {"1", "2"}
+
+
+def test_projectors_commute_only_when_their_parties_do_not_overlap():
+    system = system_from(CHAIN)
+    commuting = {frozenset(pair) for pair in (("s1", "b23"), ("s1", "s3"), ("b12", "s3"))}
+    for x, y in ((x, y) for x in system.generators for y in system.generators if x != y):
+        same = system.reduce((x, y)) == system.reduce((y, x))
+        assert same == (frozenset((x, y)) in commuting) == system.commutes(x, y), (x, y)
+
+
+def test_normal_form_takes_the_smallest_party_among_those_that_can_come_first():
+    system = system_from(CHAIN)
+    assert system.reduce(("s3", "s1")) == ("s1", "s3")
+    assert system.reduce(("s3", "b12", "s1")) == ("b12", "s1", "s3")     # s1 は b12 を越えられない
+    assert system.reduce(("s3", "b23", "s1")) == ("s1", "s3", "b23")     # s3 は b23 を越えられない
+    assert system.reduce(("b23", "b12", "s3", "s1")) == ("b23", "b12", "s1", "s3")
+
+
+def test_repeating_a_projector_collapses_unless_something_between_blocks_it():
+    system = system_from(CHAIN)
+    assert system.reduce(("s1", "b23", "s3", "s1")) == ("s1", "b23", "s3")    # b23 も s3 も s1 と可換
+    assert system.reduce(("b12", "s3", "b12")) == ("b12", "s3")
+    assert system.reduce(("s1", "b12", "s1")) == ("s1", "b12", "s1")          # b12 は s1 と可換でない
+    assert system.reduce(("b12", "b23", "b12")) == ("b12", "b23", "b12")
+    assert system.reduce(("b12", "s3", "b23", "s1", "b12")) == ("b12", "s1", "s3", "b23", "b12")
+
+
+def test_outcomes_of_a_measurement_over_several_parties():
+    system = system_from(SPREAD)
+    assert system.generators == ["m1", "m2", "a", "c"]
+    assert system.reduce(("m1", "m2")) is None
+    assert system.reduce(("m1", "c", "m2")) is None                      # c は可換なので、m1 と m2 が隣り合う
+    assert system.reduce(("m1", "a", "m2")) == ("m1", "a", "m2")         # a は可換でないので、間に残る
+    assert system.parse("m3*c*m1") == {}                                 # (1 - m1 - m2)·m1 = 0
+    assert system.parse("m3*a*m1") != {}
+
+
+def classes_by_the_rules(system, letters, length):
+    """長さ length までのすべての語を、規則で移り合うものどうしにまとめる。`reduce` は使わない。
+    規則: party が重ならない隣どうしは入れ替えられる / ee = e / 同じ測定の別の結果が隣り合えば 0。
+    戻り値は (語のリスト, 語 → まとまりの代表, 0 のまとまりの代表)。"""
+    zero = "0"
+    words = [w for n in range(length + 1) for w in itertools.product(letters, repeat=n)]
+    parent = {w: w for w in words}
+    parent[zero] = zero
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for w in words:
+        for i in range(len(w) - 1):
+            x, y = w[i], w[i + 1]
+            if x == y:
+                parent[find(w)] = find(w[:i] + w[i + 1:])
+            elif system.meas_of.get(x) is not None and system.meas_of.get(x) == system.meas_of.get(y):
+                parent[find(w)] = find(zero)
+            elif system.support[x].isdisjoint(system.support[y]):
+                parent[find(w)] = find(w[:i] + (y, x) + w[i + 2:])
+    return words, {w: find(w) for w in words}, find(zero)
+
+
+@pytest.mark.parametrize("body,length", [
+    (CHAIN, 6), (SPREAD, 5), (BELL, 6), (QUTRIT, 6),
+    ("  projector a:\n    party: A\n\n  projector b:\n    party: B\n\n  projector m:\n    party: [A, B]\n", 7),
+    ("  projector x:\n    party: [A, B]\n\n  projector y:\n    party: [B, C]\n\n"
+     "  projector z:\n    party: [C, A]\n\n  projector w:\n    party: D\n", 6),
+])
+def test_normal_form_names_each_class_of_words_exactly_once(body, length):
+    """規則で移り合う語は同じ標準形になり、移り合わない語は別の標準形になる。"""
+    system = system_from(body)
+    words, group, zero = classes_by_the_rules(system, list(system.party), length)
+    normal = {w: system.reduce(w) for w in words}
+    forms: dict = {}
+    for w in words:
+        forms.setdefault(group[w], set()).add(normal[w])
+    assert all(len(found) == 1 for found in forms.values())
+    assert len({next(iter(found)) for found in forms.values()}) == len(forms)
+    for w in words:
+        if group[w] == zero:
+            assert normal[w] is None
+        else:
+            assert group[normal[w]] == group[w]                          # 標準形そのものも、同じまとまりにある
+            assert normal[normal[w]] == normal[w]
+    shortest: dict = {}
+    for w in words:
+        shortest[group[w]] = min(shortest.get(group[w], len(w)), len(w))
+    assert all(len(normal[w]) == shortest[group[w]] for w in words if group[w] != zero)
+
+
+@pytest.mark.parametrize("name", ["bell", "ghz", "classical"])
+def test_with_one_party_each_the_normal_form_groups_the_projectors_by_party(name):
+    """party が1つずつなら、標準形は party の名前の順にまとめた形になる(同じ party の中の順序は保つ)。"""
+    system = sample(name)
+    rnd = random.Random(name)
+    for _ in range(300):
+        word = tuple(rnd.choice(system.generators) for _ in range(rnd.randint(0, 9)))
+        parts = [system.reduce(tuple(e for e in word if system.party[e] == p)) for p in system.parties]
+        assert system.reduce(word) == tuple(e for part in parts for e in part)
+
+
+def test_description_by_parties_takes_the_projectors_inside_those_parties():
+    system = system_from(CHAIN + "  description left:\n    parties: [P1, P2]\n\n"
+                                 "  description end:\n    parties: P3\n\n"
+                                 "  description all:\n    parties: [P1, P2, P3]\n")
+    assert system.description_generators("left") == ["s1", "b12"]        # b23 は P3 にもまたがるので入らない
+    assert system.description_generators("end") == ["s3"]
+    assert system.description_generators("all") == ["s1", "b12", "b23", "s3"]
+
+
+def test_joint_probabilities_are_taken_only_for_projectors_that_commute():
+    results, skipped = sample("chain").joint_probabilities()
+    assert skipped == 0
+    assert {frozenset(choice) for choice, _, _ in results} == {frozenset(c) for c in (
+        ("s1",), ("b12",), ("b23",), ("s3",), ("s1", "b23"), ("s1", "s3"), ("b12", "s3"))}
+    assert all(low > -1e-12 and abs(total - 1) < 1e-12 for _, low, total in results)
+    assert len(sample("mediator").joint_probabilities()[0]) == 4         # a、b、m と、a と b の組
+
+
+def test_recovered_operators_commute_only_when_their_parties_do_not_overlap():
+    rep = sample("mediator").representation()
+
+    def gap(x, y):
+        return physics.max_abs_diff(physics.matmul(rep.ops[x], rep.ops[y]), physics.matmul(rep.ops[y], rep.ops[x]))
+
+    assert gap("a", "b") < 1e-9
+    assert gap("a", "m") > 0.2 and gap("b", "m") > 0.2
+
+
+def test_action_reaches_a_separate_party_only_through_a_projector_that_joins_them():
+    """a と b は可換なので、a を当てても b の確率は変わらない。a、m、b の順のときだけ変わる。"""
+    system = sample("mediator")
+    psi, ops = ps.model_mediator()
+    direct = ps.unasked("b", "a")
+    assert system.parse(f"{direct} - b") == {}                           # 式が 0 になる。関係表の値によらない
+    assert system.parse(f"{ps.unasked('(' + direct + ')', 'm')} - viaM") == {}       # m、a、b の順
+    shift = ps.chance(psi, ops, ["a", "m"], "b") - ps.chance(psi, ops, ["m"], "b")
+    assert abs(shift - 0.25) < 1e-12
+    assert abs(system.evaluate(f"{ps.unasked('viaM', 'a')} - viaM") - shift) < 1e-9
+    by_history = (sum(system.history_probability(["a", "m", "b"], [x, y, "yes"]) for x in ("yes", "no") for y in ("yes", "no"))
+                  - sum(system.history_probability(["m", "b"], [y, "yes"]) for y in ("yes", "no")))
+    assert abs(by_history - shift) < 1e-9
+
+
+def test_action_travels_along_a_chain_only_in_order():
+    """両端の s1 と s3 の間では、つなぐ射影を b12、b23 の順に通したときだけ作用が届く。"""
+    system = sample("chain")
+    psi, ops = ps.model_chain()
+    exprs = {q["id"]: q["expr"] for q in system.quantities}
+    for ident in ("q-comm", "q-comm-far", "q-direct", "q-one-link", "q-wrong-order"):
+        assert system.parse(exprs[ident]) == {}, ident                   # 関係表の値によらず 0
+    assert system.parse("viaWrong") == system.parse("via23")             # b12 は s3 と可換なので、消える
+    shift = ps.chance(psi, ops, ["s1", "b12", "b23"], "s3") - ps.chance(psi, ops, ["b12", "b23"], "s3")
+    assert abs(shift + 0.125) < 1e-12
+    assert abs(system.evaluate(exprs["q-chain"]) - shift) < 1e-9
+    assert max(len(w) for w in system.parse(exprs["q-chain"])) == 7
 
 
 # ---------------------------------------------------------------- 値
@@ -381,6 +572,7 @@ def test_eigh_handles_a_rank_deficient_matrix():
 @pytest.mark.parametrize("name,description,dimension", [
     ("qubit", None, 2), ("qutrit", None, 3), ("bell", None, 4), ("pair", None, 4),
     ("classical", None, 8), ("pair", "dA", 4), ("bell", "dA", 4), ("thermal", "d", 4),
+    ("mediator", None, 4),
 ])
 def test_representation_is_recovered_from_the_table(name, description, dimension):
     rep = sample(name).representation(description)
@@ -588,6 +780,8 @@ def run(*args, encoding="cp932"):
     (["check", SAMPLES / "qubit.pyn"], "結果: 問題なし"),
     (["flow", SAMPLES / "pair.pyn", "-d", "dA", "-t", "0.5"], "σ_t(eA1)"),
     (["gns", SAMPLES / "qubit.pyn", "--matrices"], "状態ベクトル Ω"),
+    (["gns", SAMPLES / "mediator.pyn"], "party が重ならない射影どうしの交換子"),
+    (["check", SAMPLES / "chain.pyn"], "結果: 問題なし"),
     (["words", SAMPLES / "qubit.pyn", "-L", "1"], "0.853553391"),
     (["eval", SAMPLES / "bell.pyn", "S"], "2.82842712475"),
 ])

@@ -1,0 +1,188 @@
+system mediator "仲立ち:間をつなぐ射影を通ってだけ作用が届く":
+  ppyn: 0.2
+  """
+  2個の量子ビット。`a` は場所 A だけ、`b` は場所 B だけに関わる。`m` は `party: [A, B]` と書いた、両方にまたがる射影である。`a` と `b` は party が重ならないので可換になり、`m` はどちらとも可換でない。
+
+  `a` を当てても `b` の確率は変わらない。`a`、`m`、`b` の順に当てたときだけ、`a` を当てたことで `b` の確率が変わる(0.5 が 0.75 になる)。離れた2つは、間をつなぐ射影を通ってだけ作用し合う。
+  """
+
+  projector a "場所 A の X 方向で上向き":
+    party: A
+
+  projector b "場所 B の Z 方向で上向き":
+    party: B
+
+  projector m "A と B の2個がそろっている(両方にまたがる射影)":
+    party: [A, B]
+
+  define viaM "m を当ててから b を見る(m の結果は問わない)":
+    expr: "m*b*m + (1 - m)*b*(1 - m)"
+
+  term t-001 "ω(a)":
+    factors: [a]
+    value: 0.5
+
+  term t-002 "ω(b)":
+    factors: [b]
+    value: 1
+
+  term t-003 "ω(m)":
+    factors: [m]
+    value: 0.5
+
+  term t-004 "ω(a·b)":
+    factors: [a, b]
+    value: 0.5
+
+  term t-005 "ω(a·m)":
+    factors: [a, m]
+    value: 0.25
+
+  term t-006 "ω(b·m)":
+    factors: [b, m]
+    value: 0.5
+
+  term t-007 "ω(a·b·m)":
+    factors: [a, b, m]
+    value: 0.25
+
+  term t-008 "ω(a·m·a)":
+    factors: [a, m, a]
+    value: 0.125
+
+  term t-009 "ω(a·m·b)":
+    factors: [a, m, b]
+    value: 0.25
+
+  term t-010 "ω(b·m·b)":
+    factors: [b, m, b]
+    value: 0.5
+
+  term t-011 "ω(m·a·m)":
+    factors: [m, a, m]
+    value: 0.25
+
+  term t-012 "ω(m·b·m)":
+    factors: [m, b, m]
+    value: 0.25
+
+  term t-013 "ω(a·b·m·a)":
+    factors: [a, b, m, a]
+    value: 0.125
+
+  term t-014 "ω(a·b·m·b)":
+    factors: [a, b, m, b]
+    value: 0.25
+
+  term t-015 "ω(a·m·a·m)":
+    factors: [a, m, a, m]
+    value: 0.125
+
+  term t-016 "ω(a·m·b·m)":
+    factors: [a, m, b, m]
+    value: 0.125
+
+  term t-017 "ω(b·m·a·m)":
+    factors: [b, m, a, m]
+    value: 0.25
+
+  term t-018 "ω(b·m·b·m)":
+    factors: [b, m, b, m]
+    value: 0.25
+
+  term t-019 "ω(m·a·b·m)":
+    factors: [m, a, b, m]
+    value: 0.125
+
+  term t-020 "ω(a·b·m·a·b)":
+    factors: [a, b, m, a, b]
+    value: 0.125
+
+  term t-021 "ω(a·b·m·a·m)":
+    factors: [a, b, m, a, m]
+    value: 0.125
+
+  term t-022 "ω(a·b·m·b·m)":
+    factors: [a, b, m, b, m]
+    value: 0.125
+
+  term t-023 "ω(a·m·a·b·m)":
+    factors: [a, m, a, b, m]
+    value: 0.0625
+
+  term t-024 "ω(a·m·a·m·a)":
+    factors: [a, m, a, m, a]
+    value: 0.0625
+
+  term t-025 "ω(a·m·a·m·b)":
+    factors: [a, m, a, m, b]
+    value: 0.125
+
+  term t-026 "ω(a·m·b·m·a)":
+    factors: [a, m, b, m, a]
+    value: 0.0625
+
+  term t-027 "ω(a·m·b·m·b)":
+    factors: [a, m, b, m, b]
+    value: 0.125
+
+  term t-028 "ω(b·m·a·b·m)":
+    factors: [b, m, a, b, m]
+    value: 0.125
+
+  term t-029 "ω(b·m·a·m·b)":
+    factors: [b, m, a, m, b]
+    value: 0.25
+
+  term t-030 "ω(b·m·b·m·b)":
+    factors: [b, m, b, m, b]
+    value: 0.25
+
+  term t-031 "ω(m·a·m·a·m)":
+    factors: [m, a, m, a, m]
+    value: 0.125
+
+  term t-032 "ω(m·a·m·b·m)":
+    factors: [m, a, m, b, m]
+    value: 0.125
+
+  term t-033 "ω(m·b·m·b·m)":
+    factors: [m, b, m, b, m]
+    value: 0.125
+
+  quantity q-comm "a と b は可換(party が重ならない)":
+    expect: 0
+    expr: "comm(a, b)"
+    tol: 0.000001
+
+  quantity q-direct "a を当てても、b の確率は変わらない(関係表の値によらず 0)":
+    expect: 0
+    expr: "a*b*a + (1 - a)*b*(1 - a) - b"
+    tol: 0.000001
+
+  quantity q-before "m のあとの b の確率":
+    expect: 0.5
+    expr: viaM
+    tol: 0.000001
+
+  quantity q-mediated "a、m、b の順に当てると、a を当てたことで b の確率が変わる":
+    expect: 0.25
+    expr: "a*viaM*a + (1 - a)*viaM*(1 - a) - viaM"
+    tol: 0.000001
+
+  quantity q-wrong-order "m、a、b の順では変わらない(関係表の値によらず 0)":
+    expect: 0
+    expr: "m*(a*b*a + (1 - a)*b*(1 - a))*m + (1 - m)*(a*b*a + (1 - a)*b*(1 - a))*(1 - m) - viaM"
+    tol: 0.000001
+
+  history h-am "a を先に、m を後に":
+    expect: 0.125
+    results: [yes, yes]
+    steps: [a, m]
+    tol: 0.000001
+
+  history h-ma "m を先に、a を後に(確率が変わるので、a と m は可換でない)":
+    expect: 0.25
+    results: [yes, yes]
+    steps: [m, a]
+    tol: 0.000001

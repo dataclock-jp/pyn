@@ -1,0 +1,185 @@
+system chain "鎖:作用は、つなぐ射影を順にたどって伝わる":
+  ppyn: 0.2
+  """
+  3個の量子ビットの鎖。`s1` と `s3` は両端の射影で、`b12` と `b23` は隣どうしをつなぐ射影である。`b12` と `b23` は場所2を共有するので可換でなく、`s1` と `b23`、`b12` と `s3` は party が重ならないので可換になる。
+
+  `s1` を当てたことが `s3` の確率に現れるのは、`s1`、`b12`、`b23`、`s3` の順に当てたときだけである(0.75 が 0.625 になる)。つなぐ射影を1つ飛ばしても、順序を逆にしても、変化は 0 になる。作用は、つなぐ射影を順にたどってだけ伝わる。
+
+  関係表は、長さ2までの語と、上の式に現れる語だけを含む。長さ7までの語は 571 個あるので、すべては入れていない。
+  """
+
+  projector s1 "場所1の X 方向で上向き":
+    party: P1
+
+  projector b12 "場所1と2をつなぐ射影":
+    party: [P1, P2]
+
+  projector b23 "場所2と3をつなぐ射影":
+    party: [P2, P3]
+
+  projector s3 "場所3の Z 方向で上向き":
+    party: P3
+
+  define via23 "b23 を当ててから s3 を見る(b23 の結果は問わない)":
+    expr: "b23*s3*b23 + (1 - b23)*s3*(1 - b23)"
+
+  define viaBoth "b12、b23 の順に当ててから s3 を見る":
+    expr: "b12*via23*b12 + (1 - b12)*via23*(1 - b12)"
+
+  define viaWrong "b23、b12 の順に当ててから s3 を見る":
+    expr: "b23*(b12*s3*b12 + (1 - b12)*s3*(1 - b12))*b23 + (1 - b23)*(b12*s3*b12 + (1 - b12)*s3*(1 - b12))*(1 - b23)"
+
+  term t-001 "ω(b12)":
+    factors: [b12]
+    value: 0.5
+
+  term t-002 "ω(b23)":
+    factors: [b23]
+    value: 0.5
+
+  term t-003 "ω(s1)":
+    factors: [s1]
+    value: 0.5
+
+  term t-004 "ω(s3)":
+    factors: [s3]
+    value: 1
+
+  term t-005 "ω(b12·b23)":
+    factors: [b12, b23]
+    value: 0.25
+
+  term t-006 "ω(b12·s1)":
+    factors: [b12, s1]
+    value: 0.25
+
+  term t-007 "ω(b12·s3)":
+    factors: [b12, s3]
+    value: 0.5
+
+  term t-008 "ω(b23·s3)":
+    factors: [b23, s3]
+    value: 0.5
+
+  term t-009 "ω(s1·b23)":
+    factors: [s1, b23]
+    value: 0.25
+
+  term t-010 "ω(s1·s3)":
+    factors: [s1, s3]
+    value: 0.5
+
+  term t-011 "ω(b12·b23·s3)":
+    factors: [b12, b23, s3]
+    value: 0.25
+
+  term t-012 "ω(b12·s3·b23)":
+    factors: [b12, s3, b23]
+    value: 0.25
+
+  term t-013 "ω(b23·s3·b23)":
+    factors: [b23, s3, b23]
+    value: 0.25
+
+  term t-014 "ω(b12·b23·b12·s3)":
+    factors: [b12, b23, b12, s3]
+    value: 0.125
+
+  term t-015 "ω(b12·b23·s3·b23)":
+    factors: [b12, b23, s3, b23]
+    value: 0.125
+
+  term t-016 "ω(b12·b23·s3·b23·b12)":
+    factors: [b12, b23, s3, b23, b12]
+    value: 0.0625
+
+  term t-017 "ω(b12·s1·b23·s3)":
+    factors: [b12, s1, b23, s3]
+    value: 0.125
+
+  term t-018 "ω(b12·s1·s3·b23)":
+    factors: [b12, s1, s3, b23]
+    value: 0.125
+
+  term t-019 "ω(b23·b12·s1·s3)":
+    factors: [b23, b12, s1, s3]
+    value: 0.125
+
+  term t-020 "ω(s1·b12·b23·s3)":
+    factors: [s1, b12, b23, s3]
+    value: 0.125
+
+  term t-021 "ω(b12·b23·b12·s1·s3)":
+    factors: [b12, b23, b12, s1, s3]
+    value: 0.0625
+
+  term t-022 "ω(b12·s1·b23·s3·b23)":
+    factors: [b12, s1, b23, s3, b23]
+    value: 0.0625
+
+  term t-023 "ω(b12·s3·b23·b12·s1)":
+    factors: [b12, s3, b23, b12, s1]
+    value: 0.0625
+
+  term t-024 "ω(b23·s3·b23·b12·s1)":
+    factors: [b23, s3, b23, b12, s1]
+    value: 0.0625
+
+  term t-025 "ω(s1·b12·s1·b23·s3)":
+    factors: [s1, b12, s1, b23, s3]
+    value: 0.0625
+
+  term t-026 "ω(s1·b12·s1·s3·b23)":
+    factors: [s1, b12, s1, s3, b23]
+    value: 0.0625
+
+  term t-027 "ω(b12·b23·s3·b23·b12·s1)":
+    factors: [b12, b23, s3, b23, b12, s1]
+    value: 0.03125
+
+  term t-028 "ω(s1·b12·b23·b12·s1·s3)":
+    factors: [s1, b12, b23, b12, s1, s3]
+    value: 0.03125
+
+  term t-029 "ω(s1·b12·s1·b23·s3·b23)":
+    factors: [s1, b12, s1, b23, s3, b23]
+    value: 0.03125
+
+  term t-030 "ω(s1·b12·b23·s3·b23·b12·s1)":
+    factors: [s1, b12, b23, s3, b23, b12, s1]
+    value: 0.015625
+
+  quantity q-comm "両端の s1 と s3 は可換":
+    expect: 0
+    expr: "comm(s1, s3)"
+    tol: 0.000001
+
+  quantity q-comm-far "s1 は、離れた b23 とも可換":
+    expect: 0
+    expr: "comm(s1, b23)"
+    tol: 0.000001
+
+  quantity q-direct "s1 を当てても、s3 の確率は変わらない(関係表の値によらず 0)":
+    expect: 0
+    expr: "s1*s3*s1 + (1 - s1)*s3*(1 - s1) - s3"
+    tol: 0.000001
+
+  quantity q-one-link "b23 だけを通しても変わらない(関係表の値によらず 0)":
+    expect: 0
+    expr: "s1*via23*s1 + (1 - s1)*via23*(1 - s1) - via23"
+    tol: 0.000001
+
+  quantity q-before "b12、b23 のあとの s3 の確率":
+    expect: 0.75
+    expr: viaBoth
+    tol: 0.000001
+
+  quantity q-chain "s1、b12、b23、s3 の順に当てると、s1 を当てたことで s3 の確率が変わる":
+    expect: -0.125
+    expr: "s1*viaBoth*s1 + (1 - s1)*viaBoth*(1 - s1) - viaBoth"
+    tol: 0.000001
+
+  quantity q-wrong-order "b23、b12 の順では変わらない(関係表の値によらず 0)":
+    expect: 0
+    expr: "s1*viaWrong*s1 + (1 - s1)*viaWrong*(1 - s1) - viaWrong"
+    tol: 0.000001

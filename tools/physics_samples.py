@@ -132,13 +132,17 @@ def term(count, word, value):
             f'    value: {value_text(value)}\n')
 
 
-def build(name, title, prose, header_nodes, state, ops, max_len, extra_nodes):
+def build(name, title, prose, header_nodes, state, ops, max_len, extra_nodes, also=()):
     """header_nodes(射影・測定・define・description の .pyn テキスト)から代数を作り、
-    長さ max_len までの語の値を計算して term として足す。逆順の語は複素共役なので、片方だけ書く。"""
+    長さ max_len までの語の値を計算して term として足す。逆順の語は複素共役なので、片方だけ書く。
+    also に式を渡すと、その式に現れる語も足す(長い語を、使うものだけ入れるとき)。"""
     text = f'system {name} "{title}":\n' + HEAD + prose_block(prose) + header_nodes
     system = physics.System(parse(text))
+    words = system.words_upto(max_len)
+    for expr in also:
+        words += sorted(system.parse(expr), key=lambda w: (len(w), w))
     lines, seen, count = [], set(), 0
-    for word in system.words_upto(max_len):
+    for word in words:
         if not word or word in seen:
             continue
         seen.add(word)
@@ -226,9 +230,36 @@ def model_ghz():
     return psi, ops
 
 
+LINK = projector_on([1, 0, 0, 1])               # 隣り合う2個が (|00> + |11>)/√2 にあること
+
+
+def model_mediator():
+    """2個の量子ビット |00>。a は A だけ、b は B だけ、m は両方にまたがる射影。"""
+    return [1 + 0j, 0j, 0j, 0j], {
+        "a": embed(projector_on([1, 1]), 0, 2), "b": embed(projector_on([1, 0]), 1, 2), "m": LINK}
+
+
+def model_chain():
+    """3個の量子ビット |000>。s1 と s3 は両端、b12 と b23 は隣どうしをつなぐ射影。"""
+    psi = [0j] * 8
+    psi[0] = 1 + 0j
+    return psi, {"s1": embed(projector_on([1, 1]), 0, 3), "s3": embed(projector_on([1, 0]), 2, 3),
+                 "b12": kron(LINK, I2), "b23": kron(I2, LINK)}
+
+
+def chance(state, ops, steps, last):
+    """steps を順に当て(結果は問わない)、最後に last を当てて「はい」になる確率。"""
+    total = 0.0
+    for k in range(2 ** len(steps)):
+        results = ["yes" if k >> i & 1 else "no" for i in range(len(steps))]
+        total += history_prob(state, ops, [*steps, last], [*results, "yes"])
+    return total
+
+
 #: 関係表を状態から計算できるサンプル(名前 → 状態と射影)。テストが、表の値と突き合わせる
 MODELS = {"qubit": model_qubit, "qutrit": model_qutrit, "bell": model_bell,
-          "pair": model_pair, "thermal": model_thermal, "ghz": model_ghz}
+          "pair": model_pair, "thermal": model_thermal, "ghz": model_ghz,
+          "mediator": model_mediator, "chain": model_chain}
 
 
 # ---------------------------------------------------------------- サンプル
@@ -394,6 +425,80 @@ def sample_ghz():
     return build("ghz", "GHZ 状態:3者を結ぶ項が必要な例", prose, header, psi, ops, 3, extra)
 
 
+def unasked(target, first):
+    """first を当ててから(結果は問わない)target を見る、という式。"""
+    return f"{first}*{target}*{first} + (1 - {first})*{target}*(1 - {first})"
+
+
+def sample_mediator():
+    psi, ops = model_mediator()
+    header = (
+        '  projector a "場所 A の X 方向で上向き":\n    party: A\n\n'
+        '  projector b "場所 B の Z 方向で上向き":\n    party: B\n\n'
+        '  projector m "A と B の2個がそろっている(両方にまたがる射影)":\n    party: [A, B]\n\n'
+        f'  define viaM "m を当ててから b を見る(m の結果は問わない)":\n    expr: "{unasked("b", "m")}"\n'
+    )
+    direct = f"({unasked('b', 'a')})"
+    extra = (
+        quantity("q-comm", "a と b は可換(party が重ならない)", "comm(a, b)", 0)
+        + quantity("q-direct", "a を当てても、b の確率は変わらない(関係表の値によらず 0)",
+                   f"{unasked('b', 'a')} - b", 0)
+        + quantity("q-before", "m のあとの b の確率", "viaM", chance(psi, ops, ["m"], "b"))
+        + quantity("q-mediated", "a、m、b の順に当てると、a を当てたことで b の確率が変わる",
+                   f"{unasked('viaM', 'a')} - viaM",
+                   chance(psi, ops, ["a", "m"], "b") - chance(psi, ops, ["m"], "b"))
+        + quantity("q-wrong-order", "m、a、b の順では変わらない(関係表の値によらず 0)",
+                   f"{unasked(direct, 'm')} - viaM", 0)
+        + history("h-am", "a を先に、m を後に", ["a", "m"], ["yes", "yes"],
+                  history_prob(psi, ops, ["a", "m"], ["yes", "yes"]))
+        + history("h-ma", "m を先に、a を後に(確率が変わるので、a と m は可換でない)", ["m", "a"], ["yes", "yes"],
+                  history_prob(psi, ops, ["m", "a"], ["yes", "yes"]))
+    )
+    prose = [
+        "2個の量子ビット。`a` は場所 A だけ、`b` は場所 B だけに関わる。`m` は `party: [A, B]` と書いた、両方にまたがる射影である。`a` と `b` は party が重ならないので可換になり、`m` はどちらとも可換でない。",
+        "",
+        "`a` を当てても `b` の確率は変わらない。`a`、`m`、`b` の順に当てたときだけ、`a` を当てたことで `b` の確率が変わる(0.5 が 0.75 になる)。離れた2つは、間をつなぐ射影を通ってだけ作用し合う。",
+    ]
+    return build("mediator", "仲立ち:間をつなぐ射影を通ってだけ作用が届く", prose, header, psi, ops, 5, extra)
+
+
+def sample_chain():
+    psi, ops = model_chain()
+    wrong = unasked(f"({unasked('s3', 'b12')})", "b23")
+    header = (
+        '  projector s1 "場所1の X 方向で上向き":\n    party: P1\n\n'
+        '  projector b12 "場所1と2をつなぐ射影":\n    party: [P1, P2]\n\n'
+        '  projector b23 "場所2と3をつなぐ射影":\n    party: [P2, P3]\n\n'
+        '  projector s3 "場所3の Z 方向で上向き":\n    party: P3\n\n'
+        f'  define via23 "b23 を当ててから s3 を見る(b23 の結果は問わない)":\n    expr: "{unasked("s3", "b23")}"\n\n'
+        f'  define viaBoth "b12、b23 の順に当ててから s3 を見る":\n    expr: "{unasked("via23", "b12")}"\n\n'
+        f'  define viaWrong "b23、b12 の順に当ててから s3 を見る":\n    expr: "{wrong}"\n'
+    )
+    quantities = (
+        ("q-comm", "両端の s1 と s3 は可換", "comm(s1, s3)", 0),
+        ("q-comm-far", "s1 は、離れた b23 とも可換", "comm(s1, b23)", 0),
+        ("q-direct", "s1 を当てても、s3 の確率は変わらない(関係表の値によらず 0)", f"{unasked('s3', 's1')} - s3", 0),
+        ("q-one-link", "b23 だけを通しても変わらない(関係表の値によらず 0)",
+         f"{unasked('via23', 's1')} - via23", 0),
+        ("q-before", "b12、b23 のあとの s3 の確率", "viaBoth", chance(psi, ops, ["b12", "b23"], "s3")),
+        ("q-chain", "s1、b12、b23、s3 の順に当てると、s1 を当てたことで s3 の確率が変わる",
+         f"{unasked('viaBoth', 's1')} - viaBoth",
+         chance(psi, ops, ["s1", "b12", "b23"], "s3") - chance(psi, ops, ["b12", "b23"], "s3")),
+        ("q-wrong-order", "b23、b12 の順では変わらない(関係表の値によらず 0)",
+         f"{unasked('viaWrong', 's1')} - viaWrong", 0),
+    )
+    extra = "".join(quantity(*q) for q in quantities)
+    prose = [
+        "3個の量子ビットの鎖。`s1` と `s3` は両端の射影で、`b12` と `b23` は隣どうしをつなぐ射影である。`b12` と `b23` は場所2を共有するので可換でなく、`s1` と `b23`、`b12` と `s3` は party が重ならないので可換になる。",
+        "",
+        "`s1` を当てたことが `s3` の確率に現れるのは、`s1`、`b12`、`b23`、`s3` の順に当てたときだけである(0.75 が 0.625 になる)。つなぐ射影を1つ飛ばしても、順序を逆にしても、変化は 0 になる。作用は、つなぐ射影を順にたどってだけ伝わる。",
+        "",
+        "関係表は、長さ2までの語と、上の式に現れる語だけを含む。長さ7までの語は 571 個あるので、すべては入れていない。",
+    ]
+    return build("chain", "鎖:作用は、つなぐ射影を順にたどって伝わる", prose, header, psi, ops, 2, extra,
+                 also=[q[2] for q in quantities])
+
+
 def sample_classical():
     """共通の実体 λ(円周上の一様な角度)。A_i は cos(λ - a_i) > 0 で上、B_j は cos(λ - b_j) < 0 で上。
     すべての射影が同時に値を持つので、全部が可換になる。"""
@@ -458,6 +563,7 @@ SAMPLES = (
     ("qubit.pyn", sample_qubit), ("qutrit.pyn", sample_qutrit), ("bell.pyn", sample_bell),
     ("pair.pyn", sample_pair), ("thermal.pyn", sample_thermal), ("ghz.pyn", sample_ghz),
     ("classical.pyn", sample_classical), ("pr_box.pyn", sample_pr_box),
+    ("mediator.pyn", sample_mediator), ("chain.pyn", sample_chain),
 )
 
 
